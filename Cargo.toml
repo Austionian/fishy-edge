@@ -1,10 +1,31 @@
 [package]
-name = "fishy-edge"
+name = "fishy_edge"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = 'fishy_edge'
+
 [dependencies]
 actix-web = "4"
+reqwest = "0.11.14"
+serde = { version = "1.0.152", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+[dependencies.sqlx]
+version = "0.5.7"
+default-features = false
+features = [
+    "runtime-actix-rustls", 
+    "macros", 
+    "postgres", 
+    "uuid", 
+    "chrono", 
+    "migrate"
+]
