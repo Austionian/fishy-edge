@@ -1,16 +1,21 @@
 use fishy_edge::configuration::get_configuration;
 use fishy_edge::startup::run;
-use sqlx::{Connection, PgConnection};
+use sqlx::PgPool;
 use std::net::TcpListener;
+
+struct TestApp {
+    pub address: String,
+    pub db_pool: PgPool,
+}
 
 #[tokio::test]
 async fn health_check_works() {
-    let address = spawn_app();
+    let app = spawn_app().await;
 
     let client = reqwest::Client::new();
 
     let response = client
-        .get(&format!("{}/health_check", &address))
+        .get(&format!("{}/health_check", &app.address))
         .send()
         .await
         .expect("Failed to execute the request.");
@@ -19,31 +24,34 @@ async fn health_check_works() {
     assert_eq!(Some(0), response.content_length());
 }
 
-fn spawn_app() -> String {
+async fn spawn_app() -> TestApp {
+    let configuration = get_configuration().expect("Failed to read configuration.");
+    let connection_pool = PgPool::connect(&configuration.database.connection_string())
+        .await
+        .expect("Failed to connect to the db.");
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind to random port.");
     let port = listener.local_addr().unwrap().port();
-    let server = run(listener).expect("Failed to bind address.");
+    let address = format!("http://127.0.0.1:{}", port);
+
+    let server = run(listener, connection_pool.clone()).expect("Failed to bind address.");
 
     let _ = tokio::spawn(server);
 
-    format!("http://127.0.0.1:{}", port)
+    TestApp {
+        address,
+        db_pool: connection_pool,
+    }
 }
 
 #[tokio::test]
 async fn subscribe_returns_a_200() {
-    let app_address = spawn_app();
-
-    let configuration = get_configuration().expect("Failed to read the configuration.");
-    let connection_string = configuration.database.connection_string();
-    let mut connection = PgConnection::connect(&connection_string)
-        .await
-        .expect("Failed to connect to Postgres.");
+    let app = spawn_app().await;
 
     let client = reqwest::Client::new();
 
-    let body = "name=austin%20rooks&email=austin%40r00ks.io";
+    let body = "name=austin%20rooks";
     let response = client
-        .post(&format!("{}/subscribe", &app_address))
+        .post(&format!("{}/subscribe", &app.address))
         .header("Content-Type", "application/x-www-form-urlencoded")
         .body(body)
         .send()
@@ -53,7 +61,7 @@ async fn subscribe_returns_a_200() {
     assert_eq!(200, response.status().as_u16());
 
     let saved = sqlx::query!("SELECT name From fish_type")
-        .fetch_one(&mut connection)
+        .fetch_one(&app.db_pool)
         .await
         .expect("Failed to fetch saved subscription.");
 
