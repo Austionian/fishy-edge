@@ -14,6 +14,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
     let server = HttpServer::new(move || {
         App::new()
             .wrap(middleware::Compress::default())
+            .wrap(middleware::Logger::default())
             .route("/", web::get().to(greet))
             .route("/health_check", web::get().to(health_check))
             .route("/hello/{name}", web::get().to(greet))

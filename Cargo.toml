@@ -3,8 +3,6 @@ name = "fishy_edge"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [lib]
 path = "src/lib.rs"
 
@@ -15,10 +13,13 @@ name = 'fishy_edge'
 [dependencies]
 actix-web = "4"
 config = "0.11"
-reqwest = "0.11.14"
 serde = { version = "1.0.152", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 uuid = { version = "0.8.1", features = ["v4"] }
+tracing = { version = "0.1", features = ["log"] }
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+tracing-bunyan-formatter = "0.3"
+tracing-log = "0.1"
 
 [dependencies.sqlx]
 version = "0.5.7"
@@ -31,3 +32,8 @@ features = [
     "chrono", 
     "migrate"
 ]
+
+[dev-dependencies]
+reqwest = "0.11.14"
+once_cell = "1"
+
