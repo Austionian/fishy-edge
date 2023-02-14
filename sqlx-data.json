@@ -1,0 +1,16 @@
+{
+  "db": "PostgreSQL",
+  "a97778338524cee63f7c1d3e9300b758a6d2452582ccedabe97387e4c217341f": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO fish_type (id, name)\n        VALUES ($1, $2)\n        "
+  }
+}
