@@ -2,6 +2,7 @@ use fishy_edge::configuration::get_configuration;
 use fishy_edge::startup::run;
 use fishy_edge::telemetry;
 use secrecy::ExposeSecret;
+use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
 
@@ -12,9 +13,9 @@ async fn main() -> std::io::Result<()> {
 
     // Get config and connect to Postgres
     let config = get_configuration().expect("Failed to read configuration.");
-    let connection_pool = PgPool::connect(&config.database.connection_string().expose_secret())
-        .await
-        .expect("Failed to connect to the database.");
+    let connection_pool = PgPoolOptions::new()
+        .connect_timeout(std::time::Duration::from_secs(2))
+        .connect_lazy_with(config.database.with_db());
     let address = format!("{}:{}", config.application.host, config.application.port);
     let listener = TcpListener::bind(address)?;
     run(listener, connection_pool)?.await?;
