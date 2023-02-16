@@ -2,7 +2,6 @@ use fishy_edge::configuration::{get_configuration, DataBaseSettings};
 use fishy_edge::startup::run;
 use fishy_edge::telemetry;
 use once_cell::sync::Lazy;
-use secrecy::ExposeSecret;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use uuid::Uuid;

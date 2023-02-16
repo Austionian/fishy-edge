@@ -39,7 +39,7 @@ impl DataBaseSettings {
         PgConnectOptions::new()
             .host(&self.host)
             .username(&self.username)
-            .password(&self.password.expose_secret())
+            .password(self.password.expose_secret())
             .port(self.port)
             .ssl_mode(ssl_mode)
     }
@@ -90,8 +90,7 @@ impl TryFrom<String> for Environment {
             "local" => Ok(Self::Local),
             "production" => Ok(Self::Production),
             other => Err(format!(
-                "{} is not a supported environment. Use either 'local' or 'production.'",
-                other
+                "{other} is not a supported environment. Use either 'local' or 'production.'"
             )),
         }
     }
