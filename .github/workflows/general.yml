@@ -82,7 +82,7 @@ jobs:
           SKIP_DOCKER=true ./scripts/init_db.sh
       - name: Check sqlx-data.json is up-to-date
         run: |
-          cargo sqlx prepare --check -- --bin fishy-edge
+          cargo sqlx prepare --check -- --bin fishy_edge
       - name: Run cargo test
         uses: actions-rs/cargo@v1
         with:

@@ -1,9 +1,7 @@
 use fishy_edge::configuration::get_configuration;
 use fishy_edge::startup::run;
 use fishy_edge::telemetry;
-use secrecy::ExposeSecret;
 use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
 use std::net::TcpListener;
 
 #[tokio::main]
