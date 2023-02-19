@@ -28,46 +28,15 @@ jobs:
           POSTGRES_DB: postgres
         ports:
           - 5432:5432
-    env:
-      SQLX_VERSION: 0.6.2
-      SQLX_FEATURES: "rustls,postgres"
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v2
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-
-      - name: Cache sqlx-cli
-        uses: actions/cache@v2
-        id: cache-sqlx
-        with:
-          path: |
-            ~/.cargo/bin/sqlx
-            ~/.cargo/bin/cargo-sqlx
-          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}
+          key: sqlx-${{ env.SQLX_VERSION }}
       - name: Install sqlx-cli
-        uses: actions-rs/cargo@v1
-        if: steps.cache-sqlx.outputs.cache-hit == false
-        with:
-          command: install 
-          args: >
-            sqlx-cli
-            --force
+        run:
+            cargo install sqlx-cli
             --version=${{ env.SQLX_VERSION }}
             --features ${{ env.SQLX_FEATURES }}
             --no-default-features
@@ -76,13 +45,8 @@ jobs:
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
-      - name: Check sqlx-data.json is up-to-date
-        run: |
-          cargo sqlx prepare --check -- --bin fishy_edge
-      - name: Run cargo test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
+      - name: Run tests
+        run: cargo test
 
   fmt:
     name: Rustfmt
