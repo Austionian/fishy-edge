@@ -12,5 +12,47 @@
       }
     },
     "query": "\n        INSERT INTO fish_type (id, name)\n        VALUES ($1, $2)\n        "
+  },
+  "cf53e2cd4d705f72f7d032f6432ce4f4fbb14e09ff2ab8bcb8bf9ee9a05ac381": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT name, s3_fish_image, s3_woodland_image, anishinaabe_name, fish_image FROM fish_type\n        "
   }
 }
