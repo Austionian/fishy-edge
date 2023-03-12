@@ -1,4 +1,4 @@
-use crate::routes::{health_check, subscribe};
+use crate::routes::{fishs, health_check, subscribe};
 use actix_web::dev::Server;
 use actix_web::{middleware, web, App, HttpRequest, HttpServer, Responder};
 use sqlx::PgPool;
@@ -20,6 +20,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .route("/health_check", web::get().to(health_check))
             .route("/hello/{name}", web::get().to(greet))
             .route("/subscribe", web::post().to(subscribe))
+            .service(web::scope("/api").route("/fishs", web::get().to(fishs)))
             .app_data(db_pool.clone())
     })
     .listen(listener)?
