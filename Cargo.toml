@@ -12,20 +12,20 @@ name = 'fishy_edge'
 
 [dependencies]
 actix-web = "4"
-config = "0.11"
-serde = { version = "1.0.152", features = ["derive"] }
+config = { version = "0.13", default-features = false, features = ["yaml"]}
+serde = { version = "1.0.155", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-uuid = { version = "0.8.1", features = ["v4"] }
+uuid = { version = "1", features = ["v4", "serde"] }
 tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
 tracing-bunyan-formatter = "0.3"
 tracing-log = "0.1"
-tracing-actix-web = "0.5"
+tracing-actix-web = "0.7"
 secrecy = { version = "0.8", features = ["serde"] }
-serde-aux = "3"
+serde-aux = "4"
 
 [dependencies.sqlx]
-version = "0.5.7"
+version = "0.6"
 default-features = false
 features = [
     "runtime-actix-rustls", 
