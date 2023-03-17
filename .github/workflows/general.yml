@@ -16,7 +16,6 @@ env:
   CARGO_TERM_COLOR: always
   SQLX_VERSION: 0.6.2
   SQLX_FEATURES: "rustls,postgres"
-  DATABASE_URL: "***localhost:5432/fish"
 
 jobs:
   test:
