@@ -1,9 +1,6 @@
 name: General
 
 on:
-  # NB: this differs from the book's project!
-  # These settings allow us to run this specific CI pipeline for PRs against
-  # this specific branch (a.k.a. book chapter).
   push:
     branches:
       - main
@@ -14,9 +11,8 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  SQLX_VERSION: 0.6.2
+  SQLX_VERSION: 0.6.3
   SQLX_FEATURES: "rustls,postgres"
-  DATABASE_URL: "***localhost:5432/fish"
 
 jobs:
   test:
@@ -50,7 +46,7 @@ jobs:
           SKIP_DOCKER=true ./scripts/init_db.sh
       - name: Check sqlx-data.json is up-to-date
         run: |
-          cargo sqlx prepare --database-url ${{ env.DATABASE_URL }} --check -- --bin fishy_edge
+          cargo sqlx prepare --check -- --lib
       - name: Run tests
         run: cargo test
 
