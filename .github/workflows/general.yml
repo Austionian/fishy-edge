@@ -49,7 +49,7 @@ jobs:
           SKIP_DOCKER=true ./scripts/init_db.sh
       - name: Check sqlx-data.json is up-to-date
         run: |
-          cargo sqlx prepare --database-url ${{ env.DATABASE_URL }} --check -- --bin fishy_edge
+          cargo sqlx prepare --database-url ${{ DATABASE_URL }} --check -- --bin fishy_edge
       - name: Run tests
         run: cargo test
 
