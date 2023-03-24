@@ -12,7 +12,8 @@ on:
 env:
   CARGO_TERM_COLOR: always
   SQLX_VERSION: 0.6.3
-  SQLX_FEATURES: "rustls,postgres"
+  SQLX_FEATURES: "rustls,postgres,offline"
+  DATABASE_URL: postgres://postgres:password@localhost:5432/fish
 
 jobs:
   test:
@@ -44,6 +45,9 @@ jobs:
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
+      - name: Check sqlx-data.json is up-to-date
+        run: |
+          cargo sqlx prepare --check -- --lib
       - name: Run tests
         run: cargo test
 
