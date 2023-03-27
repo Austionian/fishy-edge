@@ -1,6 +1,6 @@
 {
   "db": "PostgreSQL",
-  "a97778338524cee63f7c1d3e9300b758a6d2452582ccedabe97387e4c217341f": {
+  "80e7d4e167cc1bdadd266abebebf7e39d80dfa16c7343beb39ef18ea7dac9c94": {
     "describe": {
       "columns": [],
       "nullable": [],
@@ -11,7 +11,7 @@
         ]
       }
     },
-    "query": "\n        INSERT INTO fish_type (id, name)\n        VALUES ($1, $2)\n        "
+    "query": "\n        INSERT INTO users (id, email)\n        VALUES ($1, $2)\n        "
   },
   "cf53e2cd4d705f72f7d032f6432ce4f4fbb14e09ff2ab8bcb8bf9ee9a05ac381": {
     "describe": {
