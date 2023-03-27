@@ -1,7 +1,7 @@
 mod fish;
 mod health_check;
-mod subscriptions;
+mod registrations;
 
 pub use fish::*;
 pub use health_check::*;
-pub use subscriptions::*;
+pub use registrations::*;

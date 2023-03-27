@@ -4,20 +4,20 @@ use uuid::Uuid;
 
 #[derive(serde::Deserialize)]
 pub struct FormData {
-    name: String,
+    email: String,
 }
 
 #[tracing::instrument(
-    name="Adding a new subscriber",
+    name="Registering a new user",
     skip(form, db_pool),
     fields(
-        subscriber_name = %form.name
+        subscriber_name = %form.email
         )
     )]
-pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) -> HttpResponse {
-    match insert_subscriber(&db_pool, &form).await {
+pub async fn register(form: web::Form<FormData>, db_pool: web::Data<PgPool>) -> HttpResponse {
+    match insert_user(&db_pool, &form).await {
         Ok(_) => {
-            tracing::info!("New subscriber details have been saved.");
+            tracing::info!("New user details have been saved.");
             HttpResponse::Ok().finish()
         }
         Err(e) => {
@@ -27,15 +27,15 @@ pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) ->
     }
 }
 
-#[tracing::instrument(name = "Saving new subscriber details to the db.", skip(form, db_pool))]
-pub async fn insert_subscriber(db_pool: &PgPool, form: &FormData) -> Result<(), sqlx::Error> {
+#[tracing::instrument(name = "Saving new user details to the db.", skip(form, db_pool))]
+pub async fn insert_user(db_pool: &PgPool, form: &FormData) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
-        INSERT INTO fish_type (id, name)
+        INSERT INTO users (id, email)
         VALUES ($1, $2)
         "#,
         Uuid::new_v4(),
-        form.name
+        form.email
     )
     .execute(db_pool)
     .await

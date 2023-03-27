@@ -6,25 +6,9 @@ use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use uuid::Uuid;
 
-struct TestApp {
+pub struct TestApp {
     pub address: String,
     pub db_pool: PgPool,
-}
-
-#[tokio::test]
-async fn health_check_works() {
-    let app = spawn_app().await;
-
-    let client = reqwest::Client::new();
-
-    let response = client
-        .get(&format!("{}/health_check", &app.address))
-        .send()
-        .await
-        .expect("Failed to execute the request.");
-
-    assert!(response.status().is_success());
-    assert_eq!(Some(0), response.content_length());
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
@@ -64,7 +48,7 @@ static TRACING: Lazy<()> = Lazy::new(|| {
     }
 });
 
-async fn spawn_app() -> TestApp {
+pub async fn spawn_app() -> TestApp {
     // ensure that trancing is only initialized on the first call
     Lazy::force(&TRACING);
 
@@ -84,47 +68,4 @@ async fn spawn_app() -> TestApp {
         address,
         db_pool: connection_pool,
     }
-}
-
-#[tokio::test]
-async fn subscribe_returns_a_200() {
-    let app = spawn_app().await;
-
-    let client = reqwest::Client::new();
-
-    let body = "name=austin%20rooks";
-    let response = client
-        .post(&format!("{}/subscribe", &app.address))
-        .header("Content-Type", "application/x-www-form-urlencoded")
-        .body(body)
-        .send()
-        .await
-        .expect("Failed to execute request.");
-
-    assert_eq!(200, response.status().as_u16());
-
-    let saved = sqlx::query!("SELECT name From fish_type")
-        .fetch_one(&app.db_pool)
-        .await
-        .expect("Failed to fetch saved subscription.");
-
-    assert_eq!(saved.name, "austin rooks");
-}
-
-#[tokio::test]
-async fn subscribe_returns_a_400_with_incomplete_data() {
-    let app = spawn_app().await;
-
-    let client = reqwest::Client::new();
-
-    let body = "";
-    let response = client
-        .post(format!("{}/subscribe", &app.address))
-        .header("Content-Type", "application/x-www-form-urlencoded")
-        .body(body)
-        .send()
-        .await
-        .expect("Failed to execute the request.");
-
-    assert_eq!(response.status().as_u16(), 400);
 }

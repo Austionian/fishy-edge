@@ -12,6 +12,7 @@ name = 'fishy_edge'
 
 [dependencies]
 actix-web = "4"
+actix-web-httpauth = '0.8'
 config = { version = "0.13", default-features = false, features = ["yaml"]}
 serde = { version = "1.0.155", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
