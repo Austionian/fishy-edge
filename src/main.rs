@@ -14,7 +14,10 @@ async fn main() -> std::io::Result<()> {
     let connection_pool = PgPoolOptions::new().connect_lazy_with(config.database.with_db());
     let address = format!("{}:{}", config.application.host, config.application.port);
     let listener = TcpListener::bind(address)?;
-    println!("starting up: http://{}", listener.local_addr().unwrap());
+    println!(
+        "🚀🚀 starting up: http://{} 🚀🚀",
+        listener.local_addr().unwrap()
+    );
     run(listener, connection_pool)?.await?;
 
     Ok(())

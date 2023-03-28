@@ -18,13 +18,13 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
         let auth = HttpAuthentication::bearer(api_auth);
         App::new()
             .wrap(middleware::Compress::default())
-            .wrap(TracingLogger::default())
             .route("/", web::get().to(greet))
             .route("/health_check", web::get().to(health_check))
             .route("/hello/{name}", web::get().to(greet))
             .service(
                 web::scope("/v1")
                     .wrap(auth)
+                    .wrap(TracingLogger::default())
                     .route("/fishs", web::get().to(fishs))
                     .route("/register", web::post().to(register)),
             )
