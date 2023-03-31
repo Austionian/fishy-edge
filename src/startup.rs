@@ -1,5 +1,5 @@
 use crate::middleware::api_auth;
-use crate::routes::{fishs, health_check, register};
+use crate::routes::{fish, fishs, health_check, register};
 use actix_web::dev::Server;
 use actix_web::{middleware, web, App, HttpRequest, HttpServer, Responder};
 use actix_web_httpauth::middleware::HttpAuthentication;
@@ -26,6 +26,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .wrap(auth)
                     .wrap(TracingLogger::default())
                     .route("/fishs", web::get().to(fishs))
+                    .route("/fish/{uuid}", web::get().to(fish))
                     .route("/register", web::post().to(register)),
             )
             .app_data(db_pool.clone())

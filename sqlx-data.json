@@ -54,5 +54,79 @@
       }
     },
     "query": "\n        SELECT name, s3_fish_image, s3_woodland_image, anishinaabe_name, fish_image FROM fish_type\n        "
+  },
+  "d40480485b3ba7c382666af2ffa0602fde509a28da1b1e5cf0a6d7c14bdcf850": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "mercury",
+          "ordinal": 6,
+          "type_info": "Float4"
+        },
+        {
+          "name": "omega_3",
+          "ordinal": 7,
+          "type_info": "Float4"
+        },
+        {
+          "name": "pcb",
+          "ordinal": 8,
+          "type_info": "Float4"
+        },
+        {
+          "name": "protein",
+          "ordinal": 9,
+          "type_info": "Float4"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT \n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.mercury,\n            fish.omega_3,\n            fish.pcb,\n            fish.protein\n        FROM fish_type\n        INNER JOIN fish\n        ON fish_type.id=fish.fish_type_id\n        WHERE fish.id = $1;\n        "
   }
 }

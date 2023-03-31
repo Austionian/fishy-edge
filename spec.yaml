@@ -27,6 +27,35 @@ services:
     # But let's try to keep the bill under control for now...
     instance_count: 1
     instance_size_slug: basic-xxs
+    log_destinations:
+    - logtail:
+        token: T33nQm2FjwYtozDYiv2BR2s2
+      name: logtail
     routes:
       - path: /
-
+    envs:
+      - key: APP_DATABASE__USERNAME
+        scope: RUN_TIME
+        value: ${fish-db.USERNAME}
+      - key: APP_DATABASE__PASSWORD
+        scope: RUN_TIME
+        value: ${fish-db.PASSWORD}
+      - key: APP_DATABASE__HOST
+        scope: RUN_TIME
+        value: ${fish-db.HOSTNAME}
+      - key: APP_DATABASE__PORT
+        scope: RUN_TIME
+        value: ${fish-db.PORT}
+      - key: APP_DATABASE__DATABASE_NAME
+        scope: RUN_TIME
+        value: ${fish-db.DATABASE}
+      - key: APP_APPLICATION__API_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: EV[1:LIijgaITg/4u6K5SLAmyU1J2yo1Bt6cx:zi8Hc85ATrv5NQg8PrcoPlavg+2NMeq7sERW/tKq7qHNnauVhubQYf+tV1KM8U923dL+1fMKsLd2+pnk54l6/RIEX3maEhSMjRanW1YFf1vwlUToIG5eSBjWQVCnZUIW/b8mhF7RuW3obR6uOMVY8V74WSHaZgwbupruIB3C+DvmhBaicQDi52UCCSN4L4mV]
+databases:
+  - engine: PG
+    name: fish-db
+    num_nodes: 1
+    size: db-s-dev-database
+    version: "12"
