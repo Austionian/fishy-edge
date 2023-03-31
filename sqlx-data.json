@@ -1,5 +1,71 @@
 {
   "db": "PostgreSQL",
+  "3f28d2df5c07ec185fb8c38f236297ecb907859e645ca88c52713d8bfe641bf5": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "recipe_name",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "ingredients",
+          "ordinal": 7,
+          "type_info": "TextArray"
+        },
+        {
+          "name": "steps",
+          "ordinal": 8,
+          "type_info": "TextArray"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT \n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            recipe.name as recipe_name,\n            recipe.ingredients,\n            recipe.steps\n        FROM fish_type\n        CROSS JOIN recipe\n        "
+  },
   "80e7d4e167cc1bdadd266abebebf7e39d80dfa16c7343beb39ef18ea7dac9c94": {
     "describe": {
       "columns": [],
@@ -12,48 +78,6 @@
       }
     },
     "query": "\n        INSERT INTO users (id, email)\n        VALUES ($1, $2)\n        "
-  },
-  "cf53e2cd4d705f72f7d032f6432ce4f4fbb14e09ff2ab8bcb8bf9ee9a05ac381": {
-    "describe": {
-      "columns": [
-        {
-          "name": "name",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "s3_fish_image",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "s3_woodland_image",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "anishinaabe_name",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "fish_image",
-          "ordinal": 4,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        true,
-        true,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\n        SELECT name, s3_fish_image, s3_woodland_image, anishinaabe_name, fish_image FROM fish_type\n        "
   },
   "d40480485b3ba7c382666af2ffa0602fde509a28da1b1e5cf0a6d7c14bdcf850": {
     "describe": {

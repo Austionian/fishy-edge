@@ -4,7 +4,7 @@ use std::str::FromStr;
 use uuid::Uuid;
 
 #[derive(serde::Serialize)]
-pub struct FishType {
+pub struct Fish {
     name: String,
     anishinaabe_name: Option<String>,
     fish_image: Option<String>,
@@ -34,12 +34,9 @@ pub async fn fish(req: HttpRequest, db_pool: web::Data<PgPool>) -> HttpResponse 
 }
 
 #[tracing::instrument(name = "Querying the database", skip(db_pool))]
-pub async fn get_fish_data(
-    db_pool: &PgPool,
-    fish_uuid: Uuid,
-) -> Result<Vec<FishType>, sqlx::Error> {
+pub async fn get_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Fish, sqlx::Error> {
     let data = sqlx::query_as!(
-        FishType,
+        Fish,
         r#"
         SELECT 
             fish_type.name,
@@ -59,7 +56,7 @@ pub async fn get_fish_data(
         "#,
         fish_uuid
     )
-    .fetch_all(db_pool)
+    .fetch_one(db_pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute the query: {:?}", e);
