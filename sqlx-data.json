@@ -1,55 +1,61 @@
 {
   "db": "PostgreSQL",
-  "3f28d2df5c07ec185fb8c38f236297ecb907859e645ca88c52713d8bfe641bf5": {
+  "090615cf69d611012c77f804f693985b6f72968bb68e970147983c53ec629dad": {
     "describe": {
       "columns": [
         {
-          "name": "name",
+          "name": "id",
           "ordinal": 0,
-          "type_info": "Text"
+          "type_info": "Uuid"
         },
         {
-          "name": "anishinaabe_name",
+          "name": "name",
           "ordinal": 1,
           "type_info": "Text"
         },
         {
-          "name": "fish_image",
+          "name": "anishinaabe_name",
           "ordinal": 2,
           "type_info": "Text"
         },
         {
-          "name": "woodland_fish_image",
+          "name": "fish_image",
           "ordinal": 3,
           "type_info": "Text"
         },
         {
-          "name": "s3_fish_image",
+          "name": "woodland_fish_image",
           "ordinal": 4,
           "type_info": "Text"
         },
         {
-          "name": "s3_woodland_image",
+          "name": "s3_fish_image",
           "ordinal": 5,
           "type_info": "Text"
         },
         {
-          "name": "recipe_name",
+          "name": "s3_woodland_image",
           "ordinal": 6,
           "type_info": "Text"
         },
         {
-          "name": "ingredients",
+          "name": "recipe_name",
           "ordinal": 7,
+          "type_info": "Text"
+        },
+        {
+          "name": "ingredients",
+          "ordinal": 8,
           "type_info": "TextArray"
         },
         {
           "name": "steps",
-          "ordinal": 8,
+          "ordinal": 9,
           "type_info": "TextArray"
         }
       ],
       "nullable": [
+        false,
         false,
         true,
         true,
@@ -64,7 +70,7 @@
         "Left": []
       }
     },
-    "query": "\n        SELECT \n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            recipe.name as recipe_name,\n            recipe.ingredients,\n            recipe.steps\n        FROM fish_type\n        CROSS JOIN recipe\n        "
+    "query": "\n        SELECT \n            fish_type.id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            recipe.name as recipe_name,\n            recipe.ingredients,\n            recipe.steps\n        FROM fish_type\n        CROSS JOIN recipe\n        "
   },
   "80e7d4e167cc1bdadd266abebebf7e39d80dfa16c7343beb39ef18ea7dac9c94": {
     "describe": {

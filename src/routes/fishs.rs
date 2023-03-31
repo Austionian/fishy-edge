@@ -1,15 +1,10 @@
 use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
-
-#[derive(serde::Serialize)]
-pub struct Recipe {
-    name: String,
-    ingredients: Option<Vec<String>>,
-    steps: Option<Vec<String>>,
-}
+use uuid::Uuid;
 
 #[derive(serde::Serialize)]
 pub struct AllFishData {
+    id: Uuid,
     name: String,
     anishinaabe_name: Option<String>,
     fish_image: Option<String>,
@@ -41,6 +36,7 @@ pub async fn get_fish_data(db_pool: &PgPool) -> Result<Vec<AllFishData>, sqlx::E
         AllFishData,
         r#"
         SELECT 
+            fish_type.id,
             fish_type.name,
             fish_type.anishinaabe_name,
             fish_type.fish_image,
