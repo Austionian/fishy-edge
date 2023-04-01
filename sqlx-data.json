@@ -1,19 +1,6 @@
 {
   "db": "PostgreSQL",
-  "80e7d4e167cc1bdadd266abebebf7e39d80dfa16c7343beb39ef18ea7dac9c94": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        INSERT INTO users (id, email)\n        VALUES ($1, $2)\n        "
-  },
-  "a6008d99531499df49a4c0478dcf79657d063b115f973615f87db7d85c8a58d6": {
+  "20fb0606cd36181d8b234ed1bf2dc856d1488502418aca83180b08e628e828fc": {
     "describe": {
       "columns": [
         {
@@ -55,21 +42,6 @@
           "name": "s3_woodland_image",
           "ordinal": 7,
           "type_info": "Text"
-        },
-        {
-          "name": "recipe_name",
-          "ordinal": 8,
-          "type_info": "Text"
-        },
-        {
-          "name": "ingredients",
-          "ordinal": 9,
-          "type_info": "TextArray"
-        },
-        {
-          "name": "steps",
-          "ordinal": 10,
-          "type_info": "TextArray"
         }
       ],
       "nullable": [
@@ -80,16 +52,28 @@
         true,
         true,
         true,
-        true,
-        false,
-        true,
         true
       ],
       "parameters": {
-        "Left": []
+        "Left": [
+          "Text"
+        ]
       }
     },
-    "query": "\n        SELECT \n            fish_type.id,\n            fish.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            recipe.name as recipe_name,\n            recipe.ingredients,\n            recipe.steps\n        FROM fish_type\n        JOIN fishtype_recipe\n        ON fish_type.id=fishtype_recipe.fishtype_id\n        JOIN recipe\n        ON fishtype_recipe.recipe_id=recipe.id\n        JOIN fish\n        ON fish_type.id=fish.fish_type_id\n        "
+    "query": "\n        SELECT \n            fish_type.id,\n            fish.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image\n        FROM fish\n        JOIN fish_type\n        ON fish.fish_type_id=fish_type.id\n        WHERE fish.lake=$1;\n        "
+  },
+  "80e7d4e167cc1bdadd266abebebf7e39d80dfa16c7343beb39ef18ea7dac9c94": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO users (id, email)\n        VALUES ($1, $2)\n        "
   },
   "d40480485b3ba7c382666af2ffa0602fde509a28da1b1e5cf0a6d7c14bdcf850": {
     "describe": {
