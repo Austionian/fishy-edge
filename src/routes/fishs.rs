@@ -32,7 +32,7 @@ const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 ///       "name": "Herring",
 ///       "anishinaabe_name": "Okewis",
 ///       "fish_image": "herring.png",
-///       "woodland_fish_image": "woodlandherring.png",
+///       "woodland_fish_image": "woodlandherring.webp",
 ///       "s3_fish_image": "",
 ///       "s3_woodland_image": ""
 ///     ],
