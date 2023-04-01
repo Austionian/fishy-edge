@@ -22,6 +22,10 @@ pub struct FishUuid {
     uuid: Uuid,
 }
 
+/// Retrives data for a fish specified by its uuid. If an invalid uuid is given
+/// a 400 Bad Request will be returned.
+///
+/// e.g.: `/fish/1fe5c906-d09d-11ed-afa1-0242ac120002`
 #[tracing::instrument(name = "Retreving fish data", skip(uuid, db_pool))]
 #[get("/fish/{uuid}")]
 pub async fn fish(uuid: web::Path<FishUuid>, db_pool: web::Data<PgPool>) -> HttpResponse {
