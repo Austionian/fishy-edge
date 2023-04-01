@@ -26,7 +26,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .wrap(auth)
                     .wrap(TracingLogger::default())
                     .route("/fishs", web::get().to(fishs))
-                    .route("/fish/{uuid}", web::get().to(fish))
+                    .service(fish)
                     .route("/register", web::post().to(register)),
             )
             .app_data(db_pool.clone())

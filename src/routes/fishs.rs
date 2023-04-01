@@ -5,6 +5,7 @@ use uuid::Uuid;
 #[derive(serde::Serialize)]
 pub struct AllFishData {
     id: Uuid,
+    fish_id: Uuid,
     name: String,
     anishinaabe_name: Option<String>,
     fish_image: Option<String>,
@@ -37,6 +38,7 @@ pub async fn get_fish_data(db_pool: &PgPool) -> Result<Vec<AllFishData>, sqlx::E
         r#"
         SELECT 
             fish_type.id,
+            fish.id as fish_id,
             fish_type.name,
             fish_type.anishinaabe_name,
             fish_type.fish_image,
@@ -47,7 +49,12 @@ pub async fn get_fish_data(db_pool: &PgPool) -> Result<Vec<AllFishData>, sqlx::E
             recipe.ingredients,
             recipe.steps
         FROM fish_type
-        CROSS JOIN recipe
+        JOIN fishtype_recipe
+        ON fish_type.id=fishtype_recipe.fishtype_id
+        JOIN recipe
+        ON fishtype_recipe.recipe_id=recipe.id
+        JOIN fish
+        ON fish_type.id=fish.fish_type_id
         "#
     )
     .fetch_all(db_pool)

@@ -1,6 +1,6 @@
-use actix_web::{web, HttpRequest, HttpResponse};
+use actix_web::{get, web, HttpResponse};
+use anyhow::Result;
 use sqlx::PgPool;
-use std::str::FromStr;
 use uuid::Uuid;
 
 #[derive(serde::Serialize)]
@@ -17,11 +17,15 @@ pub struct Fish {
     protein: Option<f32>,
 }
 
-#[tracing::instrument(name = "Retreving fish data", skip(db_pool))]
-pub async fn fish(req: HttpRequest, db_pool: web::Data<PgPool>) -> HttpResponse {
-    let fish_uuid = req.match_info().get("uuid").unwrap_or("0");
-    let fish_uuid = Uuid::from_str(fish_uuid).unwrap();
-    match get_fish_data(&db_pool, fish_uuid).await {
+#[derive(serde::Deserialize)]
+pub struct FishUuid {
+    uuid: Uuid,
+}
+
+#[tracing::instrument(name = "Retreving fish data", skip(uuid, db_pool))]
+#[get("/fish/{uuid}")]
+pub async fn fish(uuid: web::Path<FishUuid>, db_pool: web::Data<PgPool>) -> HttpResponse {
+    match get_fish_data(&db_pool, uuid.uuid).await {
         Ok(data) => {
             tracing::info!("Fish type data has been queried from the db.");
             HttpResponse::Ok().json(data)
