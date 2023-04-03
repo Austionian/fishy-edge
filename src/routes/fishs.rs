@@ -18,7 +18,7 @@ const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 
 /// Returns a JSON of all fish for a given lake. If no lake is supplied,
 /// will return the 'store' fish. If an invalid lake is supplied,
-/// will return 400 Bad Request.
+/// the 'store' fish will be returned.
 ///
 /// # Example
 ///
@@ -42,10 +42,10 @@ const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 ///
 #[tracing::instrument(name = "Retreving all fish data", skip(db_pool))]
 pub async fn fishs(req: HttpRequest, db_pool: web::Data<PgPool>) -> HttpResponse {
-    let lake = req.match_info().get("lake").unwrap_or("Store");
+    let mut lake = req.match_info().get("lake").unwrap_or("Store");
     if !VALID_LAKES.contains(&lake) {
-        tracing::error!("Invalid lake supplied.");
-        return HttpResponse::BadRequest().finish();
+        tracing::warn!("Invalid lake supplied. Falling back to Store.");
+        lake = "Store";
     }
     match get_fish_data(lake, &db_pool).await {
         Ok(data) => {
@@ -61,7 +61,7 @@ pub async fn fishs(req: HttpRequest, db_pool: web::Data<PgPool>) -> HttpResponse
 
 #[tracing::instrument(name = "Querying the database", skip(db_pool))]
 pub async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<AllFishData>, sqlx::Error> {
-    let data = sqlx::query_as!(
+    Ok(sqlx::query_as!(
         AllFishData,
         r#"
         SELECT 
@@ -85,7 +85,5 @@ pub async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<AllFishDa
     .map_err(|e| {
         tracing::error!("Failed to execute the query: {:?}", e);
         e
-    })?;
-
-    Ok(data)
+    })?)
 }
