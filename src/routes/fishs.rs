@@ -61,7 +61,7 @@ pub async fn fishs(req: HttpRequest, db_pool: web::Data<PgPool>) -> HttpResponse
 
 #[tracing::instrument(name = "Querying the database", skip(db_pool))]
 pub async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<AllFishData>, sqlx::Error> {
-    Ok(sqlx::query_as!(
+    let data = sqlx::query_as!(
         AllFishData,
         r#"
         SELECT 
@@ -85,5 +85,7 @@ pub async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<AllFishDa
     .map_err(|e| {
         tracing::error!("Failed to execute the query: {:?}", e);
         e
-    })?)
+    })?;
+
+    Ok(data)
 }
