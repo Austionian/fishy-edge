@@ -1,7 +1,8 @@
 use crate::middleware::api_auth;
 use crate::routes::{fish, fishs, health_check, register};
+use actix_cors::Cors;
 use actix_web::dev::Server;
-use actix_web::{middleware, web, App, HttpRequest, HttpServer, Responder};
+use actix_web::{http, middleware, web, App, HttpRequest, HttpServer, Responder};
 use actix_web_httpauth::middleware::HttpAuthentication;
 use sqlx::PgPool;
 use std::net::TcpListener;
@@ -16,8 +17,15 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
         let auth = HttpAuthentication::bearer(api_auth);
+        let cors = Cors::default()
+            .allowed_origin("*")
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            .allowed_header(http::header::CONTENT_TYPE)
+            .max_age(3600);
         App::new()
             .wrap(middleware::Compress::default())
+            .wrap(cors)
             .route("/", web::get().to(greet))
             .route("/health_check", web::get().to(health_check))
             .route("/hello/{name}", web::get().to(greet))
