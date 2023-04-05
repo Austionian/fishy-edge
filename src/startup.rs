@@ -18,7 +18,10 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
     let server = HttpServer::new(move || {
         let auth = HttpAuthentication::bearer(api_auth);
         let cors = Cors::default()
-            .allowed_origin("*")
+            .allowed_origin("https://fishy-qwik.pages.dev")
+            .allowed_origin_fn(|origin, _req_head| {
+                origin.as_bytes().starts_with(b"http://localhost")
+            })
             .allowed_methods(vec!["GET", "POST"])
             .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
             .allowed_header(http::header::CONTENT_TYPE)
