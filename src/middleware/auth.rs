@@ -23,3 +23,24 @@ fn validate_token(token: &str) -> Result<bool, std::io::Error> {
         "Authenication failed.",
     ))
 }
+
+pub async fn api_auth_pub(
+    req: ServiceRequest,
+    auth: BearerAuth,
+) -> Result<ServiceRequest, (Error, ServiceRequest)> {
+    match validate_public_token(auth.token()) {
+        Ok(_) => Ok(req),
+        Err(_) => Err((AuthenticationError::from(Config::default()).into(), req)),
+    }
+}
+
+fn validate_public_token(token: &str) -> Result<bool, std::io::Error> {
+    let public_key = get_configuration().unwrap().application.public_key;
+    if token.eq(&public_key) {
+        return Ok(true);
+    }
+    Err(std::io::Error::new(
+        std::io::ErrorKind::Other,
+        "Authenication failed.",
+    ))
+}

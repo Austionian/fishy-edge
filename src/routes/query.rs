@@ -1,4 +1,4 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{web, HttpRequest, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -14,45 +14,10 @@ pub struct AllFishData {
     s3_woodland_image: Option<String>,
 }
 
-#[derive(serde::Deserialize)]
-pub struct FishQuery {
-    lake: String,
-}
-
-const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
-
-/// Returns a JSON of all fish for a given lake. If no lake is supplied,
-/// a 400 Bad Request will be returned. If an invalid lake is supplied,
-/// the 'store' fish will be returned.
-///
-/// # Example
-///
-/// `.../fishs?lake=Huron`
-///
-///```json
-/// {
-///     [
-///       "id": "1fe5c906-d09d-11ed-afa1-0242ac120002",
-///       "fish_id": "1fe5c906-d09d-11ed-afa1-0242ac120022",
-///       "name": "Herring",
-///       "anishinaabe_name": "Okewis",
-///       "fish_image": "herring.png",
-///       "woodland_fish_image": "woodlandherring.webp",
-///       "s3_fish_image": "",
-///       "s3_woodland_image": ""
-///     ],
-///     ...
-/// }
-///```
-///
-#[tracing::instrument(name = "Retreving all fish data", skip(lake, db_pool))]
-pub async fn fishs(lake: web::Query<FishQuery>, db_pool: web::Data<PgPool>) -> HttpResponse {
-    let mut lake = lake.lake.as_str();
-    if !VALID_LAKES.contains(&lake) {
-        tracing::warn!("Invalid lake supplied. Falling back to Store.");
-        lake = "Store";
-    }
-    match get_fish_data(&lake, &db_pool).await {
+#[tracing::instrument(name = "Querying the db", skip(db_pool))]
+pub async fn query(req: HttpRequest, db_pool: web::Data<PgPool>) -> HttpResponse {
+    let query = req.match_info().get("lake").unwrap_or("");
+    match get_fish_data(query, &db_pool).await {
         Ok(data) => {
             tracing::info!("All fish type data has been queried from the db.");
             HttpResponse::Ok().json(data)
