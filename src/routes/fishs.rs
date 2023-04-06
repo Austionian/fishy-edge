@@ -1,4 +1,4 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{get, web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -46,13 +46,14 @@ const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 ///```
 ///
 #[tracing::instrument(name = "Retreving all fish data", skip(lake, db_pool))]
+#[get("/fishs")]
 pub async fn fishs(lake: web::Query<FishQuery>, db_pool: web::Data<PgPool>) -> HttpResponse {
     let mut lake = lake.lake.as_str();
     if !VALID_LAKES.contains(&lake) {
         tracing::warn!("Invalid lake supplied. Falling back to Store.");
         lake = "Store";
     }
-    match get_fish_data(&lake, &db_pool).await {
+    match get_fish_data(lake, &db_pool).await {
         Ok(data) => {
             tracing::info!("All fish type data has been queried from the db.");
             HttpResponse::Ok().json(data)

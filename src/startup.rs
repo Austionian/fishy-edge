@@ -41,13 +41,14 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(
                 web::scope("/public")
                     .wrap(pub_auth)
-                    .route("/query", web::get().to(query)),
+                    .wrap(TracingLogger::default())
+                    .route("/", web::get().to(query)),
             )
             .service(
                 web::scope("/v1")
                     .wrap(auth)
                     .wrap(TracingLogger::default())
-                    .route("/fishs", web::get().to(fishs))
+                    .service(fishs)
                     .service(fish)
                     .route("/register", web::post().to(register)),
             )
