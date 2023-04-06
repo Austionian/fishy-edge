@@ -1,8 +1,7 @@
 use crate::middleware::{api_auth, api_auth_pub};
 use crate::routes::{fish, fishs, health_check, query, register};
-use actix_cors::Cors;
 use actix_web::dev::Server;
-use actix_web::{http, middleware, web, App, HttpRequest, HttpServer, Responder};
+use actix_web::{middleware, web, App, HttpRequest, HttpServer, Responder};
 use actix_web_httpauth::middleware::HttpAuthentication;
 use sqlx::PgPool;
 use std::net::TcpListener;
@@ -18,23 +17,9 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
     let server = HttpServer::new(move || {
         let auth = HttpAuthentication::bearer(api_auth);
         let pub_auth = HttpAuthentication::bearer(api_auth_pub);
-        let cors = Cors::default()
-            .allowed_origin("https://fishy-qwik.pages.dev")
-            .allowed_origin("https://mcwfishapp.com")
-            .allowed_origin_fn(|origin, _req_head| {
-                origin.as_bytes().starts_with(b"http://localhost")
-            })
-            .allowed_origin_fn(|origin, _req_head| {
-                origin.as_bytes().starts_with(b"http://127.0.0.1")
-            })
-            .allowed_methods(vec!["GET", "POST"])
-            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
-            .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600);
 
         App::new()
             .wrap(middleware::Compress::default())
-            .wrap(cors)
             .route("/", web::get().to(greet))
             .route("/health_check", web::get().to(health_check))
             .route("/hello/{name}", web::get().to(greet))
