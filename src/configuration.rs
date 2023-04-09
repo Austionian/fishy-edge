@@ -16,7 +16,6 @@ pub struct ApplicationSettings {
     pub port: u16,
     pub host: String,
     pub api_key: String,
-    pub public_key: String,
 }
 
 #[derive(serde::Deserialize)]
