@@ -1,6 +1,7 @@
 application:
   port: 8000
   api_key: "1234567890"
+  public_key: "987654321"
 database:
   host: "localhost"
   port: 5432
