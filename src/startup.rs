@@ -1,5 +1,5 @@
 use crate::middleware::{api_auth, api_auth_pub};
-use crate::routes::{fish, fishs, health_check, query, register};
+use crate::routes::{fish, fishs, health_check, register, search};
 use actix_cors::Cors;
 use actix_web::dev::Server;
 use actix_web::{middleware, web, App, HttpRequest, HttpServer, Responder};
@@ -28,10 +28,10 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .route("/health_check", web::get().to(health_check))
             .route("/hello/{name}", web::get().to(greet))
             .service(
-                web::scope("/public")
+                web::scope("/search")
                     .wrap(pub_auth)
                     .wrap(TracingLogger::default())
-                    .route("/", web::get().to(query)),
+                    .route("/", web::get().to(search)),
             )
             .service(
                 web::scope("/v1")

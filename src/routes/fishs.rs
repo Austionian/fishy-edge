@@ -66,7 +66,7 @@ pub async fn fishs(lake: web::Query<FishQuery>, db_pool: web::Data<PgPool>) -> H
 }
 
 #[tracing::instrument(name = "Querying the database", skip(db_pool))]
-pub async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<AllFishData>, sqlx::Error> {
+async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<AllFishData>, sqlx::Error> {
     let data = sqlx::query_as!(
         AllFishData,
         r#"

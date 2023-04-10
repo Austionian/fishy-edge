@@ -28,7 +28,7 @@ pub async fn register(form: web::Form<FormData>, db_pool: web::Data<PgPool>) -> 
 }
 
 #[tracing::instrument(name = "Saving new user details to the db.", skip(form, db_pool))]
-pub async fn insert_user(db_pool: &PgPool, form: &FormData) -> Result<(), sqlx::Error> {
+async fn insert_user(db_pool: &PgPool, form: &FormData) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
         INSERT INTO users (id, email)

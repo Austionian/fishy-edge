@@ -61,7 +61,7 @@ pub async fn fish(uuid: web::Path<FishUuid>, db_pool: web::Data<PgPool>) -> Http
 }
 
 #[tracing::instrument(name = "Querying the database", skip(db_pool))]
-pub async fn get_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Fish, sqlx::Error> {
+async fn get_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Fish, sqlx::Error> {
     let data = sqlx::query_as!(
         Fish,
         r#"
