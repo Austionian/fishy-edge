@@ -1,21 +1,8 @@
+use crate::routes::Fish;
 use actix_web::{get, web, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
 use uuid::Uuid;
-
-#[derive(serde::Serialize)]
-pub struct Fish {
-    name: String,
-    anishinaabe_name: Option<String>,
-    fish_image: Option<String>,
-    woodland_fish_image: Option<String>,
-    s3_fish_image: Option<String>,
-    s3_woodland_image: Option<String>,
-    mercury: Option<f32>,
-    omega_3: Option<f32>,
-    pcb: Option<f32>,
-    protein: Option<f32>,
-}
 
 #[derive(serde::Deserialize)]
 pub struct FishUuid {
@@ -66,6 +53,7 @@ async fn get_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Fish, sqlx::
         Fish,
         r#"
         SELECT 
+            fish.id as fish_id,
             fish_type.name,
             fish_type.anishinaabe_name,
             fish_type.fish_image,

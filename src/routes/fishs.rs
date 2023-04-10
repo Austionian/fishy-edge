@@ -1,18 +1,6 @@
+use crate::routes::Fish;
 use actix_web::{get, web, HttpResponse};
 use sqlx::PgPool;
-use uuid::Uuid;
-
-#[derive(serde::Serialize)]
-pub struct AllFishData {
-    id: Uuid,
-    fish_id: Uuid,
-    name: String,
-    anishinaabe_name: Option<String>,
-    fish_image: Option<String>,
-    woodland_fish_image: Option<String>,
-    s3_fish_image: Option<String>,
-    s3_woodland_image: Option<String>,
-}
 
 #[derive(serde::Deserialize)]
 pub struct FishQuery {
@@ -66,19 +54,22 @@ pub async fn fishs(lake: web::Query<FishQuery>, db_pool: web::Data<PgPool>) -> H
 }
 
 #[tracing::instrument(name = "Querying the database", skip(db_pool))]
-async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<AllFishData>, sqlx::Error> {
+async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<Fish>, sqlx::Error> {
     let data = sqlx::query_as!(
-        AllFishData,
+        Fish,
         r#"
         SELECT 
-            fish_type.id,
             fish.id as fish_id,
             fish_type.name,
             fish_type.anishinaabe_name,
             fish_type.fish_image,
             fish_type.woodland_fish_image,
             fish_type.s3_fish_image,
-            fish_type.s3_woodland_image
+            fish_type.s3_woodland_image,
+            fish.pcb,
+            fish.protein,
+            fish.omega_3,
+            fish.mercury
         FROM fish
         JOIN fish_type
         ON fish.fish_type_id=fish_type.id
