@@ -62,6 +62,7 @@ async fn get_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Fish, sqlx::
             fish_type.s3_woodland_image,
             fish.mercury,
             fish.omega_3,
+            fish.omega_3_ratio,
             fish.pcb,
             fish.protein
         FROM fish_type

@@ -1,5 +1,177 @@
 {
   "db": "PostgreSQL",
+  "0a39be9680a0a9c1702675cfc3ef1cbec633aebcd22d5c130880f8705b4933d8": {
+    "describe": {
+      "columns": [
+        {
+          "name": "fish_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "pcb",
+          "ordinal": 7,
+          "type_info": "Float4"
+        },
+        {
+          "name": "protein",
+          "ordinal": 8,
+          "type_info": "Float4"
+        },
+        {
+          "name": "omega_3",
+          "ordinal": 9,
+          "type_info": "Float4"
+        },
+        {
+          "name": "omega_3_ratio",
+          "ordinal": 10,
+          "type_info": "Float4"
+        },
+        {
+          "name": "mercury",
+          "ordinal": 11,
+          "type_info": "Float4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT \n            fish.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.omega_3,\n            fish.omega_3_ratio,\n            fish.mercury\n        FROM fish\n        JOIN fish_type\n        ON fish.fish_type_id=fish_type.id\n        WHERE fish.lake=$1;\n        "
+  },
+  "31c2e272f147037395e2a8acfff3765458d8dcc1dee15b11f0f85ad251575d2a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "fish_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "mercury",
+          "ordinal": 7,
+          "type_info": "Float4"
+        },
+        {
+          "name": "omega_3",
+          "ordinal": 8,
+          "type_info": "Float4"
+        },
+        {
+          "name": "omega_3_ratio",
+          "ordinal": 9,
+          "type_info": "Float4"
+        },
+        {
+          "name": "pcb",
+          "ordinal": 10,
+          "type_info": "Float4"
+        },
+        {
+          "name": "protein",
+          "ordinal": 11,
+          "type_info": "Float4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT \n            fish.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.mercury,\n            fish.omega_3,\n            fish.omega_3_ratio,\n            fish.pcb,\n            fish.protein\n        FROM fish_type\n        INNER JOIN fish\n        ON fish_type.id=fish.fish_type_id\n        WHERE fish.id = $1;\n        "
+  },
   "3eb78e4228ef588d59072459df038fa1e5e38d254313910bb5c74e581c5d4c73": {
     "describe": {
       "columns": [
@@ -42,86 +214,6 @@
     },
     "query": "\n        SELECT \n            fish.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image\n        FROM fish\n        JOIN fish_type\n        ON fish.fish_type_id=fish_type.id\n        WHERE fish.lake='Store';\n        "
   },
-  "48c977ca384210b198407a5f0667daaa08c6f66798f5e3094bf22c9193789b71": {
-    "describe": {
-      "columns": [
-        {
-          "name": "fish_id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "anishinaabe_name",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "fish_image",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "woodland_fish_image",
-          "ordinal": 4,
-          "type_info": "Text"
-        },
-        {
-          "name": "s3_fish_image",
-          "ordinal": 5,
-          "type_info": "Text"
-        },
-        {
-          "name": "s3_woodland_image",
-          "ordinal": 6,
-          "type_info": "Text"
-        },
-        {
-          "name": "mercury",
-          "ordinal": 7,
-          "type_info": "Float4"
-        },
-        {
-          "name": "omega_3",
-          "ordinal": 8,
-          "type_info": "Float4"
-        },
-        {
-          "name": "pcb",
-          "ordinal": 9,
-          "type_info": "Float4"
-        },
-        {
-          "name": "protein",
-          "ordinal": 10,
-          "type_info": "Float4"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        SELECT \n            fish.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.mercury,\n            fish.omega_3,\n            fish.pcb,\n            fish.protein\n        FROM fish_type\n        INNER JOIN fish\n        ON fish_type.id=fish.fish_type_id\n        WHERE fish.id = $1;\n        "
-  },
   "80e7d4e167cc1bdadd266abebebf7e39d80dfa16c7343beb39ef18ea7dac9c94": {
     "describe": {
       "columns": [],
@@ -134,86 +226,6 @@
       }
     },
     "query": "\n        INSERT INTO users (id, email)\n        VALUES ($1, $2)\n        "
-  },
-  "c59710569d25476f47a26a8512aeecac268100ff08c886170bcb5d84bf1fd887": {
-    "describe": {
-      "columns": [
-        {
-          "name": "fish_id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "anishinaabe_name",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "fish_image",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "woodland_fish_image",
-          "ordinal": 4,
-          "type_info": "Text"
-        },
-        {
-          "name": "s3_fish_image",
-          "ordinal": 5,
-          "type_info": "Text"
-        },
-        {
-          "name": "s3_woodland_image",
-          "ordinal": 6,
-          "type_info": "Text"
-        },
-        {
-          "name": "pcb",
-          "ordinal": 7,
-          "type_info": "Float4"
-        },
-        {
-          "name": "protein",
-          "ordinal": 8,
-          "type_info": "Float4"
-        },
-        {
-          "name": "omega_3",
-          "ordinal": 9,
-          "type_info": "Float4"
-        },
-        {
-          "name": "mercury",
-          "ordinal": 10,
-          "type_info": "Float4"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        SELECT \n            fish.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.omega_3,\n            fish.mercury\n        FROM fish\n        JOIN fish_type\n        ON fish.fish_type_id=fish_type.id\n        WHERE fish.lake=$1;\n        "
   },
   "f0eb4c1f5d5e923a2776cf842e4059459f6dd0bbd507d3cc2a70e41356cacf57": {
     "describe": {

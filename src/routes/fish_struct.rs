@@ -11,6 +11,7 @@ pub struct Fish {
     pub s3_woodland_image: Option<String>,
     pub mercury: Option<f32>,
     pub omega_3: Option<f32>,
+    pub omega_3_ratio: Option<f32>,
     pub pcb: Option<f32>,
     pub protein: Option<f32>,
 }
