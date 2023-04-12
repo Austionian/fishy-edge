@@ -1,5 +1,5 @@
 use crate::middleware::{api_auth, api_auth_pub};
-use crate::routes::{fish, fishs, health_check, register, search};
+use crate::routes::{fish, fishs, health_check, recipe, recipes, register, search};
 use actix_cors::Cors;
 use actix_web::dev::Server;
 use actix_web::{middleware, web, App, HttpRequest, HttpServer, Responder};
@@ -39,6 +39,8 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .wrap(TracingLogger::default())
                     .service(fishs)
                     .service(fish)
+                    .service(recipe)
+                    .service(recipes)
                     .route("/register", web::post().to(register)),
             )
             .app_data(db_pool.clone())

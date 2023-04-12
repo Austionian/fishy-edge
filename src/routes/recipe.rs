@@ -1,0 +1,72 @@
+use crate::routes::Recipe;
+use actix_web::{get, web, HttpResponse};
+use anyhow::Result;
+use sqlx::PgPool;
+use uuid::Uuid;
+
+#[derive(serde::Deserialize)]
+pub struct RecipeUuid {
+    uuid: Uuid,
+}
+
+/// Retrives data for a recipe specified by its uuid. If an invalid uuid is given
+/// a 400 Bad Request will be returned.
+///
+/// # Example
+///
+/// `/recipe/1fe5c906-d09d-11ed-afa1-0242ac120002`
+///
+///```json
+/// {
+///    "id": uuid,
+///    "name": "Fish Stew",
+///    "ingredients": [
+///      "1 Fish",
+///      ...
+///    ],
+///    "steps": [
+///      "Add fish to stew",
+///      ...
+///    ]
+/// }
+///```
+///
+#[tracing::instrument(name = "Retreving recipe data", skip(uuid, db_pool))]
+#[get("/recipe/{uuid}")]
+pub async fn recipe(uuid: web::Path<RecipeUuid>, db_pool: web::Data<PgPool>) -> HttpResponse {
+    match get_recipe_data(&db_pool, uuid.uuid).await {
+        Ok(data) => {
+            tracing::info!("Recipe data has been queried from the db.");
+            HttpResponse::Ok().json(data)
+        }
+        Err(e) => {
+            tracing::error!("Failed to execute query: {:?}", e);
+            HttpResponse::InternalServerError().finish()
+        }
+    }
+}
+
+#[tracing::instrument(name = "Querying the database for a recipe", skip(db_pool))]
+async fn get_recipe_data(db_pool: &PgPool, recipe_uuid: Uuid) -> Result<Recipe, sqlx::Error> {
+    let data = sqlx::query_as!(
+        Recipe,
+        r#"
+        SELECT 
+            id,
+            name,
+            ingredients,
+            steps
+        FROM recipe
+        WHERE id = $1;
+        "#,
+        recipe_uuid
+    )
+    .fetch_one(db_pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute the query: {:?}", e);
+        e
+    })?;
+
+    Ok(data)
+}
