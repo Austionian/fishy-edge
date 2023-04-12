@@ -227,6 +227,44 @@
     },
     "query": "\n        INSERT INTO users (id, email)\n        VALUES ($1, $2)\n        "
   },
+  "c329e02990c1410465c456a84d328baf49d3cb48ace6301607053354f806000d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "ingredients",
+          "ordinal": 2,
+          "type_info": "TextArray"
+        },
+        {
+          "name": "steps",
+          "ordinal": 3,
+          "type_info": "TextArray"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            id,\n            name,\n            ingredients,\n            steps\n        FROM recipe\n        WHERE recipe.id\n        IN (\n            SELECT \n                recipe_id\n            FROM fishtype_recipe\n            WHERE fishtype_id = $1\n        );\n        "
+  },
   "f0eb4c1f5d5e923a2776cf842e4059459f6dd0bbd507d3cc2a70e41356cacf57": {
     "describe": {
       "columns": [
