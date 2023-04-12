@@ -15,3 +15,11 @@ pub struct Fish {
     pub pcb: Option<f32>,
     pub protein: Option<f32>,
 }
+
+#[derive(serde::Serialize)]
+pub struct Recipe {
+    pub id: Uuid,
+    pub name: String,
+    pub ingredients: Option<Vec<String>>,
+    pub steps: Option<Vec<String>>,
+}

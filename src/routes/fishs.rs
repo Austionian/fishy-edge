@@ -23,11 +23,7 @@ const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 ///       "id": "1fe5c906-d09d-11ed-afa1-0242ac120002",
 ///       "fish_id": "1fe5c906-d09d-11ed-afa1-0242ac120022",
 ///       "name": "Herring",
-///       "anishinaabe_name": "Okewis",
-///       "fish_image": "herring.png",
-///       "woodland_fish_image": "woodlandherring.webp",
-///       "s3_fish_image": "",
-///       "s3_woodland_image": ""
+///       // ...
 ///     ],
 ///     ...
 /// }
