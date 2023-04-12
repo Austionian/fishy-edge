@@ -1,4 +1,4 @@
-use crate::middleware::{api_auth, api_auth_pub};
+use crate::middleware::api_auth;
 use crate::routes::{fish, fishs, health_check, recipe, recipes, register, search};
 use actix_cors::Cors;
 use actix_web::dev::Server;
@@ -17,7 +17,6 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
         let auth = HttpAuthentication::bearer(api_auth);
-        let pub_auth = HttpAuthentication::bearer(api_auth_pub);
 
         let cors = Cors::permissive();
 
@@ -28,12 +27,6 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .route("/health_check", web::get().to(health_check))
             .route("/hello/{name}", web::get().to(greet))
             .service(
-                web::scope("/search")
-                    .wrap(pub_auth)
-                    .wrap(TracingLogger::default())
-                    .route("/", web::get().to(search)),
-            )
-            .service(
                 web::scope("/v1")
                     .wrap(auth)
                     .wrap(TracingLogger::default())
@@ -41,6 +34,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(fish)
                     .service(recipe)
                     .service(recipes)
+                    .route("/search", web::get().to(search))
                     .route("/register", web::post().to(register)),
             )
             .app_data(db_pool.clone())
