@@ -3,6 +3,7 @@ use uuid::Uuid;
 #[derive(serde::Serialize)]
 pub struct Fish {
     pub fish_id: Uuid,
+    pub fish_type_id: Uuid,
     pub name: String,
     pub anishinaabe_name: Option<String>,
     pub fish_image: Option<String>,

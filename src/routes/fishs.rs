@@ -56,6 +56,7 @@ async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<Fish>, sqlx::
         r#"
         SELECT 
             fish.id as fish_id,
+            fish.fish_type_id,
             fish_type.name,
             fish_type.anishinaabe_name,
             fish_type.fish_image,

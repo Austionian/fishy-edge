@@ -73,7 +73,7 @@ pub async fn fish(uuid: web::Path<FishUuid>, db_pool: web::Data<PgPool>) -> Http
 
 async fn get_all_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<FishData, sqlx::Error> {
     let fish_data = get_fish_data(db_pool, fish_uuid).await?;
-    let recipe_data = get_recipe_data(db_pool, fish_uuid).await?;
+    let recipe_data = get_recipe_data(db_pool, fish_data.fish_type_id).await?;
 
     Ok(FishData {
         fish_data,
@@ -88,6 +88,7 @@ async fn get_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Fish, sqlx::
         r#"
         SELECT 
             fish.id as fish_id,
+            fish.fish_type_id,
             fish_type.name,
             fish_type.anishinaabe_name,
             fish_type.fish_image,
@@ -116,8 +117,11 @@ async fn get_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Fish, sqlx::
     Ok(data)
 }
 
-#[tracing::instrument(name = "Querying the database for recipes", skip(fish_uuid, db_pool))]
-async fn get_recipe_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Vec<Recipe>, sqlx::Error> {
+#[tracing::instrument(
+    name = "Querying the database for recipes",
+    skip(fish_type_id, db_pool)
+)]
+async fn get_recipe_data(db_pool: &PgPool, fish_type_id: Uuid) -> Result<Vec<Recipe>, sqlx::Error> {
     let data = sqlx::query_as!(
         Recipe,
         r#"
@@ -135,7 +139,7 @@ async fn get_recipe_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Vec<Recipe
             WHERE fishtype_id = $1
         );
         "#,
-        fish_uuid
+        fish_type_id
     )
     .fetch_all(db_pool)
     .await
