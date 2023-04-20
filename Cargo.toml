@@ -14,7 +14,7 @@ name = 'fishy_edge'
 actix-web = "4"
 actix-web-httpauth = '0.8'
 config = { version = "0.13", default-features = false, features = ["yaml"]}
-serde = { version = "1.0.155", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 tracing = { version = "0.1", features = ["log"] }
