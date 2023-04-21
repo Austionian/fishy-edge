@@ -23,6 +23,33 @@ pub struct SearchResult {
     recipe_result: Vec<RecipeData>,
 }
 
+/// Returns a JSON of all store fish and recipes.
+///
+/// # Example
+///
+/// `.../search`
+///
+///```json
+/// {
+///   fish_result: [
+///     {
+///       "id": "1fe5c906-d09d-11ed-afa1-0242ac120002",
+///       "fish_id": "1fe5c906-d09d-11ed-afa1-0242ac120022",
+///       "name": "Herring",
+///       // ...
+///     },
+///     // ...
+///   ],
+///   recipe_result: [
+///     {
+///       "id": "1fe5c906-d09d-11ed-afa1-0242ac120002",
+///       "name": "Simple Salmon Recipe"
+///     },
+///     // ...
+///   ]
+///     ...
+/// }
+///```
 #[tracing::instrument(name = "Retreving all fish data", skip(db_pool))]
 pub async fn search(db_pool: web::Data<PgPool>) -> HttpResponse {
     match get_search_results(&db_pool).await {

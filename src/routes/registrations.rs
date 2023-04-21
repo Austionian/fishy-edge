@@ -7,6 +7,8 @@ pub struct FormData {
     email: String,
 }
 
+/// Adds a new user to the database and returns a 200 OK response on success.
+/// Expects the user's email to be included in the form data.
 #[tracing::instrument(
     name="Registering a new user",
     skip(form, db_pool),
