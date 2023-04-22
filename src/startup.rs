@@ -1,5 +1,5 @@
 use crate::middleware::api_auth;
-use crate::routes::{fish, fishs, health_check, recipe, recipes, register, search};
+use crate::routes::{all_fish, fish, fishs, health_check, recipe, recipes, register, search};
 use actix_web::dev::Server;
 use actix_web::{middleware, web, App, HttpRequest, HttpServer, Responder};
 use actix_web_httpauth::middleware::HttpAuthentication;
@@ -30,6 +30,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(fish)
                     .service(recipe)
                     .service(recipes)
+                    .service(all_fish)
                     .route("/search", web::get().to(search))
                     .route("/register", web::post().to(register)),
             )
