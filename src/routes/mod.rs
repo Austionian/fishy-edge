@@ -1,5 +1,7 @@
 mod everything;
 mod fish;
+mod fish_avg;
+mod fish_avgs;
 mod fishs;
 mod health_check;
 mod recipe;
@@ -10,6 +12,8 @@ mod structs;
 
 pub use everything::*;
 pub use fish::*;
+pub use fish_avg::*;
+pub use fish_avgs::*;
 pub use fishs::*;
 pub use health_check::*;
 pub use recipe::*;

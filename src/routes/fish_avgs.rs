@@ -36,8 +36,8 @@ pub struct Fish {
 ///```
 ///
 #[tracing::instrument(name = "Retreving all fish data", skip(db_pool))]
-#[get("/all_fish")]
-pub async fn all_fish(db_pool: web::Data<PgPool>) -> HttpResponse {
+#[get("/fish_avgs")]
+pub async fn fish_avgs(db_pool: web::Data<PgPool>) -> HttpResponse {
     match get_all_fish_data(&db_pool).await {
         Ok(data) => {
             tracing::info!("All fish type data has been queried from the db.");

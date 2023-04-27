@@ -92,6 +92,90 @@
     },
     "query": "\n        SELECT \n            fish.id as fish_id,\n            fish.fish_type_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.mercury,\n            fish.omega_3,\n            fish.omega_3_ratio,\n            fish.pcb,\n            fish.protein\n        FROM fish_type\n        INNER JOIN fish\n        ON fish_type.id=fish.fish_type_id\n        WHERE fish.id = $1;\n        "
   },
+  "3077d1397bcddf5bda137a0fbf0f76a07ed901d6d5d46c6b961688594dc23979": {
+    "describe": {
+      "columns": [
+        {
+          "name": "fish_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "pcb",
+          "ordinal": 7,
+          "type_info": "Float8"
+        },
+        {
+          "name": "protein",
+          "ordinal": 8,
+          "type_info": "Float8"
+        },
+        {
+          "name": "mercury",
+          "ordinal": 9,
+          "type_info": "Float8"
+        },
+        {
+          "name": "omega_3_ratio",
+          "ordinal": 10,
+          "type_info": "Float8"
+        },
+        {
+          "name": "omega_3",
+          "ordinal": 11,
+          "type_info": "Float8"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT\n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            AVG(pcb) as pcb,\n            AVG(protein) as protein,\n            AVG(mercury) as mercury,\n            AVG(omega_3_ratio) as omega_3_ratio,\n            AVG(omega_3) as omega_3\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        GROUP BY fish_type.id;\n        "
+  },
   "349254e7e395a13052131c34fab61859a9dde0b55665a9820bf0845440145ac4": {
     "describe": {
       "columns": [
@@ -274,6 +358,92 @@
       }
     },
     "query": "\n        SELECT \n            fish.id as fish_id,\n            fish.fish_type_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.omega_3,\n            fish.omega_3_ratio,\n            fish.mercury\n        FROM fish\n        JOIN fish_type\n        ON fish.fish_type_id=fish_type.id\n        WHERE fish.lake=$1;\n        "
+  },
+  "9745e8abc86102d86f760059d5d8923bc597975370221669d4141fbc3cbef473": {
+    "describe": {
+      "columns": [
+        {
+          "name": "fish_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "pcb",
+          "ordinal": 7,
+          "type_info": "Float8"
+        },
+        {
+          "name": "protein",
+          "ordinal": 8,
+          "type_info": "Float8"
+        },
+        {
+          "name": "mercury",
+          "ordinal": 9,
+          "type_info": "Float8"
+        },
+        {
+          "name": "omega_3_ratio",
+          "ordinal": 10,
+          "type_info": "Float8"
+        },
+        {
+          "name": "omega_3",
+          "ordinal": 11,
+          "type_info": "Float8"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            AVG(pcb) as pcb,\n            AVG(protein) as protein,\n            AVG(mercury) as mercury,\n            AVG(omega_3_ratio) as omega_3_ratio,\n            AVG(omega_3) as omega_3\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        WHERE fish_type.id=$1\n        GROUP BY fish_type.id;\n        "
   },
   "c329e02990c1410465c456a84d328baf49d3cb48ace6301607053354f806000d": {
     "describe": {
