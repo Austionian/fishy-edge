@@ -33,7 +33,6 @@ pub struct SearchResult {
 /// {
 ///   fish_result: [
 ///     {
-///       "id": "1fe5c906-d09d-11ed-afa1-0242ac120002",
 ///       "fish_id": "1fe5c906-d09d-11ed-afa1-0242ac120022",
 ///       "name": "Herring",
 ///       // ...
@@ -80,15 +79,12 @@ async fn get_fish_data(db_pool: &PgPool) -> Result<Vec<FishData>, sqlx::Error> {
         FishData,
         r#"
         SELECT 
-            fish.id as fish_id,
+            fish_type.id as fish_id,
             fish_type.name,
             fish_type.anishinaabe_name,
             fish_type.fish_image,
             fish_type.woodland_fish_image
-        FROM fish
-        JOIN fish_type
-        ON fish.fish_type_id=fish_type.id
-        WHERE fish.lake='Store';
+        FROM fish_type;
         "#,
     )
     .fetch_all(db_pool)
