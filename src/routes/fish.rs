@@ -99,7 +99,8 @@ async fn get_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<Fish, sqlx::
             fish.omega_3,
             fish.omega_3_ratio,
             fish.pcb,
-            fish.protein
+            fish.protein,
+            fish.lake
         FROM fish_type
         INNER JOIN fish
         ON fish_type.id=fish.fish_type_id

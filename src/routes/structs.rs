@@ -15,6 +15,7 @@ pub struct Fish {
     pub omega_3_ratio: Option<f32>,
     pub pcb: Option<f32>,
     pub protein: Option<f32>,
+    pub lake: String,
 }
 
 #[derive(serde::Serialize)]
