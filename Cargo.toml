@@ -24,7 +24,7 @@ tracing-log = "0.1"
 tracing-actix-web = "0.7"
 secrecy = { version = "0.8", features = ["serde"] }
 serde-aux = "4"
-anyhow = "1.0.70"
+anyhow = "1.0.71"
 
 [dependencies.sqlx]
 version = "0.6"
