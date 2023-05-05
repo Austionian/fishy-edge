@@ -4,7 +4,7 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 #[derive(serde::Serialize)]
-pub struct Fish {
+struct Fish {
     pub fish_id: Uuid,
     pub name: String,
     pub anishinaabe_name: Option<String>,

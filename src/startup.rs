@@ -32,6 +32,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(routes::fish_avgs)
                     .service(routes::recipe)
                     .service(routes::recipes)
+                    .service(routes::min_and_max)
                     .service(routes::everything)
                     .route("/search", web::get().to(routes::search))
                     .route("/register", web::post().to(routes::register)),
