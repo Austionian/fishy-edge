@@ -12,7 +12,10 @@ pub struct MinMaxQuery {
 struct Fish {
     name: String,
     anishinaabe_name: Option<String>,
-    value: Option<String>,
+    protein: Option<f32>,
+    pcb: Option<f32>,
+    omega_3: Option<f32>,
+    mercury: Option<f32>,
 }
 
 const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
@@ -80,26 +83,29 @@ async fn get_min_and_max_data(
         SELECT 
             fish_type.name,
             fish_type.anishinaabe_name,
-            $1 as value
+            fish.protein,
+            fish.pcb,
+            fish.omega_3,
+            fish.mercury
         FROM fish 
         JOIN fish_type
         ON fish.fish_type_id=fish_type.id
-        WHERE ($1=(
+        WHERE ($2=(
             SELECT 
-                MAX($1)
+                MAX($2)
             FROM fish 
-            WHERE lake=$2
-        ) AND fish.lake=$2)
+            WHERE lake=$1
+        ) AND fish.lake=$1)
         OR
-        ($1=(
+        ($2=(
             SELECT
-                MIN($1)
+                MIN($2)
             FROM fish
-            WHERE lake=$2
-        ) AND fish.lake=$2);
+            WHERE lake=$1
+        ) AND fish.lake=$1);
         "#,
-        attr,
-        lake
+        lake,
+        attr
     )
     .fetch_all(db_pool)
     .await
