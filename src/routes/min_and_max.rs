@@ -93,6 +93,9 @@ async fn get_min_and_max_data(
     query.push_bind(lake);
     query.push(") AND fish.lake=");
     query.push_bind(lake);
+    query.push(") ORDER BY ");
+    query.push(attr);
+    query.push(";");
     let data = sqlx::query_as::<_, Fish>(query.sql())
         .fetch_all(db_pool)
         .await
