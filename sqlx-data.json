@@ -218,57 +218,6 @@
     },
     "query": "\n        SELECT \n            fish.id as fish_id,\n            fish.fish_type_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.omega_3,\n            fish.omega_3_ratio,\n            fish.mercury,\n            fish.lake\n        FROM fish\n        JOIN fish_type\n        ON fish.fish_type_id=fish_type.id\n        WHERE fish.lake=$1;\n        "
   },
-  "50d6fcb58de8894c1ce95f37e03f7985c852c5e494312d7f793455454e5c6c96": {
-    "describe": {
-      "columns": [
-        {
-          "name": "name",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "anishinaabe_name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "protein",
-          "ordinal": 2,
-          "type_info": "Float4"
-        },
-        {
-          "name": "pcb",
-          "ordinal": 3,
-          "type_info": "Float4"
-        },
-        {
-          "name": "omega_3",
-          "ordinal": 4,
-          "type_info": "Float4"
-        },
-        {
-          "name": "mercury",
-          "ordinal": 5,
-          "type_info": "Float4"
-        }
-      ],
-      "nullable": [
-        false,
-        true,
-        true,
-        true,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        SELECT \n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish.protein,\n            fish.pcb,\n            fish.omega_3,\n            fish.mercury\n        FROM fish \n        JOIN fish_type\n        ON fish.fish_type_id=fish_type.id\n        WHERE ($2=(\n            SELECT \n                MAX($2)\n            FROM fish \n            WHERE lake=$1\n        ) AND fish.lake=$1)\n        OR\n        ($2=(\n            SELECT\n                MIN($2)\n            FROM fish\n            WHERE lake=$1\n        ) AND fish.lake=$1);\n        "
-  },
   "80e7d4e167cc1bdadd266abebebf7e39d80dfa16c7343beb39ef18ea7dac9c94": {
     "describe": {
       "columns": [],

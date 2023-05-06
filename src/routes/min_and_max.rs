@@ -1,5 +1,5 @@
 use actix_web::{get, web, HttpResponse};
-use sqlx::PgPool;
+use sqlx::{PgPool, Postgres};
 
 #[derive(serde::Deserialize)]
 pub struct MinMaxQuery {
@@ -8,14 +8,11 @@ pub struct MinMaxQuery {
     avg: bool,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, sqlx::FromRow)]
 struct Fish {
     name: String,
     anishinaabe_name: Option<String>,
-    protein: Option<f32>,
-    pcb: Option<f32>,
-    omega_3: Option<f32>,
-    mercury: Option<f32>,
+    value: Option<f32>,
 }
 
 const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
@@ -77,42 +74,32 @@ async fn get_min_and_max_data(
     avg: bool,
     db_pool: &PgPool,
 ) -> Result<Vec<Fish>, sqlx::Error> {
-    let data = sqlx::query_as!(
-        Fish,
-        r#"
-        SELECT 
-            fish_type.name,
-            fish_type.anishinaabe_name,
-            fish.protein,
-            fish.pcb,
-            fish.omega_3,
-            fish.mercury
-        FROM fish 
-        JOIN fish_type
-        ON fish.fish_type_id=fish_type.id
-        WHERE ($2=(
-            SELECT 
-                MAX($2)
-            FROM fish 
-            WHERE lake=$1
-        ) AND fish.lake=$1)
-        OR
-        ($2=(
-            SELECT
-                MIN($2)
-            FROM fish
-            WHERE lake=$1
-        ) AND fish.lake=$1);
-        "#,
-        lake,
-        attr
-    )
-    .fetch_all(db_pool)
-    .await
-    .map_err(|e| {
-        tracing::error!("Failed to execute the query: {:?}", e);
-        e
-    })?;
+    let mut query: sqlx::QueryBuilder<Postgres> =
+        sqlx::QueryBuilder::new("SELECT fish_type.name, fish_type.anishinaabe_name, ");
+    query.push(attr);
+    query.push("as value FROM fish JOIN fish_type ON fish.fish_type_id=fish_type.id WHERE (");
+    query.push(attr);
+    query.push("=(SELECT MAX(");
+    query.push(attr);
+    query.push(") FROM fish WHERE lake=");
+    query.push_bind(lake);
+    query.push(") AND fish.lake=");
+    query.push_bind(lake);
+    query.push(") OR (");
+    query.push(attr);
+    query.push("=(SELECT MIN(");
+    query.push(attr);
+    query.push(") FROM fish where lake=");
+    query.push_bind(lake);
+    query.push(") AND fish.lake=");
+    query.push_bind(lake);
+    let data = sqlx::query_as::<_, Fish>(query.sql())
+        .fetch_all(db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to execute the query: {:?}", e);
+            e
+        })?;
 
     Ok(data)
 }
