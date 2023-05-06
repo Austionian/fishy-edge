@@ -77,7 +77,7 @@ async fn get_min_and_max_data(
     let mut query: sqlx::QueryBuilder<Postgres> =
         sqlx::QueryBuilder::new("SELECT fish_type.name, fish_type.anishinaabe_name, ");
     query.push(attr);
-    query.push("as value FROM fish JOIN fish_type ON fish.fish_type_id=fish_type.id WHERE (");
+    query.push(" as value FROM fish JOIN fish_type ON fish.fish_type_id=fish_type.id WHERE (");
     query.push(attr);
     query.push("=(SELECT MAX(");
     query.push(attr);
@@ -96,13 +96,11 @@ async fn get_min_and_max_data(
     query.push(") ORDER BY ");
     query.push(attr);
     query.push(";");
-    let data = sqlx::query_as::<_, Fish>(query.sql())
-        .fetch_all(db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Failed to execute the query: {:?}", e);
-            e
-        })?;
+    let stream = query.build_query_as::<Fish>();
+    let data = stream.fetch_all(db_pool).await.map_err(|e| {
+        tracing::error!("Failed to execute the query: {:?}", e);
+        e
+    })?;
 
     Ok(data)
 }
