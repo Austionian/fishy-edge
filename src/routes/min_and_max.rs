@@ -135,7 +135,7 @@ async fn get_min_and_max_of_avg_data(attr: &str, db_pool: &PgPool) -> Result<Dat
         sqlx::QueryBuilder::new("SELECT fish_type.name, fish_type.anishinaabe_name, CAST(AVG(");
     query.push(attr);
     query.push(
-        "as FLOAT4) as value From fish JOIN fish_type ON fish.fish_type_id=fish_type.id
+        ") AS FLOAT4) AS value FROM fish JOIN fish_type ON fish.fish_type_id=fish_type.id
         GROUP BY fish_type.name, fish_type.anishinaabe_name ORDER BY value;",
     );
     let stream = query.build_query_as::<Fish>();
