@@ -132,10 +132,10 @@ async fn get_min_and_max_data(
 #[tracing::instrument(name = "Querying the database", skip(db_pool))]
 async fn get_min_and_max_of_avg_data(attr: &str, db_pool: &PgPool) -> Result<Data, sqlx::Error> {
     let mut query: sqlx::QueryBuilder<Postgres> =
-        sqlx::QueryBuilder::new("SELECT fish_type.name, fish_type.anishinaabe_name, AVG(");
+        sqlx::QueryBuilder::new("SELECT fish_type.name, fish_type.anishinaabe_name, CAST(AVG(");
     query.push(attr);
     query.push(
-        ") as value From fish JOIN fish_type ON fish.fish_type_id=fish_type.id
+        "as FLOAT4) as value From fish JOIN fish_type ON fish.fish_type_id=fish_type.id
         GROUP BY fish_type.name, fish_type.anishinaabe_name ORDER BY value;",
     );
     let stream = query.build_query_as::<Fish>();
