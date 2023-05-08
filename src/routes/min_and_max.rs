@@ -16,8 +16,8 @@ struct Fish {
 
 #[derive(serde::Serialize)]
 struct Data {
-    min: Fish,
-    max: Fish,
+    min: Option<Fish>,
+    max: Option<Fish>,
 }
 
 const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
@@ -122,8 +122,8 @@ async fn get_min_and_max_data(
     })?;
 
     let data = Data {
-        min: data.first().unwrap().clone(),
-        max: data.last().unwrap().clone(),
+        min: data.first().cloned(),
+        max: data.last().cloned(),
     };
 
     Ok(data)
@@ -134,7 +134,10 @@ async fn get_min_and_max_of_avg_data(attr: &str, db_pool: &PgPool) -> Result<Dat
     let mut query: sqlx::QueryBuilder<Postgres> =
         sqlx::QueryBuilder::new("SELECT fish_type.name, fish_type.anishinaabe_name, AVG(");
     query.push(attr);
-    query.push(") as value From fish JOIN fish_type ON fish.fish_type_id=fish_type.id GROUP BY fish_type.name ORDER BY value;");
+    query.push(
+        ") as value From fish JOIN fish_type ON fish.fish_type_id=fish_type.id
+        GROUP BY fish_type.name, fish_type.anishinaabe_name ORDER BY value;",
+    );
     let stream = query.build_query_as::<Fish>();
     let data = stream.fetch_all(db_pool).await.map_err(|e| {
         tracing::error!("Failed to execute the query: {:?}", e);
@@ -142,8 +145,8 @@ async fn get_min_and_max_of_avg_data(attr: &str, db_pool: &PgPool) -> Result<Dat
     })?;
 
     let data = Data {
-        min: data.first().unwrap().clone(),
-        max: data.last().unwrap().clone(),
+        min: data.first().cloned(),
+        max: data.last().cloned(),
     };
 
     Ok(data)
