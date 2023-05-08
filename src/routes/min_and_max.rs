@@ -3,23 +3,29 @@ use sqlx::{PgPool, Postgres};
 
 #[derive(serde::Deserialize)]
 pub struct MinMaxQuery {
-    lake: String,
+    lake: Option<String>,
     attr: String,
-    avg: bool,
 }
 
-#[derive(serde::Serialize, sqlx::FromRow)]
+#[derive(serde::Serialize, sqlx::FromRow, Clone)]
 struct Fish {
     name: String,
     anishinaabe_name: Option<String>,
     value: Option<f32>,
 }
 
+#[derive(serde::Serialize)]
+struct Data {
+    min: Fish,
+    max: Fish,
+}
+
 const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 const VALID_ATTRS: [&str; 4] = ["protein", "pcb", "mercury", "omega_3_ratio"];
 
 /// Returns a json of the fish with the min and max value for a given lake and
-/// attribute.
+/// attribute. If no lake specified, will return min and max values for all fish
+/// averages.
 ///
 /// # Example
 ///
@@ -27,7 +33,7 @@ const VALID_ATTRS: [&str; 4] = ["protein", "pcb", "mercury", "omega_3_ratio"];
 ///
 ///```json
 /// {
-///     min: {
+///     min {
 ///       "id": "1fe5c906-d09d-11ed-afa1-0242ac120002",
 ///       "fish_id": "1fe5c906-d09d-11ed-afa1-0242ac120022",
 ///       "name": "Herring",
@@ -45,25 +51,39 @@ pub async fn min_and_max(
     query: web::Query<MinMaxQuery>,
     db_pool: web::Data<PgPool>,
 ) -> HttpResponse {
-    let mut lake = query.lake.as_str();
-    if !VALID_LAKES.contains(&lake) {
-        tracing::warn!("Invalid lake supplied. Falling back to Store.");
-        lake = "Store";
-    }
-    let mut attr = query.attr.as_str();
+    let attr = query.attr.as_str();
     if !VALID_ATTRS.contains(&attr) {
         tracing::warn!("Invalid attr supplied.");
-        attr = "protein";
+        return HttpResponse::NotAcceptable().finish();
     }
-    match get_min_and_max_data(lake, attr, query.avg, &db_pool).await {
-        Ok(data) => {
-            tracing::info!("Min and max data has been queried from the db.");
-            HttpResponse::Ok().json(data)
+    match &query.lake {
+        Some(lake) => {
+            let lake = lake.as_str();
+            if !VALID_LAKES.contains(&lake) {
+                tracing::warn!("Invalid lake supplied. Falling back to Store.");
+                return HttpResponse::NotAcceptable().finish();
+            }
+            match get_min_and_max_data(lake, attr, &db_pool).await {
+                Ok(data) => {
+                    tracing::info!("Min and max data has been queried from the db.");
+                    HttpResponse::Ok().json(data)
+                }
+                Err(e) => {
+                    tracing::error!("Failed to execute query: {:?}", e);
+                    HttpResponse::InternalServerError().finish()
+                }
+            }
         }
-        Err(e) => {
-            tracing::error!("Failed to execute query: {:?}", e);
-            HttpResponse::InternalServerError().finish()
-        }
+        None => match get_min_and_max_of_avg_data(attr, &db_pool).await {
+            Ok(data) => {
+                tracing::info!("Avg min and max data has been queried from the db.");
+                HttpResponse::Ok().json(data)
+            }
+            Err(e) => {
+                tracing::error!("Failed to execute query: {:?}", e);
+                HttpResponse::InternalServerError().finish()
+            }
+        },
     }
 }
 
@@ -71,9 +91,8 @@ pub async fn min_and_max(
 async fn get_min_and_max_data(
     lake: &str,
     attr: &str,
-    avg: bool,
     db_pool: &PgPool,
-) -> Result<Vec<Fish>, sqlx::Error> {
+) -> Result<Data, sqlx::Error> {
     let mut query: sqlx::QueryBuilder<Postgres> =
         sqlx::QueryBuilder::new("SELECT fish_type.name, fish_type.anishinaabe_name, ");
     query.push(attr);
@@ -101,6 +120,31 @@ async fn get_min_and_max_data(
         tracing::error!("Failed to execute the query: {:?}", e);
         e
     })?;
+
+    let data = Data {
+        min: data.first().unwrap().clone(),
+        max: data.last().unwrap().clone(),
+    };
+
+    Ok(data)
+}
+
+#[tracing::instrument(name = "Querying the database", skip(db_pool))]
+async fn get_min_and_max_of_avg_data(attr: &str, db_pool: &PgPool) -> Result<Data, sqlx::Error> {
+    let mut query: sqlx::QueryBuilder<Postgres> =
+        sqlx::QueryBuilder::new("SELECT fish_type.name, fish_type.anishinaabe_name, AVG(");
+    query.push(attr);
+    query.push(") as value From fish JOIN fish_type ON fish.fish_type_id=fish_type.id GROUP BY fish_type.name ORDER BY value;");
+    let stream = query.build_query_as::<Fish>();
+    let data = stream.fetch_all(db_pool).await.map_err(|e| {
+        tracing::error!("Failed to execute the query: {:?}", e);
+        e
+    })?;
+
+    let data = Data {
+        min: data.first().unwrap().clone(),
+        max: data.last().unwrap().clone(),
+    };
 
     Ok(data)
 }
