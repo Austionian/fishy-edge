@@ -68,7 +68,8 @@ async fn get_fish_data(lake: &str, db_pool: &PgPool) -> Result<Vec<Fish>, sqlx::
             fish.omega_3,
             fish.omega_3_ratio,
             fish.mercury,
-            fish.lake
+            fish.lake,
+            fish_type.about
         FROM fish
         JOIN fish_type
         ON fish.fish_type_id=fish_type.id

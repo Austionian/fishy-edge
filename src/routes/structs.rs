@@ -16,6 +16,7 @@ pub struct Fish {
     pub pcb: Option<f32>,
     pub protein: Option<f32>,
     pub lake: String,
+    pub about: Option<String>,
 }
 
 #[derive(serde::Serialize)]
