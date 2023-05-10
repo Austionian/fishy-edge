@@ -12,7 +12,7 @@ struct Fish {
     pub woodland_fish_image: Option<String>,
     pub s3_fish_image: Option<String>,
     pub s3_woodland_image: Option<String>,
-    pub about: Option<String>,
+    pub about: String,
     pub mercury: Option<f64>,
     pub omega_3: Option<f64>,
     pub omega_3_ratio: Option<f64>,
