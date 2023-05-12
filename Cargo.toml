@@ -25,6 +25,7 @@ tracing-actix-web = "0.7"
 secrecy = { version = "0.8", features = ["serde"] }
 serde-aux = "4"
 anyhow = "1.0.70"
+rust-s3 = "0.33.0"
 
 [dependencies.sqlx]
 version = "0.6"

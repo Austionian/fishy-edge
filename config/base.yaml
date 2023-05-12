@@ -8,3 +8,8 @@ database:
   username: "postgres"
   password: "password"
   database_name: "fish"
+s3:
+  region: "us-east-2"
+  bucket: "local"
+  access_key_id: "local"
+  secret_access_key: "local_secret"

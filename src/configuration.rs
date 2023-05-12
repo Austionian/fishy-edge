@@ -8,6 +8,7 @@ use sqlx::ConnectOptions;
 pub struct Settings {
     pub database: DataBaseSettings,
     pub application: ApplicationSettings,
+    pub s3: S3Settings,
 }
 
 #[derive(serde::Deserialize)]
@@ -28,6 +29,14 @@ pub struct DataBaseSettings {
     pub host: String,
     pub database_name: String,
     pub require_ssl: bool,
+}
+
+#[derive(serde::Deserialize)]
+pub struct S3Settings {
+    pub region: String,
+    pub bucket: String,
+    pub access_key_id: String,
+    pub secret_access_key: String,
 }
 
 impl DataBaseSettings {
