@@ -6,7 +6,7 @@ async fn register_returns_a_200() {
 
     let client = reqwest::Client::new();
 
-    let body = "email=austinrooks@gmail.com";
+    let body = "email=austinrooks@gmail.com&password=test";
     let response = client
         .post(&format!("{}/v1/register", &app.address))
         .header("Content-Type", "application/x-www-form-urlencoded")
