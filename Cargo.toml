@@ -28,6 +28,8 @@ anyhow = "1"
 rust-s3 = "0.33.0"
 argon2 = { version = "0.5", features = ["std"] }
 rand = { version = "0.8", features=["std_rng"] }
+thiserror = "1"
+fake = "2"
 
 [dependencies.sqlx]
 version = "0.6"

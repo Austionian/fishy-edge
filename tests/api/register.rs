@@ -1,12 +1,15 @@
 use crate::helpers::spawn_app;
+use fake::faker::internet::en::SafeEmail;
+use fake::Fake;
 
 #[tokio::test]
 async fn register_returns_a_200() {
     let app = spawn_app().await;
 
     let client = reqwest::Client::new();
+    let email: String = SafeEmail().fake();
 
-    let body = "email=austinrooks@gmail.com&password=test";
+    let body = format!("email={email}&password=test");
     let response = client
         .post(&format!("{}/v1/register", &app.address))
         .header("Content-Type", "application/x-www-form-urlencoded")

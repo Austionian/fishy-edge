@@ -334,18 +334,19 @@
     },
     "query": "\n        SELECT\n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish_type.about,\n            AVG(pcb) as pcb,\n            AVG(protein) as protein,\n            AVG(mercury) as mercury,\n            AVG(omega_3_ratio) as omega_3_ratio,\n            AVG(omega_3) as omega_3\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        GROUP BY fish_type.id;\n        "
   },
-  "80e7d4e167cc1bdadd266abebebf7e39d80dfa16c7343beb39ef18ea7dac9c94": {
+  "822f6feed49ba14892993c5dbc095b0b2e7ee7b369df6fec90fd2a169539b4a2": {
     "describe": {
       "columns": [],
       "nullable": [],
       "parameters": {
         "Left": [
           "Uuid",
+          "Text",
           "Text"
         ]
       }
     },
-    "query": "\n        INSERT INTO users (id, email)\n        VALUES ($1, $2)\n        "
+    "query": "\n        INSERT INTO users (id, email, password_hash)\n        VALUES ($1, $2, $3)\n        "
   },
   "afc80adce5a5cefb781e130d0767f865c531d3aa50bf61c14fe2cb1d88fabe8a": {
     "describe": {
@@ -522,6 +523,32 @@
       }
     },
     "query": "\n        SELECT\n            fish.id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish.lake,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.mercury,\n            fish.omega_3_ratio,\n            fish.omega_3,\n            array(\n                SELECT recipe_id\n                FROM fishtype_recipe\n                WHERE fishtype_recipe.fishtype_id=fish_type.id\n                ) as recipes\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        "
+  },
+  "dd9557809f59c4a4e31d2ba38e835f55e67e0ebc6486fe96a1c82312626856d5": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "password_hash",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT id, password_hash\n        FROM users\n        WHERE email = $1\n        "
   },
   "e39393c916b96946227a147a6327414d3ab686743bbeba16bbbeeb4921756e4b": {
     "describe": {
