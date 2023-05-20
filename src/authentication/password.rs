@@ -22,10 +22,10 @@ pub struct Credentials {
 async fn get_stored_credentials(
     email: &str,
     pool: &PgPool,
-) -> Result<Option<(uuid::Uuid, Secret<String>)>, anyhow::Error> {
+) -> Result<Option<(uuid::Uuid, Secret<String>, bool)>, anyhow::Error> {
     let row = sqlx::query!(
         r#"
-        SELECT id, password_hash
+        SELECT id, password_hash, is_admin
         FROM users
         WHERE email = $1
         "#,
@@ -34,7 +34,14 @@ async fn get_stored_credentials(
     .fetch_optional(pool)
     .await
     .context("Failed to performed a query to retrieve stored credentials.")?
-    .map(|row| (row.id, Secret::new(row.password_hash)));
+    .map(|row| {
+        (
+            row.id,
+            Secret::new(row.password_hash),
+            row.is_admin.unwrap_or(false),
+        )
+    });
+
     Ok(row)
 }
 
@@ -42,7 +49,7 @@ async fn get_stored_credentials(
 pub async fn validate_credentials(
     credentials: Credentials,
     pool: &PgPool,
-) -> Result<uuid::Uuid, AuthError> {
+) -> Result<(uuid::Uuid, bool), AuthError> {
     let mut user_id = None;
     let mut expected_password_hash = Secret::new(
         "$argon2id$v=19$m=15000,t=2,p=1$\
@@ -50,12 +57,14 @@ pub async fn validate_credentials(
         CWOrkoo7oJBQ/iyh7uJ0LO2aLEfrHwTWllSAxT0zRno"
             .to_string(),
     );
+    let mut is_admin = false;
 
-    if let Some((stored_user_id, stored_password_hash)) =
+    if let Some((stored_user_id, stored_password_hash, stored_is_admin)) =
         get_stored_credentials(&credentials.email, pool).await?
     {
         user_id = Some(stored_user_id);
         expected_password_hash = stored_password_hash;
+        is_admin = stored_is_admin;
     }
 
     spawn_blocking_with_tracing(move || {
@@ -64,9 +73,11 @@ pub async fn validate_credentials(
     .await
     .context("Failed to spawn blocking task.")??;
 
-    user_id
+    let user_id = user_id
         .ok_or_else(|| anyhow::anyhow!("Unknown username."))
-        .map_err(AuthError::InvalidCredentials)
+        .map_err(AuthError::InvalidCredentials)?;
+
+    Ok((user_id, is_admin))
 }
 
 #[tracing::instrument(

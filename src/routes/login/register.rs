@@ -50,8 +50,8 @@ async fn insert_user(
 ) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
-        INSERT INTO users (id, email, password_hash)
-        VALUES ($1, $2, $3)
+        INSERT INTO users (id, email, password_hash, is_admin)
+        VALUES ($1, $2, $3, false)
         "#,
         Uuid::new_v4(),
         email,
