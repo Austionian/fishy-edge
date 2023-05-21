@@ -556,6 +556,26 @@
     },
     "query": "\n        SELECT\n            fish.id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish.lake,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.mercury,\n            fish.omega_3_ratio,\n            fish.omega_3,\n            array(\n                SELECT recipe_id\n                FROM fishtype_recipe\n                WHERE fishtype_recipe.fishtype_id=fish_type.id\n                ) as recipes\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        "
   },
+  "c7b13738a6ffb07e7bb9af99fbe370b1145057276c7faa4f69d2f60b939a694f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "is_admin",
+          "ordinal": 0,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT \n            is_admin\n        FROM users\n        WHERE id = $1;\n        "
+  },
   "e39393c916b96946227a147a6327414d3ab686743bbeba16bbbeeb4921756e4b": {
     "describe": {
       "columns": [

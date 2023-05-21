@@ -30,6 +30,7 @@ argon2 = { version = "0.5", features = ["std"] }
 rand = { version = "0.8", features=["std_rng"] }
 thiserror = "1"
 fake = "2"
+actix-web-lab = "0.19.1"
 
 [dependencies.sqlx]
 version = "0.6"
