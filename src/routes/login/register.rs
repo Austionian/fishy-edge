@@ -28,9 +28,9 @@ pub async fn register(
     let password = &form.password;
     let password_hash = compute_password_hash(password.clone()).map_err(e500)?;
     match insert_user(&db_pool, email.to_string(), password_hash).await {
-        Ok(_) => {
+        Ok(user_id) => {
             tracing::info!("New user details have been saved.");
-            Ok(HttpResponse::Ok().finish())
+            Ok(HttpResponse::Ok().json(user_id))
         }
         Err(e) => {
             tracing::error!("Failed to execute query: {:?}", e);
@@ -47,13 +47,14 @@ async fn insert_user(
     db_pool: &PgPool,
     email: String,
     password_hash: Secret<String>,
-) -> Result<(), sqlx::Error> {
+) -> Result<Uuid, sqlx::Error> {
+    let user_id = Uuid::new_v4();
     sqlx::query!(
         r#"
         INSERT INTO users (id, email, password_hash, is_admin)
         VALUES ($1, $2, $3, false)
         "#,
-        Uuid::new_v4(),
+        user_id,
         email,
         password_hash.expose_secret()
     )
@@ -64,5 +65,5 @@ async fn insert_user(
         e
     })?;
 
-    Ok(())
+    Ok(user_id)
 }
