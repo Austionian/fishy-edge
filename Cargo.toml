@@ -46,6 +46,6 @@ features = [
 ]
 
 [dev-dependencies]
-reqwest = "0.11.16"
+reqwest = "0.11.18"
 once_cell = "1"
 
