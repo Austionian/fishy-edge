@@ -37,6 +37,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .route("/search", web::get().to(routes::search))
                     .route("/register", web::post().to(routes::register))
                     .route("/login", web::post().to(routes::login))
+                    .route("/save", web::post().to(routes::save))
                     .service(
                         web::scope("/admin")
                             .wrap(from_fn(reject_non_admin_users))

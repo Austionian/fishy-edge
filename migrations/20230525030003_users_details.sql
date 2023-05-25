@@ -1,0 +1,7 @@
+-- Add migration script here
+ALTER TABLE users
+ADD COLUMN weight SMALLINT NOT NULL,
+ADD COLUMN age SMALLINT NOT NULL,
+ADD COLUMN sex VARCHAR NOT NULL,
+ADD COLUMN plan_to_get_pregnant BOOL,
+ADD COLUMN portion_size SMALLINT NOT NULL;

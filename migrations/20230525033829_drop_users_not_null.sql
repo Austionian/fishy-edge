@@ -1,0 +1,6 @@
+-- Add migration script here
+ALTER TABLE users
+ALTER COLUMN weight DROP NOT NULL,
+ALTER COLUMN age DROP NOT NULL,
+ALTER COLUMN sex DROP NOT NULL,
+ALTER COLUMN portion_size DROP NOT NULL;

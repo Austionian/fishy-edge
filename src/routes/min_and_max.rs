@@ -20,6 +20,7 @@ struct Data {
     max: Option<Fish>,
 }
 
+// Whitelist options
 const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 const VALID_ATTRS: [&str; 4] = ["protein", "pcb", "mercury", "omega_3_ratio"];
 
@@ -60,7 +61,7 @@ pub async fn min_and_max(
         Some(lake) => {
             let lake = lake.as_str();
             if !VALID_LAKES.contains(&lake) {
-                tracing::warn!("Invalid lake supplied. Falling back to Store.");
+                tracing::warn!("Invalid lake supplied.");
                 return HttpResponse::NotAcceptable().finish();
             }
             match get_min_and_max_data(lake, attr, &db_pool).await {
