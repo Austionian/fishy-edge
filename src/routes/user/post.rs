@@ -3,7 +3,7 @@ use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-#[derive(serde::Deserialize, sqlx::Type)]
+#[derive(serde::Deserialize, serde::Serialize, sqlx::Type)]
 #[sqlx(type_name = "sex")]
 #[sqlx(rename_all = "lowercase")]
 pub enum Sex {
@@ -39,7 +39,7 @@ pub struct FormData {
         subscriber_name = %form.user_id
         )
     )]
-pub async fn save(
+pub async fn post_user(
     form: web::Form<FormData>,
     db_pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, actix_web::Error> {
