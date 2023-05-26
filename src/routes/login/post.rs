@@ -2,11 +2,28 @@ use crate::authentication::{validate_credentials, AuthError, Credentials};
 use actix_web::{error::InternalError, web, HttpResponse};
 use secrecy::Secret;
 use sqlx::PgPool;
+use uuid::Uuid;
 
 #[derive(serde::Deserialize)]
 pub struct FormData {
     email: String,
     password: Secret<String>,
+}
+
+#[derive(serde::Serialize)]
+pub struct LoginResponse {
+    user_id: Uuid,
+    is_admin: bool,
+    data: UserData,
+}
+
+#[derive(serde::Serialize)]
+pub struct UserData {
+    weight: Option<i16>,
+    age: Option<i16>,
+    sex: Option<String>,
+    plan_to_get_pregnant: Option<bool>,
+    portion_size: Option<i16>,
 }
 
 /// Checks that the provided credentials are correct.
@@ -29,7 +46,18 @@ pub async fn login(
     match validate_credentials(credentials, &db_pool).await {
         Ok(user_data) => {
             tracing::Span::current().record("user_id", &tracing::field::display(&user_data.0));
-            Ok(HttpResponse::Ok().json(user_data))
+            match get_user_db(&db_pool, user_data.0).await {
+                Ok(data) => Ok(HttpResponse::Ok().json(LoginResponse {
+                    user_id: user_data.0,
+                    is_admin: user_data.1,
+                    data,
+                })),
+                // In the error case still allow the user to login.
+                Err(e) => {
+                    tracing::error!("User was validated, but unable to retrieve their data: {e}");
+                    Ok(HttpResponse::Ok().json(user_data))
+                }
+            }
         }
         Err(e) => {
             let e = match e {
@@ -40,6 +68,32 @@ pub async fn login(
             Err(InternalError::from_response(e, response))
         }
     }
+}
+
+#[tracing::instrument(name = "Getting user details from the db.", skip(db_pool, user_id))]
+async fn get_user_db(db_pool: &PgPool, user_id: Uuid) -> Result<UserData, sqlx::Error> {
+    let user_data = sqlx::query_as!(
+        UserData,
+        r#"
+        SELECT
+            weight,
+            age,
+            sex,
+            plan_to_get_pregnant,
+            portion_size
+        FROM users
+        WHERE id=$1
+        "#,
+        user_id
+    )
+    .fetch_one(db_pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute the query: {:?}", e);
+        e
+    })?;
+
+    Ok(user_data)
 }
 
 #[derive(thiserror::Error)]
