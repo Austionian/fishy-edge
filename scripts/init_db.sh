@@ -43,3 +43,9 @@ done
 export DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}
 sqlx database create
 sqlx migrate run
+
+# sleep 5 
+# psql -c "COPY fish_type from './basic_data/fish_type.csv' delimiter ',' CSV HEADER;"
+# psql -c "COPY fish from './basic_data/fishs.csv' delimiter ',' CSV HEADER;"
+# psql -c "COPY recipe from './basic_data/recipe.csv' delimiter ',' CSV HEADER;"
+# psql -c "COPY fishtype_recipe from './basic_data/ft_recipe.csv' delimiter ',' CSV HEADER;"

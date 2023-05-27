@@ -637,6 +637,19 @@
     },
     "query": "\n        SELECT \n            is_admin\n        FROM users\n        WHERE id = $1;\n        "
   },
+  "cee5e740041096bf9377ae2447311df839c559a56959f3893a05e14015109295": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE users\n        SET image_url=$1 \n        WHERE users.id=$2\n        "
+  },
   "e39393c916b96946227a147a6327414d3ab686743bbeba16bbbeeb4921756e4b": {
     "describe": {
       "columns": [
