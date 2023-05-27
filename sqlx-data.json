@@ -409,6 +409,56 @@
     },
     "query": "\n        INSERT INTO users (id, email, password_hash, is_admin)\n        VALUES ($1, $2, $3, false)\n        "
   },
+  "89a1c920a698f43f32004933b91db13cbc0637ae2ffeb0b0f2b93ce041243da9": {
+    "describe": {
+      "columns": [
+        {
+          "name": "weight",
+          "ordinal": 0,
+          "type_info": "Int2"
+        },
+        {
+          "name": "age",
+          "ordinal": 1,
+          "type_info": "Int2"
+        },
+        {
+          "name": "sex",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "plan_to_get_pregnant",
+          "ordinal": 3,
+          "type_info": "Bool"
+        },
+        {
+          "name": "portion_size",
+          "ordinal": 4,
+          "type_info": "Int2"
+        },
+        {
+          "name": "image_url",
+          "ordinal": 5,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            weight,\n            age,\n            sex,\n            plan_to_get_pregnant,\n            portion_size,\n            image_url\n        FROM users\n        WHERE id=$1\n        "
+  },
   "8c19df2099af738036da04e2333065d5f0ccff2d87ab96d24732a3a038867f4b": {
     "describe": {
       "columns": [
