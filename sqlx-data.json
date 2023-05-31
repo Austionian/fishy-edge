@@ -225,6 +225,18 @@
     },
     "query": "\n        UPDATE users\n        SET (weight, age, sex, plan_to_get_pregnant, portion_size) = ($1, $2, $3, $4, $5)\n        WHERE users.id = $6\n        "
   },
+  "2493822cfaac5f75d4d5d7c2f7fd6751fd31c2e74dfe728b1709d783a9fc65ba": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        DELETE FROM users\n        WHERE id=$1\n        "
+  },
   "349254e7e395a13052131c34fab61859a9dde0b55665a9820bf0845440145ac4": {
     "describe": {
       "columns": [
