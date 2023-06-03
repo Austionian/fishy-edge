@@ -12,6 +12,10 @@ pub struct FormData {
     new_password_check: Secret<String>,
 }
 
+/// An endpoint to update a user's password.
+/// The `user_id` cookie needs to be included with the request.
+/// It also expects the `current_password`, `new_password`, and
+/// `new_password_check` to be included as form data.
 pub async fn change_password(
     req: HttpRequest,
     form: web::Form<FormData>,
