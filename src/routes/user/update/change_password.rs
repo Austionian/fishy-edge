@@ -1,12 +1,13 @@
 use crate::authentication::{validate_credentials, AuthError, Credentials};
 use crate::utils::e500;
-use actix_web::{web, HttpRequest, HttpResponse};
+use actix_web::{web, HttpResponse};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
 use uuid::Uuid;
 
 #[derive(serde::Deserialize)]
 pub struct FormData {
+    user_id: Uuid,
     current_password: Secret<String>,
     new_password: Secret<String>,
     new_password_check: Secret<String>,
@@ -17,16 +18,10 @@ pub struct FormData {
 /// It also expects the `current_password`, `new_password`, and
 /// `new_password_check` to be included as form data.
 pub async fn change_password(
-    req: HttpRequest,
     form: web::Form<FormData>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let user_id = Uuid::parse_str(
-        req.cookie("user_id")
-            .ok_or(e500("No user_id cookie included with the request."))?
-            .value(),
-    )
-    .map_err(actix_web::error::ErrorBadRequest)?;
+    let user_id = form.user_id;
     if form.new_password.expose_secret() != form.new_password_check.expose_secret() {
         return Ok(HttpResponse::BadRequest().finish());
     }
