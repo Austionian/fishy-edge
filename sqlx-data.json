@@ -407,6 +407,19 @@
     },
     "query": "\n        SELECT\n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish_type.about,\n            AVG(pcb) as pcb,\n            AVG(protein) as protein,\n            AVG(mercury) as mercury,\n            AVG(omega_3_ratio) as omega_3_ratio,\n            AVG(omega_3) as omega_3\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        GROUP BY fish_type.id;\n        "
   },
+  "60b525c178f2cad080563ea589e2c3ebf5f59be1ca8cafbc4dad7346124c92a4": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE users\n        SET password_hash = $1\n        WHERE id = $2\n        "
+  },
   "655e8067e5fdc9f9c9575c5e7c7b772e1e88cfb06491b784db3218af64425d88": {
     "describe": {
       "columns": [],
@@ -502,6 +515,26 @@
       }
     },
     "query": "\n        SELECT id, password_hash, is_admin\n        FROM users\n        WHERE email = $1\n        "
+  },
+  "a2c496be8c7b12ddd1e88d01d610dc9e7d4da538f9a5295e8ff195452b2289b7": {
+    "describe": {
+      "columns": [
+        {
+          "name": "email",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT email\n        FROM users\n        WHERE id = $1\n        "
   },
   "afc80adce5a5cefb781e130d0767f865c531d3aa50bf61c14fe2cb1d88fabe8a": {
     "describe": {

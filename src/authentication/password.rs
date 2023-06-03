@@ -4,6 +4,25 @@ use argon2::password_hash::SaltString;
 use argon2::{Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier, Version};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
+use std::ops::Deref;
+use uuid::Uuid;
+
+#[derive(Copy, Clone, Debug)]
+pub struct UserId(Uuid);
+
+impl std::fmt::Display for UserId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+impl Deref for UserId {
+    type Target = Uuid;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 #[derive(thiserror::Error, Debug)]
 pub enum AuthError {
@@ -98,6 +117,30 @@ fn verify_password_hash(
         )
         .context("Invalid password.")
         .map_err(AuthError::InvalidCredentials)
+}
+
+#[tracing::instrument(name = "Change password", skip(password, pool))]
+pub async fn change_password(
+    user_id: uuid::Uuid,
+    password: Secret<String>,
+    pool: &PgPool,
+) -> Result<(), anyhow::Error> {
+    let password_hash = spawn_blocking_with_tracing(move || compute_password_hash(password))
+        .await?
+        .context("Failed to hash password")?;
+    sqlx::query!(
+        r#"
+        UPDATE users
+        SET password_hash = $1
+        WHERE id = $2
+        "#,
+        password_hash.expose_secret(),
+        user_id
+    )
+    .execute(pool)
+    .await
+    .context("Failed to change user's password in the database.")?;
+    Ok(())
 }
 
 pub fn compute_password_hash(password: Secret<String>) -> Result<Secret<String>, anyhow::Error> {

@@ -41,6 +41,10 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .route("/user", web::post().to(routes::post_user))
                     .route("/user/image", web::post().to(routes::post_image))
                     .route("/user/delete/{uuid}", web::post().to(routes::delete_user))
+                    .route(
+                        "/user/change_password",
+                        web::post().to(routes::change_password),
+                    )
                     .service(
                         web::scope("/admin")
                             .wrap(from_fn(reject_non_admin_users))
