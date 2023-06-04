@@ -25,6 +25,8 @@ pub struct UserData {
     plan_to_get_pregnant: Option<bool>,
     portion_size: Option<i16>,
     image_url: Option<String>,
+    first_name: Option<String>,
+    last_name: Option<String>,
 }
 
 /// Checks that the provided credentials are correct.
@@ -82,7 +84,9 @@ async fn get_user_db(db_pool: &PgPool, user_id: Uuid) -> Result<UserData, sqlx::
             sex,
             plan_to_get_pregnant,
             portion_size,
-            image_url
+            image_url,
+            first_name,
+            last_name
         FROM users
         WHERE id=$1
         "#,

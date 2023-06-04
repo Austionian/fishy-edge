@@ -18,18 +18,18 @@ pub struct FormData {
         subscriber_name = %form.user_id
         )
     )]
-pub async fn post_image(
+pub async fn update_image(
     form: web::Form<FormData>,
     db_pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    match update_user_image(&db_pool, form).await {
+    match update_image_db(&db_pool, form).await {
         Ok(_) => Ok(HttpResponse::Ok().finish()),
         Err(e) => Err(e500(e)),
     }
 }
 
 #[tracing::instrument(name = "Saving user details to the db.", skip(db_pool, form))]
-async fn update_user_image(db_pool: &PgPool, form: web::Form<FormData>) -> Result<(), sqlx::Error> {
+async fn update_image_db(db_pool: &PgPool, form: web::Form<FormData>) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
         UPDATE users

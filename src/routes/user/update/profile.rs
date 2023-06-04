@@ -39,18 +39,18 @@ pub struct FormData {
         subscriber_name = %form.user_id
         )
     )]
-pub async fn post_user(
+pub async fn update_profile(
     form: web::Form<FormData>,
     db_pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    match update_user(&db_pool, form).await {
+    match update_profile_db(&db_pool, form).await {
         Ok(_) => Ok(HttpResponse::Ok().finish()),
         Err(e) => Err(e500(e)),
     }
 }
 
 #[tracing::instrument(name = "Saving user details to the db.", skip(db_pool, form))]
-async fn update_user(db_pool: &PgPool, form: web::Form<FormData>) -> Result<(), sqlx::Error> {
+async fn update_profile_db(db_pool: &PgPool, form: web::Form<FormData>) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
         UPDATE users
