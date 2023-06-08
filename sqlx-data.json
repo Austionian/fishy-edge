@@ -299,6 +299,21 @@
     },
     "query": "\n        DELETE FROM users\n        WHERE id=$1\n        "
   },
+  "28f9fc2f01f289779caeebb39780a75e2df7c34f5d764639d00bf14e19156d41": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "TextArray",
+          "TextArray",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE recipe\n        SET \n           name = $1,\n           ingredients = $2,\n           steps = $3\n        WHERE id = $4\n        "
+  },
   "349254e7e395a13052131c34fab61859a9dde0b55665a9820bf0845440145ac4": {
     "describe": {
       "columns": [
