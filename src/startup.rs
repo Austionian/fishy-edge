@@ -48,6 +48,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(
                         web::scope("/admin")
                             .wrap(from_fn(reject_non_admin_users))
+                            .service(routes::update_recipe)
                             .route("/", web::get().to(greet)),
                     ),
             )
