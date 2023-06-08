@@ -1,3 +1,5 @@
-mod post;
+mod new;
+mod update;
 
-pub use post::update_recipe;
+pub use new::new_recipe;
+pub use update::{update_recipe, RecipeData};

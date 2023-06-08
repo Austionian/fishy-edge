@@ -10,9 +10,9 @@ pub struct RecipeUuid {
 
 #[derive(serde::Deserialize)]
 pub struct RecipeData {
-    name: String,
-    ingredients: Vec<String>,
-    steps: Vec<String>,
+    pub(crate) name: String,
+    pub(crate) ingredients: Vec<String>,
+    pub(crate) steps: Vec<String>,
 }
 
 #[tracing::instrument(name = "Updating recipe data", skip(uuid, data, db_pool))]
@@ -23,9 +23,9 @@ pub async fn update_recipe(
     db_pool: web::Data<PgPool>,
 ) -> HttpResponse {
     match update_recipe_db(&db_pool, uuid.uuid, data).await {
-        Ok(data) => {
-            tracing::info!("Fish type data has been queried from the db.");
-            HttpResponse::Ok().json(data)
+        Ok(_) => {
+            tracing::info!("Recipe has been updated.");
+            HttpResponse::Ok().finish()
         }
         Err(e) => {
             tracing::error!("Failed to execute query: {:?}", e);

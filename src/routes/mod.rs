@@ -14,7 +14,7 @@ mod search;
 mod structs;
 mod user;
 
-pub use admin::update_recipe;
+pub use admin::{new_recipe, update_recipe};
 pub use everything::*;
 pub use fish::fish as fish_route;
 pub use fish_avg::fish_avg as fish_avg_route;

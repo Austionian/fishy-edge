@@ -350,6 +350,21 @@
     },
     "query": "\n        SELECT \n            id,\n            name,\n            ingredients,\n            steps\n        FROM recipe\n        "
   },
+  "3c59429f7ab50937ecc8dba8959e81c60a0839b29f77e246fc3f3d0ff3b4343d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "TextArray",
+          "TextArray"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO recipe (id, name, ingredients, steps)\n        VALUES ($1, $2, $3, $4)\n        "
+  },
   "402d4e640bf17b62b453ff76aa565d4edc1c05eb5a7d04881bfc95a5032734bf": {
     "describe": {
       "columns": [

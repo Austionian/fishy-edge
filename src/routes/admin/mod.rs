@@ -1,3 +1,3 @@
 mod recipe;
 
-pub use recipe::update_recipe;
+pub use recipe::{new_recipe, update_recipe};
