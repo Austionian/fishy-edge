@@ -34,6 +34,12 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(routes::min_and_max)
                     .service(routes::everything)
                     .service(routes::presign_s3)
+                    .service(
+                        web::scope("/favorite")
+                            // .service(routes::favorite_fish)
+                            .service(routes::favorite_recipe),
+                    )
+                    .service(web::scope("/unfavorite").service(routes::unfavorite_recipe))
                     .route("/search", web::get().to(routes::search))
                     .route("/register", web::post().to(routes::register))
                     .route("/login", web::post().to(routes::login))
@@ -48,9 +54,12 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(
                         web::scope("/admin")
                             .wrap(from_fn(reject_non_admin_users))
-                            .service(routes::new_recipe)
-                            .service(routes::update_recipe)
-                            .service(routes::delete_recipe)
+                            .service(
+                                web::scope("/recipe")
+                                    .service(routes::new_recipe)
+                                    .service(routes::update_recipe)
+                                    .service(routes::delete_recipe),
+                            )
                             .route("/", web::get().to(greet)),
                     ),
             )

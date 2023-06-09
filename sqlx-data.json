@@ -467,6 +467,33 @@
     },
     "query": "\n        SELECT\n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish_type.about,\n            AVG(pcb) as pcb,\n            AVG(protein) as protein,\n            AVG(mercury) as mercury,\n            AVG(omega_3_ratio) as omega_3_ratio,\n            AVG(omega_3) as omega_3\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        GROUP BY fish_type.id;\n        "
   },
+  "5a5b1514705bafda22f44884453e32ec1ad15757b691b12ec5a5d59fefea0ae5": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "recipe_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT *\n        FROM user_recipe\n        WHERE user_id = $1\n        AND recipe_id = $2; \n        "
+  },
   "60b525c178f2cad080563ea589e2c3ebf5f59be1ca8cafbc4dad7346124c92a4": {
     "describe": {
       "columns": [],
@@ -493,6 +520,19 @@
       }
     },
     "query": "\n        INSERT INTO users (id, email, password_hash, is_admin)\n        VALUES ($1, $2, $3, false)\n        "
+  },
+  "74fb5ebcb3bb6d6358d04368ad3b3a4d92a29335d626f84220391863b0aa729e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        DELETE FROM user_recipe \n        WHERE \n            user_id = $1\n        AND\n            recipe_id = $2;\n        "
   },
   "8c19df2099af738036da04e2333065d5f0ccff2d87ab96d24732a3a038867f4b": {
     "describe": {
@@ -768,6 +808,19 @@
       }
     },
     "query": "\n        SELECT \n            is_admin\n        FROM users\n        WHERE id = $1;\n        "
+  },
+  "cd75210e03cff27e9d2cfde9b6849ff880cfbc7ad2503ac276306af89477e56a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO user_recipe (user_id, recipe_id)\n        VALUES ($1, $2);\n        "
   },
   "cee5e740041096bf9377ae2447311df839c559a56959f3893a05e14015109295": {
     "describe": {

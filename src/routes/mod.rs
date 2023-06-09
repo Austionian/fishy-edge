@@ -1,5 +1,6 @@
 mod admin;
 mod everything;
+mod favorite;
 mod fish;
 mod fish_avg;
 mod fish_avgs;
@@ -12,10 +13,12 @@ mod recipe;
 mod recipes;
 mod search;
 mod structs;
+mod unfavorite;
 mod user;
 
 pub use admin::{delete_recipe, new_recipe, update_recipe};
 pub use everything::*;
+pub use favorite::favorite_recipe;
 pub use fish::fish as fish_route;
 pub use fish_avg::fish_avg as fish_avg_route;
 pub use fish_avgs::*;
@@ -28,4 +31,5 @@ pub use recipe::*;
 pub use recipes::*;
 pub use search::search;
 pub use structs::{Fish, Recipe};
+pub use unfavorite::unfavorite_recipe;
 pub use user::*;

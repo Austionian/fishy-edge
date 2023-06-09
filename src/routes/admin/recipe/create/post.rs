@@ -5,7 +5,7 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 #[tracing::instrument(name = "Saving new recipe data", skip(data, db_pool))]
-#[post("/recipe/")]
+#[post("/")]
 pub async fn new_recipe(data: web::Json<RecipeData>, db_pool: web::Data<PgPool>) -> HttpResponse {
     let recipe_id = Uuid::new_v4();
     match save_new_recipe(&db_pool, data, recipe_id).await {

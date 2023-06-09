@@ -1,5 +1,5 @@
-use crate::routes::Recipe;
-use actix_web::{get, web, HttpResponse};
+use crate::{routes::Recipe, utils::get_user_id};
+use actix_web::{get, web, HttpRequest, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -7,6 +7,12 @@ use uuid::Uuid;
 #[derive(serde::Deserialize)]
 pub struct RecipeUuid {
     uuid: Uuid,
+}
+
+#[derive(serde::Serialize)]
+pub struct RecipeResponse {
+    data: Recipe,
+    is_favorite: bool,
 }
 
 /// Retrives data for a recipe specified by its uuid. If an invalid uuid is given
@@ -33,21 +39,30 @@ pub struct RecipeUuid {
 ///
 #[tracing::instrument(name = "Retreving recipe data", skip(uuid, db_pool))]
 #[get("/recipe/{uuid}")]
-pub async fn recipe(uuid: web::Path<RecipeUuid>, db_pool: web::Data<PgPool>) -> HttpResponse {
-    match get_recipe_data(&db_pool, uuid.uuid).await {
+pub async fn recipe(
+    uuid: web::Path<RecipeUuid>,
+    db_pool: web::Data<PgPool>,
+    req: HttpRequest,
+) -> Result<HttpResponse, actix_web::Error> {
+    let user_id = get_user_id(req)?;
+    match get_recipe_data(&db_pool, uuid.uuid, user_id).await {
         Ok(data) => {
             tracing::info!("Recipe data has been queried from the db.");
-            HttpResponse::Ok().json(data)
+            Ok(HttpResponse::Ok().json(data))
         }
         Err(e) => {
             tracing::error!("Failed to execute query: {:?}", e);
-            HttpResponse::InternalServerError().finish()
+            Ok(HttpResponse::InternalServerError().finish())
         }
     }
 }
 
 #[tracing::instrument(name = "Querying the database for a recipe", skip(db_pool))]
-async fn get_recipe_data(db_pool: &PgPool, recipe_uuid: Uuid) -> Result<Recipe, sqlx::Error> {
+async fn get_recipe_data(
+    db_pool: &PgPool,
+    recipe_uuid: Uuid,
+    user_id: Uuid,
+) -> Result<RecipeResponse, sqlx::Error> {
     let data = sqlx::query_as!(
         Recipe,
         r#"
@@ -68,5 +83,19 @@ async fn get_recipe_data(db_pool: &PgPool, recipe_uuid: Uuid) -> Result<Recipe, 
         e
     })?;
 
-    Ok(data)
+    let is_favorite = sqlx::query!(
+        r#"
+        SELECT *
+        FROM user_recipe
+        WHERE user_id = $1
+        AND recipe_id = $2; 
+        "#,
+        user_id,
+        data.id
+    )
+    .fetch_optional(db_pool)
+    .await?
+    .is_some();
+
+    Ok(RecipeResponse { data, is_favorite })
 }

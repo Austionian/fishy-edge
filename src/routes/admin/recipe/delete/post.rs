@@ -9,7 +9,7 @@ pub struct RecipeUuid {
 }
 
 #[tracing::instrument(name = "Deleting recipe data", skip(uuid, db_pool))]
-#[post("/recipe/delete/{uuid}")]
+#[post("/delete/{uuid}")]
 pub async fn delete_recipe(
     uuid: web::Path<RecipeUuid>,
     db_pool: web::Data<PgPool>,

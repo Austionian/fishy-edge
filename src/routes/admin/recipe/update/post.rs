@@ -16,7 +16,7 @@ pub struct RecipeData {
 }
 
 #[tracing::instrument(name = "Updating recipe data", skip(uuid, data, db_pool))]
-#[post("/recipe/{uuid}")]
+#[post("/{uuid}")]
 pub async fn update_recipe(
     uuid: web::Path<RecipeUuid>,
     data: web::Json<RecipeData>,
