@@ -1,5 +1,17 @@
 {
   "db": "PostgreSQL",
+  "0357b796e720fbf79ef413e136329adae7b34993c8eac47b2a52635707a7eeab": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        DELETE FROM fishtype_recipe\n        WHERE recipe_id = $1;\n        "
+  },
   "0515a96aac1d4dbf311b7543f93195e4b10c25a6ab6a842b3131588eef4063b1": {
     "describe": {
       "columns": [
@@ -533,6 +545,18 @@
       }
     },
     "query": "\n        SELECT email\n        FROM users\n        WHERE id = $1\n        "
+  },
+  "a3c9cbedc6c79f6c92b74d3d9445f925a7aecc395850b7605ff460734872b3a7": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        DELETE FROM recipe\n        WHERE id = $1;\n        "
   },
   "afc80adce5a5cefb781e130d0767f865c531d3aa50bf61c14fe2cb1d88fabe8a": {
     "describe": {
