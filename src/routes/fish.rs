@@ -1,5 +1,8 @@
-use crate::routes::{Fish, Recipe};
-use actix_web::{get, web, HttpResponse};
+use crate::{
+    routes::{Fish, Recipe},
+    utils::get_user_id,
+};
+use actix_web::{get, web, HttpRequest, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -13,6 +16,7 @@ pub struct FishUuid {
 pub struct FishData {
     fish_data: Fish,
     recipe_data: Vec<Recipe>,
+    is_favorite: bool,
 }
 
 /// Retrives data for a fish specified by its uuid. If an invalid uuid is given
@@ -51,33 +55,44 @@ pub struct FishData {
 ///           ]
 ///         ],
 ///         ...
-///       }
-///
+///       },
+///       is_favorite: bool
 /// }
 ///```
 ///
 #[tracing::instrument(name = "Retreving fish data", skip(uuid, db_pool))]
 #[get("/fish/{uuid}")]
-pub async fn fish(uuid: web::Path<FishUuid>, db_pool: web::Data<PgPool>) -> HttpResponse {
-    match get_all_fish_data(&db_pool, uuid.uuid).await {
+pub async fn fish(
+    uuid: web::Path<FishUuid>,
+    db_pool: web::Data<PgPool>,
+    req: HttpRequest,
+) -> Result<HttpResponse, actix_web::Error> {
+    let user_id = get_user_id(req)?;
+    match get_all_fish_data(&db_pool, uuid.uuid, user_id).await {
         Ok(data) => {
             tracing::info!("Fish type data has been queried from the db.");
-            HttpResponse::Ok().json(data)
+            Ok(HttpResponse::Ok().json(data))
         }
         Err(e) => {
             tracing::error!("Failed to execute query: {:?}", e);
-            HttpResponse::InternalServerError().finish()
+            Ok(HttpResponse::InternalServerError().finish())
         }
     }
 }
 
-async fn get_all_fish_data(db_pool: &PgPool, fish_uuid: Uuid) -> Result<FishData, sqlx::Error> {
+async fn get_all_fish_data(
+    db_pool: &PgPool,
+    fish_uuid: Uuid,
+    user_id: Uuid,
+) -> Result<FishData, sqlx::Error> {
     let fish_data = get_fish_data(db_pool, fish_uuid).await?;
     let recipe_data = get_recipe_data(db_pool, fish_data.fish_type_id).await?;
+    let is_favorite = get_is_favorite(db_pool, fish_data.fish_type_id, user_id).await?;
 
     Ok(FishData {
         fish_data,
         recipe_data,
+        is_favorite,
     })
 }
 
@@ -151,4 +166,33 @@ async fn get_recipe_data(db_pool: &PgPool, fish_type_id: Uuid) -> Result<Vec<Rec
     })?;
 
     Ok(data)
+}
+
+/// Finds whether the selected fish has been favorited by the user.
+#[tracing::instrument(
+    name = "Querying for is favorited fish",
+    skip(fish_type_id, user_id, db_pool)
+)]
+pub async fn get_is_favorite(
+    db_pool: &PgPool,
+    fish_type_id: Uuid,
+    user_id: Uuid,
+) -> Result<bool, sqlx::Error> {
+    let is_favorite = sqlx::query!(
+        r#"
+        SELECT *
+        FROM user_fishtype
+        WHERE
+            user_id = $1
+        AND
+            fishtype_id = $2;
+        "#,
+        user_id,
+        fish_type_id
+    )
+    .fetch_optional(db_pool)
+    .await?
+    .is_some();
+
+    Ok(is_favorite)
 }

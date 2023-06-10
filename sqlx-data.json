@@ -521,6 +521,33 @@
     },
     "query": "\n        INSERT INTO users (id, email, password_hash, is_admin)\n        VALUES ($1, $2, $3, false)\n        "
   },
+  "7088dc1934911f9f468950d61d3e7d2ee93640f96b53c196eaff57b9acf2a66a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "fishtype_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT *\n        FROM user_fishtype\n        WHERE\n            user_id = $1\n        AND\n            fishtype_id = $2;\n        "
+  },
   "74fb5ebcb3bb6d6358d04368ad3b3a4d92a29335d626f84220391863b0aa729e": {
     "describe": {
       "columns": [],
@@ -808,6 +835,32 @@
       }
     },
     "query": "\n        SELECT \n            is_admin\n        FROM users\n        WHERE id = $1;\n        "
+  },
+  "c9d7c5ac4ee4fad4d5e6c8ef1a98289315ed462085299f29456585c8e21544d2": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        DELETE FROM user_fishtype \n        WHERE \n            user_id = $1\n        AND\n            fishtype_id = $2;\n        "
+  },
+  "ca252f32fc1980a1727982355ab62654c5b62c946805ceb9c44eb1cd5806e3bc": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO user_fishtype (user_id, fishtype_id)\n        VALUES ($1, $2);\n        "
   },
   "cd75210e03cff27e9d2cfde9b6849ff880cfbc7ad2503ac276306af89477e56a": {
     "describe": {

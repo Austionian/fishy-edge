@@ -36,10 +36,14 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(routes::presign_s3)
                     .service(
                         web::scope("/favorite")
-                            // .service(routes::favorite_fish)
+                            .service(routes::favorite_fish)
                             .service(routes::favorite_recipe),
                     )
-                    .service(web::scope("/unfavorite").service(routes::unfavorite_recipe))
+                    .service(
+                        web::scope("/unfavorite")
+                            .service(routes::unfavorite_fish)
+                            .service(routes::unfavorite_recipe),
+                    )
                     .route("/search", web::get().to(routes::search))
                     .route("/register", web::post().to(routes::register))
                     .route("/login", web::post().to(routes::login))

@@ -18,8 +18,8 @@ mod user;
 
 pub use admin::{delete_recipe, new_recipe, update_recipe};
 pub use everything::*;
-pub use favorite::favorite_recipe;
-pub use fish::fish as fish_route;
+pub use favorite::{favorite_fish, favorite_recipe};
+pub use fish::{fish as fish_route, get_is_favorite};
 pub use fish_avg::fish_avg as fish_avg_route;
 pub use fish_avgs::*;
 pub use fishs::fishs as fishs_route;
@@ -31,5 +31,5 @@ pub use recipe::*;
 pub use recipes::*;
 pub use search::search;
 pub use structs::{Fish, Recipe};
-pub use unfavorite::unfavorite_recipe;
+pub use unfavorite::{unfavorite_fish, unfavorite_recipe};
 pub use user::*;

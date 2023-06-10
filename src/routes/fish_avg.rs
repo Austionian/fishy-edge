@@ -1,5 +1,8 @@
-use crate::routes::structs::Recipe;
-use actix_web::{get, web, HttpResponse};
+use crate::{
+    routes::{get_is_favorite, structs::Recipe},
+    utils::get_user_id,
+};
+use actix_web::{get, web, HttpRequest, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -24,6 +27,7 @@ struct Fish {
 pub struct FishData {
     fish_data: Fish,
     recipe_data: Vec<Recipe>,
+    is_favorite: bool,
 }
 
 #[derive(serde::Deserialize)]
@@ -72,26 +76,37 @@ pub struct FishQuery {
 ///```
 #[tracing::instrument(name = "Retreving all fish data", skip(query, db_pool))]
 #[get("/fish_avg")]
-pub async fn fish_avg(query: web::Query<FishQuery>, db_pool: web::Data<PgPool>) -> HttpResponse {
-    match get_all_fish_data(query.fishtype_id, &db_pool).await {
+pub async fn fish_avg(
+    query: web::Query<FishQuery>,
+    db_pool: web::Data<PgPool>,
+    req: HttpRequest,
+) -> Result<HttpResponse, actix_web::Error> {
+    let user_id = get_user_id(req)?;
+    match get_all_fish_data(query.fishtype_id, user_id, &db_pool).await {
         Ok(data) => {
             tracing::info!("All fish type data has been queried from the db.");
-            HttpResponse::Ok().json(data)
+            Ok(HttpResponse::Ok().json(data))
         }
         Err(e) => {
             tracing::error!("Failed to execute query: {:?}", e);
-            HttpResponse::InternalServerError().finish()
+            Ok(HttpResponse::InternalServerError().finish())
         }
     }
 }
 
-async fn get_all_fish_data(fish_uuid: Uuid, db_pool: &PgPool) -> Result<FishData, sqlx::Error> {
+async fn get_all_fish_data(
+    fish_uuid: Uuid,
+    user_id: Uuid,
+    db_pool: &PgPool,
+) -> Result<FishData, sqlx::Error> {
     let fish_data = get_fish_data(fish_uuid, db_pool).await?;
     let recipe_data = get_recipe_data(fish_uuid, db_pool).await?;
+    let is_favorite = get_is_favorite(db_pool, fish_uuid, user_id).await?;
 
     Ok(FishData {
         fish_data,
         recipe_data,
+        is_favorite,
     })
 }
 
