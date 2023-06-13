@@ -47,14 +47,14 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .route("/search", web::get().to(routes::search))
                     .route("/register", web::post().to(routes::register))
                     .route("/login", web::post().to(routes::login))
-                    .route("/user/profile", web::post().to(routes::update_profile))
-                    .route("/user/image", web::post().to(routes::update_image))
-                    .route(
-                        "/user/change_password",
-                        web::post().to(routes::change_password),
+                    .service(
+                        web::scope("/user")
+                            .route("/profile", web::post().to(routes::update_profile))
+                            .route("/account", web::post().to(routes::update_account))
+                            .route("/image", web::post().to(routes::update_image))
+                            .route("/change_password", web::post().to(routes::change_password))
+                            .route("/delete/{uuid}", web::post().to(routes::delete_user)),
                     )
-                    .route("/user/account", web::post().to(routes::update_account))
-                    .route("/user/delete/{uuid}", web::post().to(routes::delete_user))
                     .service(
                         web::scope("/admin")
                             .wrap(from_fn(reject_non_admin_users))
@@ -63,6 +63,16 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                                     .service(routes::new_recipe)
                                     .service(routes::update_recipe)
                                     .service(routes::delete_recipe),
+                            )
+                            .service(
+                                web::scope("/fish")
+                                    // .service(routes::new_fish)
+                                    .service(routes::update_fish)
+                                    .service(routes::delete_fish),
+                            )
+                            .service(
+                                web::scope("/fish_type"), // .service(routes::new_fish_type)
+                                                          // .service(routes::update_fish_type)
                             )
                             .route("/", web::get().to(greet)),
                     ),

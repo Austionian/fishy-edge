@@ -16,7 +16,7 @@ mod structs;
 mod unfavorite;
 mod user;
 
-pub use admin::{delete_recipe, new_recipe, update_recipe};
+pub use admin::{delete_fish, delete_recipe, new_fish, new_recipe, update_fish, update_recipe};
 pub use everything::*;
 pub use favorite::{favorite_fish, favorite_recipe};
 pub use fish::{fish as fish_route, get_is_favorite};
