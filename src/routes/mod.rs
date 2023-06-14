@@ -19,7 +19,7 @@ mod user;
 
 pub use admin::{delete_fish, delete_recipe, new_fish, new_recipe, update_fish, update_recipe};
 pub use everything::*;
-pub use favorite::{favorite_fish, favorite_recipe};
+pub use favorite::{favorite_fish, favorite_recipe, favorites};
 pub use fish::{fish as fish_route, get_is_favorite};
 pub use fish_avg::fish_avg as fish_avg_route;
 pub use fish_avgs::*;

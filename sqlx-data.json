@@ -536,6 +536,32 @@
     },
     "query": "\n        UPDATE users\n        SET password_hash = $1\n        WHERE id = $2\n        "
   },
+  "648b75527d7e5143ce391832a4320557801b0ed9afdd600d010027f563ec999e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            id,\n            name\n        FROM recipe\n        JOIN user_recipe ON recipe.id = user_recipe.recipe_id\n        WHERE user_recipe.user_id = $1;\n        "
+  },
   "655e8067e5fdc9f9c9575c5e7c7b772e1e88cfb06491b784db3218af64425d88": {
     "describe": {
       "columns": [],
@@ -549,6 +575,38 @@
       }
     },
     "query": "\n        INSERT INTO users (id, email, password_hash, is_admin)\n        VALUES ($1, $2, $3, false)\n        "
+  },
+  "66a6d20211928b52dc371e12e05d351633fa1f72c652c4b9db649725d8140b78": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            id,\n            name,\n            anishinaabe_name\n        FROM fish_type\n        JOIN user_fishtype ON fish_type.id = user_fishtype.fishtype_id\n        WHERE user_fishtype.user_id = $1;\n        "
   },
   "7088dc1934911f9f468950d61d3e7d2ee93640f96b53c196eaff57b9acf2a66a": {
     "describe": {

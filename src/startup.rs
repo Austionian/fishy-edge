@@ -1,17 +1,12 @@
 use crate::middleware::{api_auth, reject_non_admin_users};
 use crate::routes;
 use actix_web::dev::Server;
-use actix_web::{middleware, web, App, HttpRequest, HttpServer, Responder};
+use actix_web::{middleware, web, App, HttpServer};
 use actix_web_httpauth::middleware::HttpAuthentication;
 use actix_web_lab::middleware::from_fn;
 use sqlx::PgPool;
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
-
-async fn greet(req: HttpRequest) -> impl Responder {
-    let name = req.match_info().get("name").unwrap_or("world");
-    format!("Hello {}!", &name)
-}
 
 pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Error> {
     let db_pool = web::Data::new(db_pool);
@@ -37,6 +32,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(routes::presign_s3)
                     .service(
                         web::scope("/favorite")
+                            .service(routes::favorites)
                             .service(routes::favorite_fish)
                             .service(routes::favorite_recipe),
                     )
@@ -73,9 +69,8 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                             )
                             .service(
                                 web::scope("/fish_type"), // .service(routes::new_fish_type)
-                                                          // .service(routes::update_fish_type)
-                            )
-                            .route("/", web::get().to(greet)),
+                                                          // .service(routes::update_fish_type),
+                            ),
                     ),
             )
             .app_data(db_pool.clone())
