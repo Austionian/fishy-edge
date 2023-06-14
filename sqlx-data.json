@@ -917,6 +917,61 @@
     },
     "query": "\n        UPDATE users\n        SET image_url=$1 \n        WHERE users.id=$2\n        "
   },
+  "d1bbe74dbcf38a36e973e34f50bc716973788de1bfe94c4783acd95ec6998a01": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid",
+          "Text",
+          "Float4",
+          "Float4",
+          "Float4",
+          "Float4",
+          "Float4"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO fish (\n            id,\n            fish_type_id,\n            lake,\n            mercury,\n            omega_3,\n            omega_3_ratio,\n            pcb,\n            protein\n        )\n        VALUES (\n            $1, $2, $3, $4, $5, $6, $7, $8\n        );\n        "
+  },
+  "e315b654c27005c50b77a5b54ece9d8c744e3c3e0e6832a42a48595461d2ba58": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "about",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT\n            id,\n            name,\n            anishinaabe_name,\n            about\n        FROM fish_type;\n        "
+  },
   "e39393c916b96946227a147a6327414d3ab686743bbeba16bbbeeb4921756e4b": {
     "describe": {
       "columns": [
