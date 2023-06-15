@@ -68,8 +68,8 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                                     .service(routes::delete_fish),
                             )
                             .service(
-                                web::scope("/fish_type"), // .service(routes::new_fish_type)
-                                                          // .service(routes::update_fish_type),
+                                web::scope("/fish_type").service(routes::new_fish_type),
+                                // .service(routes::update_fish_type),
                             ),
                     ),
             )

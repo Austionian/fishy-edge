@@ -994,6 +994,25 @@
     },
     "query": "\n        INSERT INTO fish (\n            id,\n            fish_type_id,\n            lake,\n            mercury,\n            omega_3,\n            omega_3_ratio,\n            pcb,\n            protein\n        )\n        VALUES (\n            $1, $2, $3, $4, $5, $6, $7, $8\n        );\n        "
   },
+  "db45d97971903ee5221c9077340c1c4b53918760d80554e8e4adcb6297539650": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Text",
+          "Text",
+          "Text",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO fish_type (\n            id,\n            name,\n            anishinaabe_name,\n            fish_image,\n            s3_fish_image,\n            s3_woodland_image,\n            woodland_fish_image,\n            about\n        )\n        VALUES (\n            $1, $2, $3, $4, $5, $6, $7, $8\n        );\n        "
+  },
   "e315b654c27005c50b77a5b54ece9d8c744e3c3e0e6832a42a48595461d2ba58": {
     "describe": {
       "columns": [
