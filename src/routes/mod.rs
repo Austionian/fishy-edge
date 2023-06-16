@@ -18,7 +18,7 @@ mod unfavorite;
 mod user;
 
 pub use admin::{
-    delete_fish, delete_recipe, new_fish, new_fish_type, new_recipe, update_fish,
+    delete_fish, delete_recipe, new_fish, new_fish_type, new_recipe, update_fish, update_fish_type,
     update_fish_type_image, update_recipe,
 };
 pub use everything::*;

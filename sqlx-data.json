@@ -497,6 +497,21 @@
     },
     "query": "\n        UPDATE fish\n        SET \n            mercury = $1,\n            omega_3 = $2,\n            omega_3_ratio = $3,\n            pcb = $4,\n            protein = $5\n        WHERE id = $6\n        "
   },
+  "4aa3c97ec41078895a18a3b085d633647cbcf862d4940e44d2ef575c9f81c440": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE fish_type\n        SET \n            name = $1,\n            anishinaabe_name = $2,\n            about = $3\n        WHERE id = $4;\n        "
+  },
   "4f8469cea3aca16be73e3c40a58768106a62e5aae8ffe853b7b6b12cc4c4ab60": {
     "describe": {
       "columns": [],

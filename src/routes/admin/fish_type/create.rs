@@ -1,12 +1,23 @@
-use crate::routes::structs::FishType;
 use actix_web::{post, web, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
 use uuid::Uuid;
 
+#[derive(serde::Deserialize)]
+pub struct NewFishType {
+    name: String,
+    anishinaabe_name: String,
+    fish_image: String,
+    woodland_fish_image: Option<String>,
+    about: String,
+}
+
 #[tracing::instrument(name = "Creating a new fish type.", skip(data, db_pool))]
 #[post("/")]
-pub async fn new_fish_type(data: web::Json<FishType>, db_pool: web::Data<PgPool>) -> HttpResponse {
+pub async fn new_fish_type(
+    data: web::Json<NewFishType>,
+    db_pool: web::Data<PgPool>,
+) -> HttpResponse {
     let fish_id = Uuid::new_v4();
     match new_fish_type_db(&db_pool, fish_id, data).await {
         Ok(_) => {
@@ -27,7 +38,7 @@ pub async fn new_fish_type(data: web::Json<FishType>, db_pool: web::Data<PgPool>
 async fn new_fish_type_db(
     db_pool: &PgPool,
     fish_id: Uuid,
-    data: web::Json<FishType>,
+    data: web::Json<NewFishType>,
 ) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
@@ -46,8 +57,8 @@ async fn new_fish_type_db(
         fish_id,
         data.name,
         data.anishinaabe_name,
-        data.s3_fish_image,
-        data.s3_woodland_image,
+        data.fish_image,
+        data.woodland_fish_image,
         data.about
     )
     .execute(db_pool)
