@@ -1,3 +1,4 @@
+use crate::routes::admin::fish_type::insert_recipes_fish_type;
 use actix_web::{post, web, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
@@ -7,6 +8,7 @@ use uuid::Uuid;
 pub struct NewFishType {
     name: String,
     anishinaabe_name: String,
+    recipe: Option<Vec<Uuid>>,
     fish_image: String,
     woodland_fish_image: Option<String>,
     about: String,
@@ -17,16 +19,16 @@ pub struct NewFishType {
 pub async fn new_fish_type(
     data: web::Json<NewFishType>,
     db_pool: web::Data<PgPool>,
-) -> HttpResponse {
-    let fish_id = Uuid::new_v4();
-    match new_fish_type_db(&db_pool, fish_id, data).await {
+) -> Result<HttpResponse, actix_web::Error> {
+    let fish_type_id = Uuid::new_v4();
+    match new_fish_type_db(&db_pool, fish_type_id, data).await {
         Ok(_) => {
             tracing::info!("New fish has been added.");
-            HttpResponse::Ok().finish()
+            Ok(HttpResponse::Ok().finish())
         }
         Err(e) => {
             tracing::error!("Failed to execute query: {:?}", e);
-            HttpResponse::InternalServerError().finish()
+            Ok(HttpResponse::InternalServerError().finish())
         }
     }
 }
@@ -37,7 +39,7 @@ pub async fn new_fish_type(
 )]
 async fn new_fish_type_db(
     db_pool: &PgPool,
-    fish_id: Uuid,
+    fish_type_id: Uuid,
     data: web::Json<NewFishType>,
 ) -> Result<(), sqlx::Error> {
     sqlx::query!(
@@ -54,7 +56,7 @@ async fn new_fish_type_db(
             $1, $2, $3, $4, $5, $6
         );
         "#,
-        fish_id,
+        fish_type_id,
         data.name,
         data.anishinaabe_name,
         data.fish_image,
@@ -67,6 +69,13 @@ async fn new_fish_type_db(
         tracing::error!("Failed to execute the query: {:?}", e);
         e
     })?;
+
+    if let Some(recipes) = &data.recipe {
+        tracing::info!("Inserting recipes into user_recipe join table.");
+        for recipe_id in recipes {
+            insert_recipes_fish_type(db_pool, fish_type_id, *recipe_id).await?;
+        }
+    };
 
     Ok(())
 }

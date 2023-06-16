@@ -390,6 +390,19 @@
     },
     "query": "\n        INSERT INTO recipe (id, name, ingredients, steps)\n        VALUES ($1, $2, $3, $4)\n        "
   },
+  "3ca77be1104ca7655c5ccc158762d8aaf86d98b7a2bb1c040f6216122b52b084": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO fishtype_recipe (\n           fishtype_id, recipe_id \n        )\n        VALUES (\n            $1, $2\n        );\n        "
+  },
   "402d4e640bf17b62b453ff76aa565d4edc1c05eb5a7d04881bfc95a5032734bf": {
     "describe": {
       "columns": [
@@ -692,6 +705,18 @@
       }
     },
     "query": "\n        DELETE FROM user_recipe \n        WHERE \n            user_id = $1\n        AND\n            recipe_id = $2;\n        "
+  },
+  "844691a98e288699c77064d9e4afd9807be4f6f0491c7a2b3629e03594388be2": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        DELETE FROM fishtype_recipe\n        WHERE fishtype_id = $1;\n        "
   },
   "8c19df2099af738036da04e2333065d5f0ccff2d87ab96d24732a3a038867f4b": {
     "describe": {
