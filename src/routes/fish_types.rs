@@ -1,14 +1,6 @@
+use crate::routes::structs::FishType;
 use actix_web::{get, web, HttpResponse};
 use sqlx::PgPool;
-use uuid::Uuid;
-
-#[derive(serde::Serialize)]
-pub struct FishType {
-    id: Uuid,
-    name: String,
-    anishinaabe_name: Option<String>,
-    about: String,
-}
 
 #[tracing::instrument(name = "Retreving all fish types.", skip(db_pool))]
 #[get("/fish_types")]
@@ -34,6 +26,10 @@ async fn get_fish_type_data(db_pool: &PgPool) -> Result<Vec<FishType>, sqlx::Err
             id,
             name,
             anishinaabe_name,
+            fish_image,
+            s3_fish_image,
+            s3_woodland_image,
+            woodland_fish_image,
             about
         FROM fish_type;
         "#
