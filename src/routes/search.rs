@@ -9,6 +9,8 @@ pub struct FishData {
     anishinaabe_name: Option<String>,
     fish_image: Option<String>,
     woodland_fish_image: Option<String>,
+    s3_fish_image: Option<String>,
+    s3_woodland_image: Option<String>,
 }
 
 #[derive(serde::Serialize)]
@@ -83,7 +85,9 @@ async fn get_fish_data(db_pool: &PgPool) -> Result<Vec<FishData>, sqlx::Error> {
             fish_type.name,
             fish_type.anishinaabe_name,
             fish_type.fish_image,
-            fish_type.woodland_fish_image
+            fish_type.woodland_fish_image,
+            fish_type.s3_fish_image,
+            fish_type.s3_woodland_image
         FROM fish_type;
         "#,
     )

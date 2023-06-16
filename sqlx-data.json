@@ -757,48 +757,6 @@
     },
     "query": "\n        DELETE FROM recipe\n        WHERE id = $1;\n        "
   },
-  "afc80adce5a5cefb781e130d0767f865c531d3aa50bf61c14fe2cb1d88fabe8a": {
-    "describe": {
-      "columns": [
-        {
-          "name": "fish_id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "anishinaabe_name",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "fish_image",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "woodland_fish_image",
-          "ordinal": 4,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\n        SELECT \n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image\n        FROM fish_type;\n        "
-  },
   "b0bed5e03cf5fe7ab59fecc8582fbe8a8201928d4b35bd09a21697586ce883c8": {
     "describe": {
       "columns": [],
@@ -1203,6 +1161,60 @@
       }
     },
     "query": "\n        SELECT\n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish_type.about,\n            AVG(pcb) as pcb,\n            AVG(protein) as protein,\n            AVG(mercury) as mercury,\n            AVG(omega_3_ratio) as omega_3_ratio,\n            AVG(omega_3) as omega_3\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        WHERE fish_type.id=$1\n        GROUP BY fish_type.id;\n        "
+  },
+  "e5329b70bf7ce470777b516753eea18daa3b7f4c2da1e983b8e84c5e02e22ee8": {
+    "describe": {
+      "columns": [
+        {
+          "name": "fish_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 6,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT \n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image\n        FROM fish_type;\n        "
   },
   "f0eb4c1f5d5e923a2776cf842e4059459f6dd0bbd507d3cc2a70e41356cacf57": {
     "describe": {
