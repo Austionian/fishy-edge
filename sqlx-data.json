@@ -326,6 +326,19 @@
     },
     "query": "\n        UPDATE recipe\n        SET \n           name = $1,\n           ingredients = $2,\n           steps = $3\n        WHERE id = $4\n        "
   },
+  "2bdf58576e0781cc279f0cab96822644e5bc11b651af349b86a12177224b36ff": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE fish_type\n        SET s3_fish_image = $1\n        WHERE id = $2;\n        "
+  },
   "349254e7e395a13052131c34fab61859a9dde0b55665a9820bf0845440145ac4": {
     "describe": {
       "columns": [
@@ -483,6 +496,23 @@
       }
     },
     "query": "\n        UPDATE fish\n        SET \n            mercury = $1,\n            omega_3 = $2,\n            omega_3_ratio = $3,\n            pcb = $4,\n            protein = $5\n        WHERE id = $6\n        "
+  },
+  "4f8469cea3aca16be73e3c40a58768106a62e5aae8ffe853b7b6b12cc4c4ab60": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Text",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO fish_type (\n            id,\n            name,\n            anishinaabe_name,\n            s3_fish_image,\n            s3_woodland_image,\n            about\n        )\n        VALUES (\n            $1, $2, $3, $4, $5, $6\n        );\n        "
   },
   "5581d02e9774b63001133dfda06edb6617193ca96c91e133c3c8f32c11441276": {
     "describe": {
@@ -903,6 +933,79 @@
     },
     "query": "\n        SELECT\n            fish.id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish.lake,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.mercury,\n            fish.omega_3_ratio,\n            fish.omega_3,\n            array(\n                SELECT recipe_id\n                FROM fishtype_recipe\n                WHERE fishtype_recipe.fishtype_id=fish_type.id\n                ) as recipes\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        "
   },
+  "c5503e36f6c88937f352ffd6ade7e7b9913f69576279506e5721378a822e7fd3": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "about",
+          "ordinal": 7,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT\n            id,\n            name,\n            anishinaabe_name,\n            fish_image,\n            s3_fish_image,\n            s3_woodland_image,\n            woodland_fish_image,\n            about\n        FROM fish_type;\n        "
+  },
+  "c7983383193f150e91efdafcf90adb9fd15a671684f5b04fdcbd010837935b1b": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE fish_type\n        SET s3_woodland_image = $1\n        WHERE id = $2;\n        "
+  },
   "c7b13738a6ffb07e7bb9af99fbe370b1145057276c7faa4f69d2f60b939a694f": {
     "describe": {
       "columns": [
@@ -993,61 +1096,6 @@
       }
     },
     "query": "\n        INSERT INTO fish (\n            id,\n            fish_type_id,\n            lake,\n            mercury,\n            omega_3,\n            omega_3_ratio,\n            pcb,\n            protein\n        )\n        VALUES (\n            $1, $2, $3, $4, $5, $6, $7, $8\n        );\n        "
-  },
-  "db45d97971903ee5221c9077340c1c4b53918760d80554e8e4adcb6297539650": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text",
-          "Text",
-          "Text",
-          "Text",
-          "Text",
-          "Text",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        INSERT INTO fish_type (\n            id,\n            name,\n            anishinaabe_name,\n            fish_image,\n            s3_fish_image,\n            s3_woodland_image,\n            woodland_fish_image,\n            about\n        )\n        VALUES (\n            $1, $2, $3, $4, $5, $6, $7, $8\n        );\n        "
-  },
-  "e315b654c27005c50b77a5b54ece9d8c744e3c3e0e6832a42a48595461d2ba58": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "anishinaabe_name",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "about",
-          "ordinal": 3,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true,
-        false
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\n        SELECT\n            id,\n            name,\n            anishinaabe_name,\n            about\n        FROM fish_type;\n        "
   },
   "e39393c916b96946227a147a6327414d3ab686743bbeba16bbbeeb4921756e4b": {
     "describe": {
