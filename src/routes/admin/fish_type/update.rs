@@ -66,7 +66,6 @@ async fn update_fish_type_db(
     })?;
 
     if let Some(recipes) = &data.recipe {
-        tracing::info!("Clearing saved recipes.");
         delete_recipes_fish_type(db_pool, fish_type_id).await?;
 
         tracing::info!("Inserting recipes into user_recipe join table.");
@@ -78,6 +77,10 @@ async fn update_fish_type_db(
     Ok(())
 }
 
+#[tracing::instrument(
+    name = "Clearing fish type data in the fishtype_recipe table.",
+    skip(db_pool, fish_type_id)
+)]
 async fn delete_recipes_fish_type(db_pool: &PgPool, fish_type_id: Uuid) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"

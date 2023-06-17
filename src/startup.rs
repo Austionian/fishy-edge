@@ -24,6 +24,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(routes::fishs_route)
                     .service(routes::fish_avg_route)
                     .service(routes::fish_avgs)
+                    .service(routes::fish_type_route)
                     .service(routes::fish_types_route)
                     .service(routes::recipe)
                     .service(routes::recipes)
