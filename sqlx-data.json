@@ -299,6 +299,26 @@
     },
     "query": "\n        UPDATE users\n        SET (weight, age, sex, plan_to_get_pregnant, portion_size) = ($1, $2, $3, $4, $5)\n        WHERE users.id = $6\n        "
   },
+  "20fcba0cd35f00b45b2deab9251a49480fc90272d6675030bb7433b530196f52": {
+    "describe": {
+      "columns": [
+        {
+          "name": "recipe_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            recipe_id\n        FROM fishtype_recipe\n        WHERE fishtype_id = $1;\n        "
+  },
   "2493822cfaac5f75d4d5d7c2f7fd6751fd31c2e74dfe728b1709d783a9fc65ba": {
     "describe": {
       "columns": [],
@@ -781,6 +801,68 @@
       }
     },
     "query": "\n        DELETE FROM recipe\n        WHERE id = $1;\n        "
+  },
+  "a71aac8ea6b38ed60a7f4ed1145ed158ff712904fd6bcb45fbbadcbc94c07983": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "about",
+          "ordinal": 7,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            id,\n            name,\n            anishinaabe_name,\n            fish_image,\n            s3_fish_image,\n            s3_woodland_image,\n            woodland_fish_image,\n            about\n        FROM fish_type\n        WHERE id = $1;\n        "
   },
   "b0bed5e03cf5fe7ab59fecc8582fbe8a8201928d4b35bd09a21697586ce883c8": {
     "describe": {
