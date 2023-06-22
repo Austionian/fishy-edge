@@ -4,14 +4,13 @@ use sqlx::PgPool;
 
 #[derive(serde::Deserialize)]
 pub struct FishQuery {
-    lake: String,
+    lake: Option<String>,
 }
 
 const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 
-/// Returns a JSON of all fish for a given lake. If no lake is supplied,
-/// a 400 Bad Request will be returned. If an invalid lake is supplied,
-/// the 'store' fish will be returned.
+/// Returns a JSON of all fish for a given lake. If no lake is supplied
+/// or an invalid lake is supplied the 'store' fish will be returned.
 ///
 /// # Example
 ///
@@ -32,12 +31,13 @@ const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 #[tracing::instrument(name = "Retreving all fish data", skip(lake, db_pool))]
 #[get("/fishs")]
 pub async fn fishs(lake: web::Query<FishQuery>, db_pool: web::Data<PgPool>) -> HttpResponse {
-    let mut lake = lake.lake.as_str();
-    if !VALID_LAKES.contains(&lake) {
+    let lake = lake.lake.clone();
+    let mut lake = lake.unwrap_or("Store".to_string());
+    if !VALID_LAKES.iter().any(|e| e == &lake) {
         tracing::warn!("Invalid lake supplied. Falling back to Store.");
-        lake = "Store";
+        lake = "Store".to_string();
     }
-    match get_fish_data(lake, &db_pool).await {
+    match get_fish_data(&lake, &db_pool).await {
         Ok(data) => {
             tracing::info!("All fish type data has been queried from the db.");
             HttpResponse::Ok().json(data)

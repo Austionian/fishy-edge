@@ -34,7 +34,7 @@ async fn fishs_gets_fish_data() {
 }
 
 #[tokio::test]
-async fn fishs_requires_lake_query_param() {
+async fn fishs_does_not_require_a_lake_query_param() {
     let app = spawn_app().await;
 
     let client = reqwest::Client::new();
@@ -48,7 +48,7 @@ async fn fishs_requires_lake_query_param() {
         .await
         .expect("Failed to execute request.");
 
-    assert_eq!(400, response.status().as_u16());
+    assert_eq!(200, response.status().as_u16());
 }
 
 #[tokio::test]

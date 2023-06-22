@@ -1,5 +1,5 @@
 mod admin;
-mod fish;
+mod fishs;
 mod health_check;
 mod helpers;
 mod register;
