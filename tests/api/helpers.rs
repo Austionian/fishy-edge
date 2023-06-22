@@ -1,3 +1,5 @@
+use argon2::password_hash::SaltString;
+use argon2::{Algorithm, Argon2, Params, PasswordHasher, Version};
 use fishy_edge::configuration::{get_configuration, DataBaseSettings};
 use fishy_edge::startup::run;
 use fishy_edge::telemetry;
@@ -9,6 +11,44 @@ use uuid::Uuid;
 pub struct TestApp {
     pub address: String,
     pub db_pool: PgPool,
+    pub test_user: TestUser,
+    pub admin_user: AdminUser,
+    pub api_client: reqwest::Client,
+}
+
+impl TestApp {
+    // pub async fn login<Body>(&self, body: &Body) -> reqwest::Response
+    // where
+    //     Body: serde::Serialize,
+    // {
+    //     self.api_client
+    //         .post(&format!("{}/login", &self.address))
+    //         .form(body)
+    //         .send()
+    //         .await
+    //         .expect("Failed to login.")
+    // }
+
+    pub async fn post_new_recipe<Body>(&self, body: &Body, with_admin: bool) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
+        let user_id = match with_admin {
+            true => self.admin_user.user_id.to_string(),
+            false => self.test_user.user_id.to_string(),
+        };
+
+        let cookie = format!("user_id={user_id}");
+
+        self.api_client
+            .post(&format!("{}/v1/admin/recipe/", &self.address))
+            .json(body)
+            .header("Cookie", cookie)
+            .header("Authorization", "Bearer 1234567890")
+            .send()
+            .await
+            .expect("Failed to post new recipe.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
@@ -62,10 +102,102 @@ pub async fn spawn_app() -> TestApp {
 
     let server = run(listener, connection_pool.clone()).expect("Failed to bind address.");
 
+    let client = reqwest::Client::builder()
+        .redirect(reqwest::redirect::Policy::none())
+        .build()
+        .unwrap();
+
     let _ = tokio::spawn(server);
 
-    TestApp {
+    let test_app = TestApp {
         address,
         db_pool: connection_pool,
+        api_client: client,
+        test_user: TestUser::new(),
+        admin_user: AdminUser::new(),
+    };
+
+    test_app.test_user.store(&test_app.db_pool).await;
+    test_app.admin_user.store(&test_app.db_pool).await;
+
+    test_app
+}
+
+pub struct TestUser {
+    user_id: Uuid,
+    pub email: String,
+    pub password: String,
+}
+
+impl TestUser {
+    pub fn new() -> Self {
+        Self {
+            user_id: Uuid::new_v4(),
+            email: Uuid::new_v4().to_string(),
+            password: Uuid::new_v4().to_string(),
+        }
+    }
+
+    async fn store(&self, pool: &PgPool) {
+        let salt = SaltString::generate(&mut rand::thread_rng());
+        let password_hash = Argon2::new(
+            Algorithm::Argon2id,
+            Version::V0x13,
+            Params::new(15000, 2, 1, None).unwrap(),
+        )
+        .hash_password(self.password.as_bytes(), &salt)
+        .unwrap()
+        .to_string();
+
+        sqlx::query!(
+            "INSERT INTO users (id, email, password_hash)
+            VALUES ($1, $2, $3);",
+            self.user_id,
+            self.email,
+            password_hash,
+        )
+        .execute(pool)
+        .await
+        .expect("Failed to store test user.");
+    }
+}
+
+pub struct AdminUser {
+    user_id: Uuid,
+    pub email: String,
+    pub password: String,
+}
+
+impl AdminUser {
+    pub fn new() -> Self {
+        Self {
+            user_id: Uuid::new_v4(),
+            email: Uuid::new_v4().to_string(),
+            password: Uuid::new_v4().to_string(),
+        }
+    }
+
+    async fn store(&self, pool: &PgPool) {
+        let salt = SaltString::generate(&mut rand::thread_rng());
+        let password_hash = Argon2::new(
+            Algorithm::Argon2id,
+            Version::V0x13,
+            Params::new(15000, 2, 1, None).unwrap(),
+        )
+        .hash_password(self.password.as_bytes(), &salt)
+        .unwrap()
+        .to_string();
+
+        sqlx::query!(
+            "INSERT INTO users (id, email, password_hash, is_admin)
+            VALUES ($1, $2, $3, $4);",
+            self.user_id,
+            self.email,
+            password_hash,
+            true
+        )
+        .execute(pool)
+        .await
+        .expect("Failed to store admin user.");
     }
 }
