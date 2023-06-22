@@ -41,3 +41,19 @@ async fn admin_users_can_create_new_recipes() {
 
     assert_eq!(response.status().as_u16(), 200);
 }
+
+#[tokio::test]
+async fn admin_users_can_create_new_fish_types() {
+    let app = spawn_app().await;
+    let name = Uuid::new_v4();
+    let body = serde_json::json!({
+        "name": name,
+        "anishinaabe_name": name,
+        "fish_image": "path_to_image",
+        "about": "This is a new fish type added for tests"
+    });
+
+    let response = app.post_new_fish_type(&body).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+}

@@ -14,6 +14,7 @@ pub struct TestApp {
     pub test_user: TestUser,
     pub admin_user: AdminUser,
     pub api_client: reqwest::Client,
+    pub api_key: &'static str,
 }
 
 impl TestApp {
@@ -44,10 +45,27 @@ impl TestApp {
             .post(&format!("{}/v1/admin/recipe/", &self.address))
             .json(body)
             .header("Cookie", cookie)
-            .header("Authorization", "Bearer 1234567890")
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await
             .expect("Failed to post new recipe.")
+    }
+
+    pub async fn post_new_fish_type<Body>(&self, body: &Body) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
+        self.api_client
+            .post(&format!("{}/v1/admin/fish_type/", &self.address))
+            .json(body)
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post new fish type.")
     }
 }
 
@@ -115,6 +133,7 @@ pub async fn spawn_app() -> TestApp {
         api_client: client,
         test_user: TestUser::new(),
         admin_user: AdminUser::new(),
+        api_key: "1234567890",
     };
 
     test_app.test_user.store(&test_app.db_pool).await;
