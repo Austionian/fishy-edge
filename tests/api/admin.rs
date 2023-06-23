@@ -58,7 +58,7 @@ async fn admin_users_can_crud_recipes() {
         "ingredients": []
     });
 
-    let response = app.update_recipe(&body, recipe.id.to_string()).await;
+    let response = app.update_recipe(&body, &recipe.id.to_string()).await;
 
     assert_eq!(response.status().as_u16(), 200);
 
@@ -72,7 +72,7 @@ async fn admin_users_can_crud_recipes() {
     assert_eq!(recipe.ingredients.unwrap().len(), 0);
 
     // Part Three: Delete the recipe
-    let response = app.delete_recipe(recipe.id.to_string()).await;
+    let response = app.delete_recipe(&recipe.id.to_string()).await;
 
     assert_eq!(response.status().as_u16(), 200);
 
@@ -85,19 +85,51 @@ async fn admin_users_can_crud_recipes() {
 }
 
 #[tokio::test]
-async fn admin_users_can_create_new_fish_types() {
+async fn admin_users_can_crud_fish_types() {
+    // Part One: Create new fish type
     let app = spawn_app().await;
     let name = Uuid::new_v4();
     let body = serde_json::json!({
         "name": name,
         "anishinaabe_name": name,
         "fish_image": "path_to_image",
-        "about": "This is a new fish type added for tests"
+        "about": "This is a new fish type added for tests."
     });
 
     let response = app.post_new_fish_type(&body).await;
 
     assert_eq!(response.status().as_u16(), 200);
+
+    let fish_type = sqlx::query!("SELECT * FROM fish_type WHERE name = $1", name.to_string())
+        .fetch_one(&app.db_pool)
+        .await
+        .expect("Failed to get fish type from db.");
+
+    assert_eq!(fish_type.name, name.to_string());
+    assert_eq!(fish_type.anishinaabe_name.unwrap(), name.to_string());
+    assert_eq!(fish_type.s3_fish_image.unwrap(), "path_to_image");
+    assert_eq!(fish_type.fish_image, None);
+    assert_eq!(fish_type.about, "This is a new fish type added for tests.");
+
+    // Part Two: Update fish type
+    let body = serde_json::json!({
+        "name": name,
+        "anishinaabe_name": "anishinaabe name test",
+        "about": "This is the new about text."
+    });
+
+    let response = app.update_fish_type(&body, &fish_type.id.to_string()).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+
+    let fish_type = sqlx::query!("SELECT * FROM fish_type WHERE name = $1", name.to_string())
+        .fetch_one(&app.db_pool)
+        .await
+        .expect("Failed to get fish type from db.");
+
+    assert_eq!(fish_type.name, name.to_string());
+    assert_eq!(fish_type.anishinaabe_name.unwrap(), "anishinaabe name test");
+    assert_eq!(fish_type.about, "This is the new about text.");
 }
 
 #[tokio::test]
