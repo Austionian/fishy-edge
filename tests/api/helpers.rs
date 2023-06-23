@@ -67,6 +67,56 @@ impl TestApp {
             .await
             .expect("Failed to post new fish type.")
     }
+
+    pub async fn post_new_fish<Body>(&self, body: &Body) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
+        self.api_client
+            .post(format!("{}/v1/admin/fish/", &self.address))
+            .json(body)
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post new fish.")
+    }
+
+    pub async fn update_recipe<Body>(&self, body: &Body, recipe_id: String) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
+        self.api_client
+            .post(format!("{}/v1/admin/recipe/{}", &self.address, recipe_id))
+            .json(body)
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post recipe update.")
+    }
+
+    pub async fn delete_recipe(&self, recipe_id: String) -> reqwest::Response {
+        self.api_client
+            .post(format!(
+                "{}/v1/admin/recipe/delete/{}",
+                &self.address, recipe_id
+            ))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post recipe delete.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
