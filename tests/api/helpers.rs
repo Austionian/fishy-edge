@@ -29,22 +29,34 @@ impl TestApp {
     //         .await
     //         .expect("Failed to login.")
     // }
-
-    pub async fn post_new_recipe<Body>(&self, body: &Body, with_admin: bool) -> reqwest::Response
+    pub async fn post_to_admin_with_non_admin_user<Body>(&self, body: &Body) -> reqwest::Response
     where
         Body: serde::Serialize,
     {
-        let user_id = match with_admin {
-            true => self.admin_user.user_id.to_string(),
-            false => self.test_user.user_id.to_string(),
-        };
+        self.api_client
+            .post(format!("{}/v1/admin/recipe/", &self.address))
+            .json(body)
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.test_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post new recipe.")
+    }
 
-        let cookie = format!("user_id={user_id}");
-
+    pub async fn post_new_recipe<Body>(&self, body: &Body) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
         self.api_client
             .post(&format!("{}/v1/admin/recipe/", &self.address))
             .json(body)
-            .header("Cookie", cookie)
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await

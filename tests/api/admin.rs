@@ -5,20 +5,17 @@ use uuid::Uuid;
 async fn only_admin_users_can_hit_admin_routes() {
     let app = spawn_app().await;
 
-    let response = app
-        .post_new_recipe(
-            &serde_json::json!({
-                "name": "recipe_name",
-                "steps": [
-                    "step"
-                ],
-                "ingredients": [
-                    "ingredient"
-                ]
-            }),
-            false,
-        )
-        .await;
+    let body = serde_json::json!({
+        "name": "Test name",
+        "steps": [
+            "step"
+        ],
+        "ingredients": [
+            "ingredient"
+        ]
+    });
+
+    let response = app.post_to_admin_with_non_admin_user(&body).await;
 
     assert_eq!(response.status().as_u16(), 401);
 }
@@ -38,7 +35,7 @@ async fn admin_users_can_crud_recipes() {
         ]
     });
 
-    let response = app.post_new_recipe(&body, true).await;
+    let response = app.post_new_recipe(&body).await;
 
     assert_eq!(response.status().as_u16(), 200);
 
