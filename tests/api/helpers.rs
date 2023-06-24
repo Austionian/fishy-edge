@@ -43,7 +43,7 @@ impl TestApp {
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await
-            .expect("Failed to post new recipe.")
+            .expect("Failed to post new recipe with test user.")
     }
 
     pub async fn post_new_recipe<Body>(&self, body: &Body) -> reqwest::Response
@@ -130,7 +130,7 @@ impl TestApp {
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await
-            .expect("Failed to post new fish type.")
+            .expect("Failed to update fish type.")
     }
 
     pub async fn post_new_fish<Body>(&self, body: &Body) -> reqwest::Response
@@ -148,6 +148,39 @@ impl TestApp {
             .send()
             .await
             .expect("Failed to post new fish.")
+    }
+
+    pub async fn update_fish<Body>(&self, body: &Body, fish_id: &str) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
+        self.api_client
+            .post(format!("{}/v1/admin/fish/{}", &self.address, fish_id))
+            .json(body)
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to update fish.")
+    }
+
+    pub async fn delete_fish(&self, fish_id: &str) -> reqwest::Response {
+        self.api_client
+            .post(format!(
+                "{}/v1/admin/fish/delete/{}",
+                &self.address, fish_id
+            ))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to update fish.")
     }
 }
 

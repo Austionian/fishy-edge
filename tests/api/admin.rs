@@ -48,7 +48,7 @@ async fn admin_users_can_crud_recipes() {
     assert_eq!(recipe.steps.unwrap().len(), 1);
     assert_eq!(recipe.ingredients.unwrap().len(), 1);
 
-    // Part Rwo: Update the recipe
+    // Part Two: Update the recipe
     let body = serde_json::json!({
         "name": name,
         "steps": [
@@ -86,7 +86,7 @@ async fn admin_users_can_crud_recipes() {
 
 #[tokio::test]
 async fn admin_users_can_crud_fish_types() {
-    // Part One: Create new fish type
+    // Part One: Create new fish type and a fish instance of the type
     let app = spawn_app().await;
     let name = Uuid::new_v4();
     let body = serde_json::json!({
@@ -133,7 +133,8 @@ async fn admin_users_can_crud_fish_types() {
 }
 
 #[tokio::test]
-async fn admin_users_can_create_new_fish() {
+async fn admin_users_can_crud_fish() {
+    // Part One: Create the fish type and fish instance
     let app = spawn_app().await;
     let fish_name = Uuid::new_v4();
     let body = serde_json::json!({
@@ -155,9 +156,10 @@ async fn admin_users_can_create_new_fish() {
     .await
     .expect("Failed to get the created fish type.");
 
+    let lake = "Michigan";
     let body = serde_json::json!({
         "fish_type_id": fish_type.id.to_string(),
-        "lake": "Michigan",
+        "lake": lake,
         "mercury": 1.1,
         "omega_3": 1.1,
         "omega_3_ratio": 1.1,
@@ -168,4 +170,55 @@ async fn admin_users_can_create_new_fish() {
     let response = app.post_new_fish(&body).await;
 
     assert_eq!(response.status().as_u16(), 200);
+
+    let fish = sqlx::query!(
+        "SELECT * FROM fish WHERE fish_type_id = $1 AND lake = $2",
+        fish_type.id,
+        lake
+    )
+    .fetch_one(&app.db_pool)
+    .await
+    .expect("Failed to get the created fish.");
+
+    assert_eq!(fish.mercury.unwrap(), 1.1);
+    assert_eq!(fish.omega_3.unwrap(), 1.1);
+
+    // Part Two: Update the fish instance
+    let body = serde_json::json!({
+        "fish_type_id": fish_type.id.to_string(),
+        "lake": lake,
+        "mercury": 2.1,
+        "omega_3": 2.1,
+        "omega_3_ratio": 2.1,
+        "pcb": 2.1,
+        "protein": 2.1
+    });
+
+    let response = app.update_fish(&body, &fish.id.to_string()).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+
+    let fish = sqlx::query!(
+        "SELECT * FROM fish WHERE fish_type_id = $1 AND lake = $2",
+        fish_type.id,
+        lake
+    )
+    .fetch_one(&app.db_pool)
+    .await
+    .expect("Failed to get the created fish.");
+
+    assert_eq!(fish.mercury.unwrap(), 2.1);
+    assert_eq!(fish.omega_3.unwrap(), 2.1);
+
+    // Part Three: Delete the fish instance
+    let response = app.delete_fish(&fish.id.to_string()).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+
+    let fishs = sqlx::query!("SELECT * FROM fish WHERE id = $1", fish.id)
+        .fetch_all(&app.db_pool)
+        .await
+        .expect("Failed to get fishs.");
+
+    assert_eq!(fishs.len(), 0);
 }
