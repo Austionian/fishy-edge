@@ -182,6 +182,17 @@ impl TestApp {
             .await
             .expect("Failed to update fish.")
     }
+
+    pub async fn update_profile(&self, body: String) -> reqwest::Response {
+        self.api_client
+            .post(format!("{}/v1/user/profile", &self.address))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to update profile.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
@@ -258,7 +269,7 @@ pub async fn spawn_app() -> TestApp {
 }
 
 pub struct TestUser {
-    user_id: Uuid,
+    pub user_id: Uuid,
     pub email: String,
     pub password: String,
 }

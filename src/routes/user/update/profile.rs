@@ -30,8 +30,7 @@ pub struct FormData {
     portion_size: i16,
 }
 
-/// Adds a new user to the database and returns a 200 OK response on success.
-/// Expects the user's email and password to be included in the form data.
+/// Updates a user's profile information.
 #[tracing::instrument(
     name="Saving user's info",
     skip(form, db_pool),
