@@ -32,6 +32,27 @@ async fn a_user_should_be_able_to_update_their_account() {
     let app = spawn_app().await;
     let email = uuid::Uuid::new_v4();
 
+    let body = format!(
+        "user_id={}&email={}&first_name=&last_name=",
+        &app.test_user.id, email
+    );
+
+    let response = app.update_account(body).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+
+    let user = app.get_test_user_from_db().await;
+
+    assert_eq!(user.email, email.to_string());
+    assert_eq!(user.first_name, Some("".to_string()));
+    assert_eq!(user.last_name, Some("".to_string()));
+}
+
+#[tokio::test]
+async fn a_user_should_be_able_to_update_their_account_with_incomplete_data() {
+    let app = spawn_app().await;
+    let email = uuid::Uuid::new_v4();
+
     let body = format!("user_id={}&email={}&last_name=", &app.test_user.id, email);
 
     let response = app.update_account(body).await;
@@ -64,4 +85,15 @@ async fn a_user_should_be_able_to_update_their_profile_image() {
         user.image_url,
         Some("http://test.url/test/path".to_string())
     );
+}
+
+#[tokio::test]
+async fn a_user_should_not_be_able_to_update_their_profile_image_with_incomplete_data() {
+    let app = spawn_app().await;
+
+    let body = format!("user_id={}", &app.test_user.id);
+
+    let response = app.update_image(body).await;
+
+    assert_eq!(response.status().as_u16(), 400);
 }
