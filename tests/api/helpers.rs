@@ -215,6 +215,28 @@ impl TestApp {
             .await
             .expect("Failed to update account.")
     }
+
+    pub async fn change_password(&self, body: String) -> reqwest::Response {
+        self.api_client
+            .post(format!("{}/v1/user/change_password", &self.address))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to change password.")
+    }
+
+    pub async fn login(&self, body: String) -> reqwest::Response {
+        self.api_client
+            .post(format!("{}/v1/login", &self.address))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to login.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
