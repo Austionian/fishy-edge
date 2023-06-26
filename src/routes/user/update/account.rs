@@ -7,13 +7,12 @@ use uuid::Uuid;
 pub struct FormData {
     user_id: Uuid,
     email: String,
-    first_name: String,
-    last_name: String,
+    first_name: Option<String>,
+    last_name: Option<String>,
 }
 
 /// An endpoint to update a user's account information.
-/// It requires the `user_id` and `email`,
-/// `first_name`, and `last_name` to be included as form data.
+/// It requires the `user_id` and `email`.
 pub async fn update_account(
     form: web::Form<FormData>,
     pool: web::Data<PgPool>,
