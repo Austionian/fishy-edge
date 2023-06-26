@@ -11,17 +11,14 @@ async fn a_user_should_be_able_to_update_their_profile() {
 
     let body = format!(
         "user_id={}&weight={weight}&age={age}&sex={sex}&portion_size={portion_size}",
-        &app.test_user.user_id,
+        &app.test_user.id,
     );
 
     let response = app.update_profile(body).await;
 
     assert_eq!(response.status().as_u16(), 200);
 
-    let user = sqlx::query!("SELECT * FROM users WHERE id = $1;", &app.test_user.user_id)
-        .fetch_one(&app.db_pool)
-        .await
-        .expect("Failed to get the user from the db.");
+    let user = app.get_test_user_from_db().await;
 
     assert_eq!(user.weight, Some(weight));
     assert_eq!(user.age, Some(age));
@@ -35,21 +32,36 @@ async fn a_user_should_be_able_to_update_their_account() {
     let app = spawn_app().await;
     let email = uuid::Uuid::new_v4();
 
-    let body = format!(
-        "user_id={}&email={}&last_name=",
-        &app.test_user.user_id, email
-    );
+    let body = format!("user_id={}&email={}&last_name=", &app.test_user.id, email);
 
     let response = app.update_account(body).await;
 
     assert_eq!(response.status().as_u16(), 200);
 
-    let user = sqlx::query!("SELECT * FROM users WHERE id = $1;", &app.test_user.user_id)
-        .fetch_one(&app.db_pool)
-        .await
-        .expect("Failed to get the user from the db.");
+    let user = app.get_test_user_from_db().await;
 
     assert_eq!(user.email, email.to_string());
     assert_eq!(user.first_name, None);
     assert_eq!(user.last_name, Some("".to_string()));
+}
+
+#[tokio::test]
+async fn a_user_should_be_able_to_update_their_profile_image() {
+    let app = spawn_app().await;
+
+    let body = format!(
+        "user_id={}&image_url=http://test.url/test/path",
+        &app.test_user.id
+    );
+
+    let response = app.update_image(body).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+
+    let user = app.get_test_user_from_db().await;
+
+    assert_eq!(
+        user.image_url,
+        Some("http://test.url/test/path".to_string())
+    );
 }

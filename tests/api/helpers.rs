@@ -18,17 +18,17 @@ pub struct TestApp {
 }
 
 impl TestApp {
-    // pub async fn login<Body>(&self, body: &Body) -> reqwest::Response
-    // where
-    //     Body: serde::Serialize,
-    // {
-    //     self.api_client
-    //         .post(&format!("{}/login", &self.address))
-    //         .form(body)
-    //         .send()
-    //         .await
-    //         .expect("Failed to login.")
-    // }
+    pub async fn get_test_user_from_db(&self) -> TestUser {
+        sqlx::query_as!(
+            TestUser,
+            "SELECT * FROM users WHERE id = $1;",
+            &self.test_user.id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .expect("Failed to get the user from the db.")
+    }
+
     pub async fn post_to_admin_with_non_admin_user<Body>(&self, body: &Body) -> reqwest::Response
     where
         Body: serde::Serialize,
@@ -38,7 +38,7 @@ impl TestApp {
             .json(body)
             .header(
                 "Cookie",
-                &format!("user_id={}", &self.test_user.user_id.to_string()),
+                &format!("user_id={}", &self.test_user.id.to_string()),
             )
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
@@ -204,6 +204,17 @@ impl TestApp {
             .await
             .expect("Failed to update account.")
     }
+
+    pub async fn update_image(&self, body: String) -> reqwest::Response {
+        self.api_client
+            .post(format!("{}/v1/user/image", &self.address))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to update account.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
@@ -280,17 +291,37 @@ pub async fn spawn_app() -> TestApp {
 }
 
 pub struct TestUser {
-    pub user_id: Uuid,
+    pub id: Uuid,
     pub email: String,
-    pub password: String,
+    pub name: Option<String>,
+    pub password_hash: String,
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
+    pub age: Option<i16>,
+    pub weight: Option<i16>,
+    pub sex: Option<String>,
+    pub plan_to_get_pregnant: Option<bool>,
+    pub portion_size: Option<i16>,
+    pub is_admin: Option<bool>,
+    pub image_url: Option<String>,
 }
 
 impl TestUser {
     pub fn new() -> Self {
         Self {
-            user_id: Uuid::new_v4(),
+            id: Uuid::new_v4(),
             email: Uuid::new_v4().to_string(),
-            password: Uuid::new_v4().to_string(),
+            name: None,
+            password_hash: Uuid::new_v4().to_string(),
+            first_name: None,
+            last_name: None,
+            age: None,
+            weight: None,
+            sex: None,
+            plan_to_get_pregnant: None,
+            portion_size: None,
+            is_admin: Some(false),
+            image_url: None,
         }
     }
 
@@ -301,14 +332,14 @@ impl TestUser {
             Version::V0x13,
             Params::new(15000, 2, 1, None).unwrap(),
         )
-        .hash_password(self.password.as_bytes(), &salt)
+        .hash_password(self.password_hash.as_bytes(), &salt)
         .unwrap()
         .to_string();
 
         sqlx::query!(
             "INSERT INTO users (id, email, password_hash)
             VALUES ($1, $2, $3);",
-            self.user_id,
+            self.id,
             self.email,
             password_hash,
         )
