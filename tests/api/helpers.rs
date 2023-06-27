@@ -18,7 +18,7 @@ pub struct TestApp {
 }
 
 impl TestApp {
-    pub async fn get_test_user_from_db(&self) -> TestUser {
+    pub async fn get_test_user_from_db(&self) -> Result<TestUser, sqlx::Error> {
         sqlx::query_as!(
             TestUser,
             "SELECT * FROM users WHERE id = $1;",
@@ -26,7 +26,6 @@ impl TestApp {
         )
         .fetch_one(&self.db_pool)
         .await
-        .expect("Failed to get the user from the db.")
     }
 
     pub async fn post_to_admin_with_non_admin_user<Body>(&self, body: &Body) -> reqwest::Response
@@ -236,6 +235,19 @@ impl TestApp {
             .send()
             .await
             .expect("Failed to login.")
+    }
+
+    pub async fn delete_account(&self) -> reqwest::Response {
+        self.api_client
+            .post(format!(
+                "{}/v1/user/delete/{}",
+                &self.address, &self.test_user.id
+            ))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to delete account.")
     }
 }
 
