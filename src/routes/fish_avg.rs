@@ -74,7 +74,7 @@ pub struct FishQuery {
 ///
 /// }
 ///```
-#[tracing::instrument(name = "Retreving all fish data", skip(query, db_pool))]
+#[tracing::instrument(name = "Retreving avg fish data for a fish.", skip(query, db_pool))]
 #[get("/fish_avg")]
 pub async fn fish_avg(
     query: web::Query<FishQuery>,
@@ -84,7 +84,7 @@ pub async fn fish_avg(
     let user_id = get_user_id(req)?;
     match get_all_fish_data(query.fishtype_id, user_id, &db_pool).await {
         Ok(data) => {
-            tracing::info!("All fish type data has been queried from the db.");
+            tracing::info!("Avg fish data has been queried from the db.");
             Ok(HttpResponse::Ok().json(data))
         }
         Err(e) => {

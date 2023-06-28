@@ -1,17 +1,7 @@
+use crate::routes::structs::FishType;
 use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
-
-#[derive(serde::Serialize)]
-pub struct FishData {
-    fish_id: Uuid,
-    name: String,
-    anishinaabe_name: Option<String>,
-    fish_image: Option<String>,
-    woodland_fish_image: Option<String>,
-    s3_fish_image: Option<String>,
-    s3_woodland_image: Option<String>,
-}
 
 #[derive(serde::Serialize)]
 pub struct RecipeData {
@@ -21,7 +11,7 @@ pub struct RecipeData {
 
 #[derive(serde::Serialize)]
 pub struct SearchResult {
-    fish_result: Vec<FishData>,
+    fish_result: Vec<FishType>,
     recipe_result: Vec<RecipeData>,
 }
 
@@ -76,18 +66,12 @@ async fn get_search_results(db_pool: &PgPool) -> Result<SearchResult, sqlx::Erro
 }
 
 #[tracing::instrument(name = "Querying the database for fish", skip(db_pool))]
-async fn get_fish_data(db_pool: &PgPool) -> Result<Vec<FishData>, sqlx::Error> {
+async fn get_fish_data(db_pool: &PgPool) -> Result<Vec<FishType>, sqlx::Error> {
     let data = sqlx::query_as!(
-        FishData,
+        FishType,
         r#"
         SELECT 
-            fish_type.id as fish_id,
-            fish_type.name,
-            fish_type.anishinaabe_name,
-            fish_type.fish_image,
-            fish_type.woodland_fish_image,
-            fish_type.s3_fish_image,
-            fish_type.s3_woodland_image
+            *
         FROM fish_type;
         "#,
     )

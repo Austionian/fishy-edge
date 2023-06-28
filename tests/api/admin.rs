@@ -134,31 +134,12 @@ async fn admin_users_can_crud_fish_types() {
 
 #[tokio::test]
 async fn admin_users_can_crud_fish() {
-    // Part One: Create the fish type and fish instance
+    // Part One: Create the fish instance
     let app = spawn_app().await;
-    let fish_name = Uuid::new_v4();
-    let body = serde_json::json!({
-        "name": fish_name,
-        "anishinaabe_name": fish_name,
-        "fish_image": "path_to_image",
-        "about": "This is a new fish type added for tests"
-    });
-
-    let response = app.post_new_fish_type(&body).await;
-
-    assert_eq!(response.status().as_u16(), 200);
-
-    let fish_type = sqlx::query!(
-        "SELECT id FROM fish_type WHERE name = $1",
-        fish_name.to_string()
-    )
-    .fetch_one(&app.db_pool)
-    .await
-    .expect("Failed to get the created fish type.");
 
     let lake = "Michigan";
     let body = serde_json::json!({
-        "fish_type_id": fish_type.id.to_string(),
+        "fish_type_id": &app.fish_type.id,
         "lake": lake,
         "mercury": 1.1,
         "omega_3": 1.1,
@@ -173,7 +154,7 @@ async fn admin_users_can_crud_fish() {
 
     let fish = sqlx::query!(
         "SELECT * FROM fish WHERE fish_type_id = $1 AND lake = $2",
-        fish_type.id,
+        &app.fish_type.id,
         lake
     )
     .fetch_one(&app.db_pool)
@@ -185,7 +166,7 @@ async fn admin_users_can_crud_fish() {
 
     // Part Two: Update the fish instance
     let body = serde_json::json!({
-        "fish_type_id": fish_type.id.to_string(),
+        "fish_type_id": &app.fish_type.id,
         "lake": lake,
         "mercury": 2.1,
         "omega_3": 2.1,
@@ -200,7 +181,7 @@ async fn admin_users_can_crud_fish() {
 
     let fish = sqlx::query!(
         "SELECT * FROM fish WHERE fish_type_id = $1 AND lake = $2",
-        fish_type.id,
+        &app.fish_type.id,
         lake
     )
     .fetch_one(&app.db_pool)

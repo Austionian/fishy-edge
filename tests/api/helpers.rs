@@ -13,6 +13,7 @@ pub struct TestApp {
     pub db_pool: PgPool,
     pub test_user: TestUser,
     pub admin_user: AdminUser,
+    pub fish_type: FishType,
     pub api_client: reqwest::Client,
     pub api_key: &'static str,
 }
@@ -315,11 +316,13 @@ pub async fn spawn_app() -> TestApp {
         api_client: client,
         test_user: TestUser::new(),
         admin_user: AdminUser::new(),
+        fish_type: FishType::new(),
         api_key: "1234567890",
     };
 
     test_app.test_user.store(&test_app.db_pool).await;
     test_app.admin_user.store(&test_app.db_pool).await;
+    test_app.fish_type.store(&test_app.db_pool).await;
 
     test_app
 }
@@ -420,5 +423,39 @@ impl AdminUser {
         .execute(pool)
         .await
         .expect("Failed to store admin user.");
+    }
+}
+
+pub struct FishType {
+    pub id: Uuid,
+    pub name: &'static str,
+    pub anishinaabe_name: &'static str,
+    pub about: &'static str,
+}
+
+impl FishType {
+    pub fn new() -> Self {
+        Self {
+            id: Uuid::new_v4(),
+            name: "Test Fish",
+            anishinaabe_name: "Test Anishaabe Name",
+            about: "About a test fish.",
+        }
+    }
+
+    pub async fn store(&self, db_pool: &PgPool) {
+        sqlx::query!(
+            r#"
+            INSERT INTO fish_type (id, name, anishinaabe_name, about)
+            VALUES ($1, $2, $3, $4);
+            "#,
+            &self.id,
+            &self.name,
+            &self.anishinaabe_name,
+            &self.about
+        )
+        .execute(db_pool)
+        .await
+        .expect("Failed to store fish type.");
     }
 }
