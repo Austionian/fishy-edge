@@ -11,8 +11,8 @@ pub struct RecipeData {
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct SearchResult {
-    pub fish_result: Vec<FishType>,
-    pub recipe_result: Vec<RecipeData>,
+    pub fishs: Vec<FishType>,
+    pub recipes: Vec<RecipeData>,
 }
 
 /// Returns a JSON of all store fish and recipes.
@@ -56,13 +56,10 @@ pub async fn search(db_pool: web::Data<PgPool>) -> HttpResponse {
 }
 
 async fn get_search_results(db_pool: &PgPool) -> Result<SearchResult, sqlx::Error> {
-    let fish_result = get_fish_data(db_pool).await?;
-    let recipe_result = get_recipe_data(db_pool).await?;
+    let fishs = get_fish_data(db_pool).await?;
+    let recipes = get_recipe_data(db_pool).await?;
 
-    Ok(SearchResult {
-        fish_result,
-        recipe_result,
-    })
+    Ok(SearchResult { fishs, recipes })
 }
 
 #[tracing::instrument(name = "Querying the database for fish", skip(db_pool))]

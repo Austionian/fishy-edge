@@ -11,12 +11,12 @@ async fn search_should_return_everything_for_the_client() {
 
     let body: SearchResult = response.json().await.expect("Failed to parse response.");
 
-    assert!(body.fish_result.len() >= 1);
+    assert!(body.fishs.len() >= 1);
     // This could be false unless app is created with a recipe pre-defined.
-    // assert!(body.recipe_result.len() >= 1);
+    // assert!(body.recipes.len() >= 1);
 
     assert!(body
-        .fish_result
+        .fishs
         .iter()
         .map(|fish| fish.id)
         .collect::<Vec<uuid::Uuid>>()
