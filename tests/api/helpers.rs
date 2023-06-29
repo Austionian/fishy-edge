@@ -113,6 +113,22 @@ impl TestApp {
             .expect("Failed to post new fish type.")
     }
 
+    pub async fn get_fish_type(&self, fish_type_id: &str) -> reqwest::Response {
+        self.api_client
+            .get(format!(
+                "{}/v1/admin/fish_type/{}",
+                &self.address, fish_type_id
+            ))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to get fish type.")
+    }
+
     pub async fn update_fish_type<Body>(&self, body: &Body, fish_type_id: &str) -> reqwest::Response
     where
         Body: serde::Serialize,

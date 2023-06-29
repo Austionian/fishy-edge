@@ -130,6 +130,11 @@ async fn admin_users_can_crud_fish_types() {
     assert_eq!(fish_type.name, name.to_string());
     assert_eq!(fish_type.anishinaabe_name.unwrap(), "anishinaabe name test");
     assert_eq!(fish_type.about, "This is the new about text.");
+
+    // Part Three: Read the new fish type.
+    let response = app.get_fish_type(fish_type.id.to_string().as_str()).await;
+
+    assert_eq!(response.status().as_u16(), 200);
 }
 
 #[tokio::test]
@@ -202,4 +207,26 @@ async fn admin_users_can_crud_fish() {
         .expect("Failed to get fishs.");
 
     assert_eq!(fishs.len(), 0);
+}
+
+#[tokio::test]
+async fn admins_should_be_able_to_read_fish_types() {
+    let app = spawn_app().await;
+
+    let response = app
+        .get_fish_type(&app.fish_type.id.to_string().as_str())
+        .await;
+
+    assert_eq!(response.status().as_u16(), 200);
+}
+
+#[tokio::test]
+async fn fish_type_read_route_should_return_bad_request_for_made_up_uuid() {
+    let app = spawn_app().await;
+
+    let response = app
+        .get_fish_type(uuid::Uuid::new_v4().to_string().as_str())
+        .await;
+
+    assert_eq!(response.status().as_u16(), 400);
 }

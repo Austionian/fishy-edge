@@ -24,7 +24,6 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .service(routes::fishs_route)
                     .service(routes::fish_avg_route)
                     .service(routes::fish_avgs)
-                    .service(routes::fish_type_route)
                     .service(routes::fish_types_route)
                     .service(routes::recipe)
                     .service(routes::recipes)
@@ -70,8 +69,9 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                             )
                             .service(
                                 web::scope("/fish_type")
-                                    .service(routes::new_fish_type)
+                                    .service(routes::create_fish_type)
                                     .service(routes::update_fish_type)
+                                    .service(routes::read_fish_type)
                                     .service(routes::update_fish_type_image),
                             ),
                     ),

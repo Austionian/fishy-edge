@@ -16,7 +16,7 @@ pub struct NewFishType {
 
 #[tracing::instrument(name = "Creating a new fish type.", skip(data, db_pool))]
 #[post("/")]
-pub async fn new_fish_type(
+pub async fn create_fish_type(
     data: web::Json<NewFishType>,
     db_pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, actix_web::Error> {

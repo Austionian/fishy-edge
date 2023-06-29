@@ -10,13 +10,13 @@ pub struct FishTypeId {
 
 #[derive(serde::Serialize)]
 pub struct FishTypeResponse {
-    fish_data: FishType,
-    recipe_data: Vec<Uuid>,
+    fish: FishType,
+    recipes: Vec<Uuid>,
 }
 
 #[tracing::instrument(name = "Retreving all fish types.", skip(db_pool))]
-#[get("/fish_type/{uuid}")]
-pub async fn fish_type(
+#[get("/{uuid}")]
+pub async fn read_fish_type(
     db_pool: web::Data<PgPool>,
     fish_type_id: web::Path<FishTypeId>,
 ) -> HttpResponse {
@@ -27,7 +27,10 @@ pub async fn fish_type(
         }
         Err(e) => {
             tracing::error!("Failed to execute query: {:?}", e);
-            HttpResponse::InternalServerError().finish()
+            match e {
+                sqlx::Error::RowNotFound => HttpResponse::BadRequest().finish(),
+                _ => HttpResponse::InternalServerError().finish(),
+            }
         }
     }
 }
@@ -36,13 +39,10 @@ async fn get_fish_type_response(
     db_pool: &PgPool,
     fish_type_id: Uuid,
 ) -> Result<FishTypeResponse, sqlx::Error> {
-    let fish_data = get_fish_type_db(db_pool, fish_type_id).await?;
-    let recipe_data = get_recipe_db(db_pool, fish_type_id).await?;
+    let fish = get_fish_type_db(db_pool, fish_type_id).await?;
+    let recipes = get_recipes_db(db_pool, fish_type_id).await?;
 
-    Ok(FishTypeResponse {
-        fish_data,
-        recipe_data,
-    })
+    Ok(FishTypeResponse { fish, recipes })
 }
 
 #[tracing::instrument(name = "Querying the database for fish type", skip(db_pool))]
@@ -78,7 +78,7 @@ async fn get_fish_type_db(db_pool: &PgPool, fish_type_id: Uuid) -> Result<FishTy
     name = "Querying the database for fish type recipe data",
     skip(db_pool)
 )]
-async fn get_recipe_db(db_pool: &PgPool, fish_type_id: Uuid) -> Result<Vec<Uuid>, sqlx::Error> {
+async fn get_recipes_db(db_pool: &PgPool, fish_type_id: Uuid) -> Result<Vec<Uuid>, sqlx::Error> {
     let data = sqlx::query!(
         r#"
         SELECT
