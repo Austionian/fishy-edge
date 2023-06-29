@@ -244,11 +244,19 @@ impl TestApp {
                 "{}/v1/user/delete/{}",
                 &self.address, &self.test_user.id
             ))
-            .header("Content-Type", "application/x-www-form-urlencoded")
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await
             .expect("Failed to delete account.")
+    }
+
+    pub async fn get_search(&self) -> reqwest::Response {
+        self.api_client
+            .get(format!("{}/v1/search", &self.address))
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to get search.")
     }
 }
 

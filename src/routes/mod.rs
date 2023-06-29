@@ -36,7 +36,7 @@ pub use min_and_max::*;
 pub use presign_s3::*;
 pub use recipe::*;
 pub use recipes::*;
-pub use search::search;
+pub use search::{search, SearchResult};
 pub use structs::{Fish, Recipe};
 pub use unfavorite::{unfavorite_fish, unfavorite_recipe};
 pub use user::*;

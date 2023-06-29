@@ -3,16 +3,16 @@ use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct RecipeData {
     recipe_id: Uuid,
     recipe_name: String,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct SearchResult {
-    fish_result: Vec<FishType>,
-    recipe_result: Vec<RecipeData>,
+    pub fish_result: Vec<FishType>,
+    pub recipe_result: Vec<RecipeData>,
 }
 
 /// Returns a JSON of all store fish and recipes.

@@ -29,12 +29,12 @@ pub struct Recipe {
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct FishType {
-    pub(crate) id: Uuid,
-    pub(crate) name: String,
-    pub(crate) anishinaabe_name: Option<String>,
-    pub(crate) fish_image: Option<String>,
-    pub(crate) s3_fish_image: Option<String>,
-    pub(crate) s3_woodland_image: Option<String>,
-    pub(crate) woodland_fish_image: Option<String>,
-    pub(crate) about: String,
+    pub id: Uuid,
+    pub name: String,
+    pub anishinaabe_name: Option<String>,
+    pub fish_image: Option<String>,
+    pub s3_fish_image: Option<String>,
+    pub s3_woodland_image: Option<String>,
+    pub woodland_fish_image: Option<String>,
+    pub about: String,
 }
