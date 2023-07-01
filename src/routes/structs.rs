@@ -1,6 +1,6 @@
 use uuid::Uuid;
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct Fish {
     pub fish_id: Uuid,
     pub fish_type_id: Uuid,
@@ -19,7 +19,7 @@ pub struct Fish {
     pub about: String,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct Recipe {
     pub id: Uuid,
     pub name: String,

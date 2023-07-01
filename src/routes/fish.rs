@@ -12,11 +12,11 @@ pub struct FishUuid {
     uuid: Uuid,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct FishData {
-    fish_data: Fish,
-    recipe_data: Vec<Recipe>,
-    is_favorite: bool,
+    pub fish_data: Fish,
+    pub recipe_data: Vec<Recipe>,
+    pub is_favorite: bool,
 }
 
 /// Retrives data for a fish specified by its uuid. If an invalid uuid is given
@@ -75,7 +75,10 @@ pub async fn fish(
         }
         Err(e) => {
             tracing::error!("Failed to execute query: {:?}", e);
-            Ok(HttpResponse::InternalServerError().finish())
+            match e {
+                sqlx::Error::RowNotFound => Ok(HttpResponse::BadRequest().finish()),
+                _ => Ok(HttpResponse::InternalServerError().finish()),
+            }
         }
     }
 }

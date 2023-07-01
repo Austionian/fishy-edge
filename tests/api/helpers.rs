@@ -506,8 +506,7 @@ impl FishType {
 pub struct Fish {
     pub id: Uuid,
     pub fish_type_id: Uuid,
-    pub name: &'static str,
-    pub lake: &'static str,
+    pub lake: String,
 }
 
 impl Fish {
@@ -515,8 +514,7 @@ impl Fish {
         Self {
             id: Uuid::new_v4(),
             fish_type_id,
-            name: "Fish",
-            lake: "Lake",
+            lake: "Lake".to_string(),
         }
     }
 

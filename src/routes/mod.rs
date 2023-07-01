@@ -23,7 +23,7 @@ pub use admin::{
 };
 pub use everything::*;
 pub use favorite::{favorite_fish, favorite_recipe, favorites};
-pub use fish::{fish as fish_route, get_is_favorite};
+pub use fish::{fish as fish_route, get_is_favorite, FishData};
 pub use fish_avg::fish_avg as fish_avg_route;
 pub use fish_avgs::*;
 pub use fish_types::fish_types as fish_types_route;
