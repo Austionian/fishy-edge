@@ -1,5 +1,6 @@
 mod admin;
 mod change_password;
+mod fish;
 mod fishs;
 mod health_check;
 mod helpers;

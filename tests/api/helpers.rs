@@ -14,6 +14,7 @@ pub struct TestApp {
     pub test_user: TestUser,
     pub admin_user: AdminUser,
     pub fish_type: FishType,
+    pub fish: Fish,
     pub api_client: reqwest::Client,
     pub api_key: &'static str,
 }
@@ -274,6 +275,19 @@ impl TestApp {
             .await
             .expect("Failed to get search.")
     }
+
+    pub async fn get_fish_by_id(&self, fish_id: Uuid) -> reqwest::Response {
+        self.api_client
+            .get(format!("{}/v1/fish/{}", &self.address, fish_id))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to get fish.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
@@ -334,19 +348,23 @@ pub async fn spawn_app() -> TestApp {
 
     let _ = tokio::spawn(server);
 
+    let fish_type_id = Uuid::new_v4();
+
     let test_app = TestApp {
         address,
         db_pool: connection_pool,
         api_client: client,
         test_user: TestUser::new(),
         admin_user: AdminUser::new(),
-        fish_type: FishType::new(),
+        fish_type: FishType::new(fish_type_id),
+        fish: Fish::new(fish_type_id),
         api_key: "1234567890",
     };
 
     test_app.test_user.store(&test_app.db_pool).await;
     test_app.admin_user.store(&test_app.db_pool).await;
     test_app.fish_type.store(&test_app.db_pool).await;
+    test_app.fish.store(&test_app.db_pool).await;
 
     test_app
 }
@@ -458,9 +476,9 @@ pub struct FishType {
 }
 
 impl FishType {
-    pub fn new() -> Self {
+    pub fn new(id: Uuid) -> Self {
         Self {
-            id: Uuid::new_v4(),
+            id,
             name: "Test Fish",
             anishinaabe_name: "Test Anishaabe Name",
             about: "About a test fish.",
@@ -481,5 +499,39 @@ impl FishType {
         .execute(db_pool)
         .await
         .expect("Failed to store fish type.");
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub struct Fish {
+    pub id: Uuid,
+    pub fish_type_id: Uuid,
+    pub name: &'static str,
+    pub lake: &'static str,
+}
+
+impl Fish {
+    pub fn new(fish_type_id: Uuid) -> Self {
+        Self {
+            id: Uuid::new_v4(),
+            fish_type_id,
+            name: "Fish",
+            lake: "Lake",
+        }
+    }
+
+    pub async fn store(&self, db_pool: &PgPool) {
+        sqlx::query!(
+            r#"
+            INSERT INTO fish (id, fish_type_id, lake)
+            VALUES ($1, $2, $3)
+            "#,
+            &self.id,
+            &self.fish_type_id,
+            &self.lake,
+        )
+        .execute(db_pool)
+        .await
+        .expect("Failed to store fish.");
     }
 }
