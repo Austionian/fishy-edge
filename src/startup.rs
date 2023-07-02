@@ -22,9 +22,8 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .wrap(TracingLogger::default())
                     .service(routes::fish)
                     .service(routes::fishs)
-                    .service(routes::fish_avg_route)
+                    .service(routes::fish_avg)
                     .service(routes::fish_avgs)
-                    .service(routes::fish_types_route)
                     .service(routes::recipe)
                     .service(routes::recipes)
                     .service(routes::min_and_max)
@@ -72,6 +71,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                                     .service(routes::create_fish_type)
                                     .service(routes::update_fish_type)
                                     .service(routes::read_fish_type)
+                                    .service(routes::read_all_fish_types)
                                     .service(routes::update_fish_type_image),
                             ),
                     ),

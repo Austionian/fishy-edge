@@ -4,7 +4,7 @@ use sqlx::PgPool;
 
 #[tracing::instrument(name = "Retreving all fish types.", skip(db_pool))]
 #[get("/fish_types")]
-pub async fn fish_types(db_pool: web::Data<PgPool>) -> HttpResponse {
+pub async fn read_all_fish_types(db_pool: web::Data<PgPool>) -> HttpResponse {
     match get_fish_type_data(&db_pool).await {
         Ok(data) => {
             tracing::info!("All fish type data has been queried from the db.");

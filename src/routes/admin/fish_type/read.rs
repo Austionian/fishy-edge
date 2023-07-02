@@ -14,7 +14,7 @@ pub struct FishTypeResponse {
     recipes: Vec<Uuid>,
 }
 
-#[tracing::instrument(name = "Retreving all fish types.", skip(db_pool))]
+#[tracing::instrument(name = "Retreving a fish type.", skip(db_pool))]
 #[get("/{uuid}")]
 pub async fn read_fish_type(
     db_pool: web::Data<PgPool>,
