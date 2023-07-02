@@ -35,7 +35,8 @@ pub struct FishQuery {
     fishtype_id: Uuid,
 }
 
-/// Returns a JSON object with a single fish type and its averages.
+/// Retrives average data for a fish type specified by its uuid. If no or an invalid
+/// uuid is given a 400 Bad Request will be returned.
 ///
 /// # Example
 ///
@@ -89,7 +90,10 @@ pub async fn fish_avg(
         }
         Err(e) => {
             tracing::error!("Failed to execute query: {:?}", e);
-            Ok(HttpResponse::InternalServerError().finish())
+            match e {
+                sqlx::Error::RowNotFound => Ok(HttpResponse::BadRequest().finish()),
+                _ => Ok(HttpResponse::InternalServerError().finish()),
+            }
         }
     }
 }

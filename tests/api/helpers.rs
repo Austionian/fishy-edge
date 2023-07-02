@@ -271,6 +271,22 @@ impl TestApp {
             .await
             .expect("Failed to get fish.")
     }
+
+    pub async fn get_fish_type_avg(&self, fish_type_id: &Uuid) -> reqwest::Response {
+        self.api_client
+            .get(format!(
+                "{}/v1/fish_avg?fishtype_id={}",
+                &self.address, fish_type_id
+            ))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to get fish type avg.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
@@ -490,6 +506,11 @@ pub struct Fish {
     pub id: Uuid,
     pub fish_type_id: Uuid,
     pub lake: String,
+    pub mercury: Option<f32>,
+    pub omega_3: Option<f32>,
+    pub omega_3_ratio: Option<f32>,
+    pub pcb: Option<f32>,
+    pub protein: Option<f32>,
 }
 
 impl Fish {
@@ -498,18 +519,28 @@ impl Fish {
             id: Uuid::new_v4(),
             fish_type_id,
             lake: "Lake".to_string(),
+            mercury: Some(1.12),
+            omega_3: Some(1.12),
+            omega_3_ratio: Some(1.12),
+            pcb: Some(1.12),
+            protein: Some(1.12),
         }
     }
 
     pub async fn store(&self, db_pool: &PgPool) {
         sqlx::query!(
             r#"
-            INSERT INTO fish (id, fish_type_id, lake)
-            VALUES ($1, $2, $3)
+            INSERT INTO fish (id, fish_type_id, lake, mercury, omega_3, omega_3_ratio, pcb, protein)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             "#,
             &self.id,
             &self.fish_type_id,
             &self.lake,
+            &self.mercury.unwrap(),
+            &self.omega_3.unwrap(),
+            &self.omega_3_ratio.unwrap(),
+            &self.pcb.unwrap(),
+            &self.protein.unwrap(),
         )
         .execute(db_pool)
         .await

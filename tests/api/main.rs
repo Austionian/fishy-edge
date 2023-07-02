@@ -2,6 +2,7 @@ mod admin;
 mod api;
 mod change_password;
 mod fish;
+mod fish_avg;
 mod fishs;
 mod health_check;
 mod helpers;

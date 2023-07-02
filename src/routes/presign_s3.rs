@@ -13,8 +13,7 @@ pub struct Presign {
     url: String,
 }
 
-/// Adds a new user to the database and returns a 200 OK response on success.
-/// Expects the user's email to be included in the form data.
+/// Returns a URL to upload an image to the s3 bucket.
 #[tracing::instrument(name = "Generating a presigned URL", skip(file))]
 #[post("/presign_s3")]
 pub async fn presign_s3(file: web::Json<File>) -> HttpResponse {
@@ -45,8 +44,6 @@ pub async fn presign_s3(file: web::Json<File>) -> HttpResponse {
         .unwrap();
 
     let url = Presign { url };
-
-    // Save to db with filename
 
     HttpResponse::Ok().json(url)
 }
