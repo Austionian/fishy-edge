@@ -1,4 +1,5 @@
 mod admin;
+mod api;
 mod change_password;
 mod fish;
 mod fishs;

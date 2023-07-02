@@ -13,7 +13,7 @@ pub struct FishUuid {
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
-pub struct FishData {
+pub struct FishResponse {
     pub fish_data: Fish,
     pub recipe_data: Vec<Recipe>,
     pub is_favorite: bool,
@@ -87,12 +87,12 @@ async fn get_all_fish_data(
     db_pool: &PgPool,
     fish_uuid: Uuid,
     user_id: Uuid,
-) -> Result<FishData, sqlx::Error> {
+) -> Result<FishResponse, sqlx::Error> {
     let fish_data = get_fish_data(db_pool, fish_uuid).await?;
     let recipe_data = get_recipe_data(db_pool, fish_data.fish_type_id).await?;
     let is_favorite = get_is_favorite(db_pool, fish_data.fish_type_id, user_id).await?;
 
-    Ok(FishData {
+    Ok(FishResponse {
         fish_data,
         recipe_data,
         is_favorite,

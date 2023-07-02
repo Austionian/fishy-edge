@@ -23,7 +23,7 @@ struct Fish {
 ///
 /// # Example
 ///
-/// `.../all_fish`
+/// `.../fish_avgs`
 ///
 ///```json
 /// {

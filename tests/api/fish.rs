@@ -1,5 +1,5 @@
 use crate::helpers::spawn_app;
-use fishy_edge::routes::FishData;
+use fishy_edge::routes::FishResponse;
 
 #[tokio::test]
 async fn fish_route_should_return_the_fish_by_id() {
@@ -9,7 +9,7 @@ async fn fish_route_should_return_the_fish_by_id() {
 
     assert_eq!(response.status().as_u16(), 200);
 
-    let response_body = response.json::<FishData>().await.unwrap();
+    let response_body = response.json::<FishResponse>().await.unwrap();
 
     assert_eq!(&response_body.fish_data.name, &app.fish_type.name);
     assert_eq!(&response_body.fish_data.fish_type_id, &app.fish_type.id);

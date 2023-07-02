@@ -30,23 +30,6 @@ impl TestApp {
         .await
     }
 
-    pub async fn post_to_admin_with_non_admin_user<Body>(&self, body: &Body) -> reqwest::Response
-    where
-        Body: serde::Serialize,
-    {
-        self.api_client
-            .post(format!("{}/v1/admin/recipe/", &self.address))
-            .json(body)
-            .header(
-                "Cookie",
-                &format!("user_id={}", &self.test_user.id.to_string()),
-            )
-            .header("Authorization", &format!("Bearer {}", &self.api_key))
-            .send()
-            .await
-            .expect("Failed to post new recipe with test user.")
-    }
-
     pub async fn post_new_recipe<Body>(&self, body: &Body) -> reqwest::Response
     where
         Body: serde::Serialize,

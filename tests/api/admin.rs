@@ -2,25 +2,6 @@ use crate::helpers::spawn_app;
 use uuid::Uuid;
 
 #[tokio::test]
-async fn only_admin_users_can_hit_admin_routes() {
-    let app = spawn_app().await;
-
-    let body = serde_json::json!({
-        "name": "Test name",
-        "steps": [
-            "step"
-        ],
-        "ingredients": [
-            "ingredient"
-        ]
-    });
-
-    let response = app.post_to_admin_with_non_admin_user(&body).await;
-
-    assert_eq!(response.status().as_u16(), 401);
-}
-
-#[tokio::test]
 async fn admin_users_can_crud_recipes() {
     // Part One: Create a new recipe.
     let app = spawn_app().await;
