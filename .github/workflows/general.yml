@@ -13,6 +13,7 @@ env:
   CARGO_TERM_COLOR: always
   SQLX_VERSION: 0.6.3
   SQLX_FEATURES: "rustls,postgres"
+  DATABASE_URL: "postgres://postgres:password@localhost:5432/fish"
 
 jobs:
   test:
@@ -46,9 +47,14 @@ jobs:
           SKIP_DOCKER=true ./scripts/init_db.sh
       - name: Check sqlx-data.json is up-to-date
         run: |
-          cargo sqlx prepare --database-url "postgres://postgres:password@localhost:5432/fish" --check -- --bin fishy_edge
+          SQLX_OFFLINE=true
+          DATABASE_URL=${{ env.DATABASE_URL }}
+          cargo sqlx prepare --check -- --bin fishy_edge
       - name: Run tests
-        run: cargo test
+        run: |
+          SQLX_OFFLINE=true
+          DATABASE_URL=${{ env.DATABASE_URL }}
+          cargo test
 
   fmt:
     name: Rustfmt
@@ -128,4 +134,7 @@ jobs:
       - name: Migrate database
         run: SKIP_DOCKER=true ./scripts/init_db.sh
       - name: Generate code coverage
-        run: cargo tarpaulin --verbose --workspace
+        run: |
+          SQLX_OFFLINE=true
+          DATABASE_URL=${{ env.DATABASE_URL }}
+          cargo tarpaulin --verbose --workspace
