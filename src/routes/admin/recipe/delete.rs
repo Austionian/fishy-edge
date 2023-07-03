@@ -1,4 +1,4 @@
-use actix_web::{post, web, HttpResponse};
+use actix_web::{delete, web, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -9,7 +9,7 @@ pub struct RecipeUuid {
 }
 
 #[tracing::instrument(name = "Deleting recipe data", skip(uuid, db_pool))]
-#[post("/delete/{uuid}")]
+#[delete("/{uuid}")]
 pub async fn delete_recipe(
     uuid: web::Path<RecipeUuid>,
     db_pool: web::Data<PgPool>,

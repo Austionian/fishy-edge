@@ -49,7 +49,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                             .route("/account", web::post().to(routes::update_account))
                             .route("/image", web::post().to(routes::update_image))
                             .route("/change_password", web::post().to(routes::change_password))
-                            .route("/delete/{uuid}", web::post().to(routes::delete_user)),
+                            .route("/{uuid}", web::delete().to(routes::delete_user)),
                     )
                     .service(
                         web::scope("/admin")

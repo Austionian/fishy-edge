@@ -1,4 +1,4 @@
-use actix_web::{post, web, HttpResponse};
+use actix_web::{put, web, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -15,7 +15,7 @@ pub struct FishTypeImageData {
 }
 
 #[tracing::instrument(name = "Updating a fish image.", skip(data, db_pool))]
-#[post("/{uuid}/image")]
+#[put("/{uuid}/image")]
 pub async fn update_fish_type_image(
     fish_type_id: web::Path<FishTypeId>,
     data: web::Json<FishTypeImageData>,

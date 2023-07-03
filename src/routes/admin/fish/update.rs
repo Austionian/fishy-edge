@@ -1,4 +1,4 @@
-use actix_web::{post, web, HttpResponse};
+use actix_web::{put, web, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -18,7 +18,7 @@ pub struct FishData {
 }
 
 #[tracing::instrument(name = "Updating fish data", skip(uuid, data, db_pool))]
-#[post("/{uuid}")]
+#[put("/{uuid}")]
 pub async fn update_fish(
     uuid: web::Path<FishUuid>,
     data: web::Json<FishData>,

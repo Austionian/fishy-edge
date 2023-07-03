@@ -52,7 +52,7 @@ impl TestApp {
         Body: serde::Serialize,
     {
         self.api_client
-            .post(format!("{}/v1/admin/recipe/{}", &self.address, recipe_id))
+            .put(format!("{}/v1/admin/recipe/{}", &self.address, recipe_id))
             .json(body)
             .header(
                 "Cookie",
@@ -66,10 +66,7 @@ impl TestApp {
 
     pub async fn delete_recipe(&self, recipe_id: &str) -> reqwest::Response {
         self.api_client
-            .post(format!(
-                "{}/v1/admin/recipe/delete/{}",
-                &self.address, recipe_id
-            ))
+            .delete(format!("{}/v1/admin/recipe/{}", &self.address, recipe_id))
             .header(
                 "Cookie",
                 &format!("user_id={}", &self.admin_user.user_id.to_string()),
@@ -118,7 +115,7 @@ impl TestApp {
         Body: serde::Serialize,
     {
         self.api_client
-            .post(&format!(
+            .put(&format!(
                 "{}/v1/admin/fish_type/{}",
                 &self.address, fish_type_id
             ))
@@ -155,7 +152,7 @@ impl TestApp {
         Body: serde::Serialize,
     {
         self.api_client
-            .post(format!("{}/v1/admin/fish/{}", &self.address, fish_id))
+            .put(format!("{}/v1/admin/fish/{}", &self.address, fish_id))
             .json(body)
             .header(
                 "Cookie",
@@ -169,10 +166,7 @@ impl TestApp {
 
     pub async fn delete_fish(&self, fish_id: &str) -> reqwest::Response {
         self.api_client
-            .post(format!(
-                "{}/v1/admin/fish/delete/{}",
-                &self.address, fish_id
-            ))
+            .delete(format!("{}/v1/admin/fish/{}", &self.address, fish_id))
             .header(
                 "Cookie",
                 &format!("user_id={}", &self.admin_user.user_id.to_string()),
@@ -240,10 +234,7 @@ impl TestApp {
 
     pub async fn delete_account(&self) -> reqwest::Response {
         self.api_client
-            .post(format!(
-                "{}/v1/user/delete/{}",
-                &self.address, &self.test_user.id
-            ))
+            .delete(format!("{}/v1/user/{}", &self.address, &self.test_user.id))
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await
