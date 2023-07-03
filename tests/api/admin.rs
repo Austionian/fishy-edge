@@ -116,6 +116,11 @@ async fn admin_users_can_crud_fish_types() {
     let response = app.get_fish_type(fish_type.id.to_string().as_str()).await;
 
     assert_eq!(response.status().as_u16(), 200);
+
+    // Part Four: Read all the fish types.
+    let response = app.get_all_fish_types().await;
+
+    assert_eq!(response.status().as_u16(), 200);
 }
 
 #[tokio::test]

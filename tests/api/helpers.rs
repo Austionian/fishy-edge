@@ -94,6 +94,19 @@ impl TestApp {
             .expect("Failed to post new fish type.")
     }
 
+    pub async fn get_all_fish_types(&self) -> reqwest::Response {
+        self.api_client
+            .get(format!("{}/v1/admin/fish_type/", &self.address))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to get all fish types.")
+    }
+
     pub async fn get_fish_type(&self, fish_type_id: &str) -> reqwest::Response {
         self.api_client
             .get(format!(
