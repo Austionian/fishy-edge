@@ -12,6 +12,39 @@ pub struct Favorites {
 }
 
 /// Gets a user's favorited fish and recipes.
+///
+/// # Example
+///
+/// `/favorite/`
+///
+///```json
+/// {
+///     fishs: [
+///         {
+///             "id": "",
+///             "name": "",
+///             "anishinaabe_name": "",
+///             ...
+///         },
+///         ...
+///     ],
+///     recipes: [
+///         {
+///             "id": "",
+///             "name": "",
+///             "steps": [
+///                 ...
+///             ],
+///             "ingredients": [
+///                 ...
+///             ]
+///         },
+///         ...
+///     ]
+///     
+/// }
+///```
+///
 #[tracing::instrument(name = "Getting favorite fish and recipes.", skip(db_pool))]
 #[get("/")]
 pub async fn favorites(

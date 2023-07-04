@@ -28,7 +28,7 @@ pub struct FishResponse {
 ///
 ///```json
 /// {
-///       fish_data: {
+///       "fish_data": {
 ///         "name": "Herring",
 ///         "anishinaabe_name": "Okewis",
 ///         "fish_image": "herring.png",
@@ -41,7 +41,7 @@ pub struct FishResponse {
 ///         "pcb": 0.0002,
 ///         "protein": 21.1
 ///       },
-///       recipe_data: {
+///       "recipe_data": {
 ///         [
 ///           "id": uuid,
 ///           "name": "Fish Stew",
