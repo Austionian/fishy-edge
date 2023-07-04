@@ -1,6 +1,6 @@
 use crate::{
     routes::{Fish, Recipe},
-    utils::get_user_id,
+    utils::get_optional_user_id,
 };
 use actix_web::{get, web, HttpRequest, HttpResponse};
 use anyhow::Result;
@@ -67,7 +67,7 @@ pub async fn fish(
     db_pool: web::Data<PgPool>,
     req: HttpRequest,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let user_id = get_user_id(req)?;
+    let user_id = get_optional_user_id(req)?;
     match get_all_fish_data(&db_pool, uuid.uuid, user_id).await {
         Ok(data) => {
             tracing::info!("Fish type data has been queried from the db.");
@@ -86,11 +86,14 @@ pub async fn fish(
 async fn get_all_fish_data(
     db_pool: &PgPool,
     fish_uuid: Uuid,
-    user_id: Uuid,
+    user_id: Option<Uuid>,
 ) -> Result<FishResponse, sqlx::Error> {
     let fish_data = get_fish_data(db_pool, fish_uuid).await?;
     let recipe_data = get_recipe_data(db_pool, fish_data.fish_type_id).await?;
-    let is_favorite = get_is_favorite(db_pool, fish_data.fish_type_id, user_id).await?;
+    let is_favorite = match user_id {
+        Some(user_id) => get_is_favorite(db_pool, fish_data.fish_type_id, user_id).await?,
+        None => false,
+    };
 
     Ok(FishResponse {
         fish_data,

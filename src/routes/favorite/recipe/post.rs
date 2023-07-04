@@ -1,3 +1,4 @@
+use crate::utils::get_user_id;
 use actix_web::{post, web, HttpRequest, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
@@ -15,12 +16,7 @@ pub async fn favorite_recipe(
     db_pool: web::Data<PgPool>,
     req: HttpRequest,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let user_id = Uuid::parse_str(
-        req.cookie("user_id")
-            .ok_or(actix_web::error::ErrorBadRequest("No user id provided."))?
-            .value(),
-    )
-    .map_err(actix_web::error::ErrorBadRequest)?;
+    let user_id = get_user_id(req)?;
     match favorite_recipe_db(&db_pool, user_id, uuid.uuid).await {
         Ok(_) => {
             tracing::info!("Recipe has been favorited.");

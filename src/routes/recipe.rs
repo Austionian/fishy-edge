@@ -1,4 +1,4 @@
-use crate::{routes::Recipe, utils::get_user_id};
+use crate::{routes::Recipe, utils::get_optional_user_id};
 use actix_web::{get, web, HttpRequest, HttpResponse};
 use anyhow::Result;
 use sqlx::PgPool;
@@ -44,7 +44,7 @@ pub async fn recipe(
     db_pool: web::Data<PgPool>,
     req: HttpRequest,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let user_id = get_user_id(req)?;
+    let user_id = get_optional_user_id(req)?;
     match get_recipe_data(&db_pool, uuid.uuid, user_id).await {
         Ok(data) => {
             tracing::info!("Recipe data has been queried from the db.");
@@ -61,7 +61,7 @@ pub async fn recipe(
 async fn get_recipe_data(
     db_pool: &PgPool,
     recipe_uuid: Uuid,
-    user_id: Uuid,
+    user_id: Option<Uuid>,
 ) -> Result<RecipeResponse, sqlx::Error> {
     let data = sqlx::query_as!(
         Recipe,
@@ -83,19 +83,22 @@ async fn get_recipe_data(
         e
     })?;
 
-    let is_favorite = sqlx::query!(
-        r#"
-        SELECT *
-        FROM user_recipe
-        WHERE user_id = $1
-        AND recipe_id = $2; 
-        "#,
-        user_id,
-        data.id
-    )
-    .fetch_optional(db_pool)
-    .await?
-    .is_some();
+    let is_favorite = match user_id {
+        Some(user_id) => sqlx::query!(
+            r#"
+            SELECT *
+            FROM user_recipe
+            WHERE user_id = $1
+            AND recipe_id = $2; 
+            "#,
+            user_id,
+            data.id
+        )
+        .fetch_optional(db_pool)
+        .await?
+        .is_some(),
+        None => false,
+    };
 
     Ok(RecipeResponse { data, is_favorite })
 }

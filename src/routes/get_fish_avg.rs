@@ -1,6 +1,6 @@
 use crate::{
     routes::{get_is_favorite, structs::Recipe},
-    utils::get_user_id,
+    utils::get_optional_user_id,
 };
 use actix_web::{get, web, HttpRequest, HttpResponse};
 use sqlx::PgPool;
@@ -82,7 +82,7 @@ pub async fn fish_avg(
     db_pool: web::Data<PgPool>,
     req: HttpRequest,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let user_id = get_user_id(req)?;
+    let user_id = get_optional_user_id(req)?;
     match get_all_fish_data(query.fishtype_id, user_id, &db_pool).await {
         Ok(data) => {
             tracing::info!("Avg fish data has been queried from the db.");
@@ -100,12 +100,15 @@ pub async fn fish_avg(
 
 async fn get_all_fish_data(
     fish_uuid: Uuid,
-    user_id: Uuid,
+    user_id: Option<Uuid>,
     db_pool: &PgPool,
 ) -> Result<FishData, sqlx::Error> {
     let fish_data = get_fish_data(fish_uuid, db_pool).await?;
     let recipe_data = get_recipe_data(fish_uuid, db_pool).await?;
-    let is_favorite = get_is_favorite(db_pool, fish_uuid, user_id).await?;
+    let is_favorite = match user_id {
+        Some(user_id) => get_is_favorite(db_pool, fish_uuid, user_id).await?,
+        None => false,
+    };
 
     Ok(FishData {
         fish_data,

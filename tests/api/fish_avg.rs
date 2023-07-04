@@ -35,7 +35,7 @@ async fn you_must_give_a_uuid() {
 }
 
 #[tokio::test]
-async fn you_must_give_a_user_id() {
+async fn a_user_id_is_optional() {
     let app = spawn_app().await;
 
     let response = app
@@ -49,5 +49,5 @@ async fn you_must_give_a_user_id() {
         .await
         .expect("Failed to post recipe delete.");
 
-    assert_eq!(response.status().as_u16(), 500);
+    assert_eq!(response.status().as_u16(), 200);
 }
