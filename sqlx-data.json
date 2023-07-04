@@ -574,33 +574,6 @@
     },
     "query": "\n        DELETE FROM fish\n        WHERE id = $1;\n        "
   },
-  "5a5b1514705bafda22f44884453e32ec1ad15757b691b12ec5a5d59fefea0ae5": {
-    "describe": {
-      "columns": [
-        {
-          "name": "user_id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "recipe_id",
-          "ordinal": 1,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        SELECT *\n        FROM user_recipe\n        WHERE user_id = $1\n        AND recipe_id = $2; \n        "
-  },
   "60b525c178f2cad080563ea589e2c3ebf5f59be1ca8cafbc4dad7346124c92a4": {
     "describe": {
       "columns": [],
@@ -843,6 +816,33 @@
       }
     },
     "query": "\n        SELECT\n            id,\n            name,\n            anishinaabe_name,\n            fish_image,\n            s3_fish_image,\n            s3_woodland_image,\n            woodland_fish_image,\n            about\n        FROM fish_type\n        WHERE id = $1;\n        "
+  },
+  "ae84944092c7c715cd1678f5d0dd581d318ae1d51da6cbe54a1f1d6845e95367": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "recipe_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n            SELECT *\n            FROM user_recipe\n            WHERE user_id = $1\n            AND recipe_id = $2; \n            "
   },
   "b0bed5e03cf5fe7ab59fecc8582fbe8a8201928d4b35bd09a21697586ce883c8": {
     "describe": {
