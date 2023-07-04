@@ -614,32 +614,6 @@
     },
     "query": "\n        UPDATE users\n        SET password_hash = $1\n        WHERE id = $2\n        "
   },
-  "648b75527d7e5143ce391832a4320557801b0ed9afdd600d010027f563ec999e": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        SELECT\n            id,\n            name\n        FROM recipe\n        JOIN user_recipe ON recipe.id = user_recipe.recipe_id\n        WHERE user_recipe.user_id = $1;\n        "
-  },
   "655e8067e5fdc9f9c9575c5e7c7b772e1e88cfb06491b784db3218af64425d88": {
     "describe": {
       "columns": [],
@@ -653,38 +627,6 @@
       }
     },
     "query": "\n        INSERT INTO users (id, email, password_hash, is_admin)\n        VALUES ($1, $2, $3, false)\n        "
-  },
-  "66a6d20211928b52dc371e12e05d351633fa1f72c652c4b9db649725d8140b78": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "anishinaabe_name",
-          "ordinal": 2,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        SELECT\n            id,\n            name,\n            anishinaabe_name\n        FROM fish_type\n        JOIN user_fishtype ON fish_type.id = user_fishtype.fishtype_id\n        WHERE user_fishtype.user_id = $1;\n        "
   },
   "7088dc1934911f9f468950d61d3e7d2ee93640f96b53c196eaff57b9acf2a66a": {
     "describe": {
@@ -769,6 +711,44 @@
       }
     },
     "query": "\n        SELECT id, password_hash, is_admin\n        FROM users\n        WHERE email = $1\n        "
+  },
+  "90cdb2d4bc32af58d1651eeb11154cef07cc009bff38982d57e469bc5c843ea9": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "steps",
+          "ordinal": 2,
+          "type_info": "TextArray"
+        },
+        {
+          "name": "ingredients",
+          "ordinal": 3,
+          "type_info": "TextArray"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            id,\n            name,\n            steps,\n            ingredients\n        FROM recipe\n        JOIN user_recipe ON recipe.id = user_recipe.recipe_id\n        WHERE user_recipe.user_id = $1;\n        "
   },
   "a2c496be8c7b12ddd1e88d01d610dc9e7d4da538f9a5295e8ff195452b2289b7": {
     "describe": {
@@ -1328,6 +1308,68 @@
       }
     },
     "query": "\n        SELECT\n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish_type.about,\n            AVG(pcb) as pcb,\n            AVG(protein) as protein,\n            AVG(mercury) as mercury,\n            AVG(omega_3_ratio) as omega_3_ratio,\n            AVG(omega_3) as omega_3\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        WHERE fish_type.id=$1\n        GROUP BY fish_type.id;\n        "
+  },
+  "efe4f2123d489966679b4aa0b7045b1896f2d8393883b696984251dac9bab7b7": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "about",
+          "ordinal": 7,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            id,\n            name,\n            anishinaabe_name,\n            fish_image,\n            woodland_fish_image,\n            s3_fish_image,\n            s3_woodland_image,\n            about\n        FROM fish_type\n        JOIN user_fishtype ON fish_type.id = user_fishtype.fishtype_id\n        WHERE user_fishtype.user_id = $1;\n        "
   },
   "f0eb4c1f5d5e923a2776cf842e4059459f6dd0bbd507d3cc2a70e41356cacf57": {
     "describe": {
