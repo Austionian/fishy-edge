@@ -1,3 +1,4 @@
+use crate::routes::{FishType, Recipe};
 use crate::utils::get_user_id;
 use actix_web::{get, web, HttpRequest, HttpResponse};
 use anyhow::Result;
@@ -5,24 +6,12 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 #[derive(serde::Serialize)]
-pub struct FavoriteFish {
-    id: Uuid,
-    name: String,
-    anishinaabe_name: Option<String>,
-}
-
-#[derive(serde::Serialize)]
-pub struct FavoriteRecipe {
-    id: Uuid,
-    name: String,
-}
-
-#[derive(serde::Serialize)]
 pub struct Favorites {
-    fishs: Vec<FavoriteFish>,
-    recipes: Vec<FavoriteRecipe>,
+    fishs: Vec<FishType>,
+    recipes: Vec<Recipe>,
 }
 
+/// Gets a user's favorited fish and recipes.
 #[tracing::instrument(name = "Getting favorite fish and recipes.", skip(db_pool))]
 #[get("/")]
 pub async fn favorites(
@@ -45,12 +34,17 @@ pub async fn favorites(
 #[tracing::instrument(name = "Getting favorites from the database.", skip(db_pool))]
 async fn favorites_db(db_pool: &PgPool, user_id: Uuid) -> Result<Favorites, sqlx::Error> {
     let fishs = sqlx::query_as!(
-        FavoriteFish,
+        FishType,
         r#"
         SELECT
             id,
             name,
-            anishinaabe_name
+            anishinaabe_name,
+            fish_image,
+            woodland_fish_image,
+            s3_fish_image,
+            s3_woodland_image,
+            about
         FROM fish_type
         JOIN user_fishtype ON fish_type.id = user_fishtype.fishtype_id
         WHERE user_fishtype.user_id = $1;
@@ -65,11 +59,13 @@ async fn favorites_db(db_pool: &PgPool, user_id: Uuid) -> Result<Favorites, sqlx
     })?;
 
     let recipes = sqlx::query_as!(
-        FavoriteRecipe,
+        Recipe,
         r#"
         SELECT
             id,
-            name
+            name,
+            steps,
+            ingredients
         FROM recipe
         JOIN user_recipe ON recipe.id = user_recipe.recipe_id
         WHERE user_recipe.user_id = $1;
