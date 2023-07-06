@@ -1,4 +1,4 @@
-use crate::routes::structs::Recipe;
+use crate::routes::Recipe;
 use actix_web::{get, web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;

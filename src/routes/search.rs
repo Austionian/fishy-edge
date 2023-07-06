@@ -1,4 +1,4 @@
-use crate::routes::structs::FishType;
+use crate::routes::FishType;
 use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;

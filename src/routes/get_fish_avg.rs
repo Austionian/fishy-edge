@@ -1,5 +1,5 @@
 use crate::{
-    routes::{get_is_favorite, structs::Recipe},
+    routes::{get_is_favorite, Recipe},
     utils::get_optional_user_id,
 };
 use actix_web::{get, web, HttpRequest, HttpResponse};
