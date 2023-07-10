@@ -304,6 +304,19 @@ impl TestApp {
             .await
             .expect("Failed to get favorites.")
     }
+
+    pub async fn favorite_fish(&self, fish_id: &Uuid) -> reqwest::Response {
+        self.api_client
+            .post(format!("{}/v1/favorite/fish/{}", &self.address, fish_id))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.test_user.id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to get favorites.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
