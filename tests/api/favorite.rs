@@ -74,3 +74,38 @@ async fn a_user_can_favorite_and_unfavorite_a_fish() {
 
     assert_eq!(favorite.len(), 0);
 }
+
+#[tokio::test]
+async fn a_user_can_favorite_and_unfavorite_a_recipe() {
+    let app = spawn_app().await;
+
+    // Part One: Favorite the recipe.
+    let response = app.favorite_recipe(&app.recipe.id).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+
+    let favorite = sqlx::query!(
+        "SElECT * FROM user_recipe WHERE user_id = $1",
+        &app.test_user.id
+    )
+    .fetch_all(&app.db_pool)
+    .await
+    .expect("Failed to find a favorite recipe for user.");
+
+    assert_eq!(favorite.len(), 1);
+
+    // Part Two: Unfavorite the recipe.
+    let response = app.unfavorite_recipe(&app.recipe.id).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+
+    let favorite = sqlx::query!(
+        "SElECT * FROM user_recipe WHERE user_id = $1",
+        &app.test_user.id
+    )
+    .fetch_all(&app.db_pool)
+    .await
+    .expect("Failed to find a favorite recipe for user.");
+
+    assert_eq!(favorite.len(), 0);
+}

@@ -15,6 +15,7 @@ pub struct TestApp {
     pub admin_user: AdminUser,
     pub fish_type: FishType,
     pub fish: Fish,
+    pub recipe: Recipe,
     pub api_client: reqwest::Client,
     pub api_key: &'static str,
 }
@@ -315,7 +316,7 @@ impl TestApp {
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await
-            .expect("Failed to get favorites.")
+            .expect("Failed to post favorite fish.")
     }
 
     pub async fn unfavorite_fish(&self, fish_id: &Uuid) -> reqwest::Response {
@@ -328,7 +329,39 @@ impl TestApp {
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await
-            .expect("Failed to get favorites.")
+            .expect("Failed to post unfavorite fish.")
+    }
+
+    pub async fn favorite_recipe(&self, recipe_id: &Uuid) -> reqwest::Response {
+        self.api_client
+            .post(format!(
+                "{}/v1/favorite/recipe/{}",
+                &self.address, recipe_id
+            ))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.test_user.id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post favorite recipe.")
+    }
+
+    pub async fn unfavorite_recipe(&self, recipe_id: &Uuid) -> reqwest::Response {
+        self.api_client
+            .post(format!(
+                "{}/v1/unfavorite/recipe/{}",
+                &self.address, recipe_id
+            ))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.test_user.id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post unfavorite recipe.")
     }
 }
 
@@ -400,6 +433,7 @@ pub async fn spawn_app() -> TestApp {
         admin_user: AdminUser::new(),
         fish_type: FishType::new(fish_type_id),
         fish: Fish::new(fish_type_id),
+        recipe: Recipe::new(),
         api_key: "1234567890",
     };
 
@@ -407,6 +441,7 @@ pub async fn spawn_app() -> TestApp {
     test_app.admin_user.store(&test_app.db_pool).await;
     test_app.fish_type.store(&test_app.db_pool).await;
     test_app.fish.store(&test_app.db_pool).await;
+    test_app.recipe.store(&test_app.db_pool).await;
 
     test_app
 }
@@ -588,5 +623,38 @@ impl Fish {
         .execute(db_pool)
         .await
         .expect("Failed to store fish.");
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub struct Recipe {
+    pub id: Uuid,
+    pub name: String,
+    pub ingredients: Option<Vec<String>>,
+    pub steps: Option<Vec<String>>,
+}
+
+impl Recipe {
+    pub fn new() -> Self {
+        Self {
+            id: uuid::Uuid::new_v4(),
+            name: uuid::Uuid::new_v4().to_string(),
+            ingredients: None,
+            steps: None,
+        }
+    }
+
+    pub async fn store(&self, db_pool: &PgPool) {
+        sqlx::query!(
+            r#"
+            INSERT INTO recipe (id, name)
+            VALUES ($1, $2)
+            "#,
+            &self.id,
+            &self.name
+        )
+        .execute(db_pool)
+        .await
+        .expect("Failed to save recipe to the database.");
     }
 }
