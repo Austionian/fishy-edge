@@ -41,9 +41,10 @@ async fn a_valid_uuid_user_id_is_required_to_see_favorites() {
 }
 
 #[tokio::test]
-async fn a_user_can_favorite_a_fish() {
+async fn a_user_can_favorite_and_unfavorite_a_fish() {
     let app = spawn_app().await;
 
+    // Part One: Favorite the fish.
     let response = app.favorite_fish(&app.fish_type.id).await;
 
     assert_eq!(response.status().as_u16(), 200);
@@ -57,4 +58,19 @@ async fn a_user_can_favorite_a_fish() {
     .expect("Failed to find a favorite for user.");
 
     assert_eq!(favorite.len(), 1);
+
+    // Part two: Unfavorite the fish.
+    let response = app.unfavorite_fish(&app.fish_type.id).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+
+    let favorite = sqlx::query!(
+        "SElECT * FROM user_fishtype WHERE user_id = $1",
+        &app.test_user.id
+    )
+    .fetch_all(&app.db_pool)
+    .await
+    .expect("Failed to find a favorite for user.");
+
+    assert_eq!(favorite.len(), 0);
 }
