@@ -363,6 +363,23 @@ impl TestApp {
             .await
             .expect("Failed to post unfavorite recipe.")
     }
+
+    pub async fn post_presign_url<Body>(&self, body: Body) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
+        self.api_client
+            .post(format!("{}/v1/presign_s3", &self.address))
+            .json(&body)
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.test_user.id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post unfavorite recipe.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
