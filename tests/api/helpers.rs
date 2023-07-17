@@ -293,6 +293,15 @@ impl TestApp {
             .expect("Failed to get fish type avg.")
     }
 
+    pub async fn get_fish_type_avgs(&self) -> reqwest::Response {
+        self.api_client
+            .get(format!("{}/v1/fish_avgs", &self.address))
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to get fish type avgs.")
+    }
+
     pub async fn get_favorites(&self) -> reqwest::Response {
         self.api_client
             .get(format!("{}/v1/favorite/", &self.address))

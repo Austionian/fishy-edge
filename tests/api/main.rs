@@ -4,6 +4,7 @@ mod change_password;
 mod favorite;
 mod fish;
 mod fish_avg;
+mod fish_avgs;
 mod fishs;
 mod health_check;
 mod helpers;

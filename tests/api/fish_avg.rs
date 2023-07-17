@@ -6,7 +6,6 @@ async fn you_can_retrieve_averages_for_a_fish_type() {
 
     let response = app.get_fish_type_avg(&app.fish_type.id).await;
 
-    println!("{:?}", response);
     assert_eq!(response.status().as_u16(), 200);
 }
 
