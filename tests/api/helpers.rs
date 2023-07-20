@@ -389,6 +389,19 @@ impl TestApp {
             .await
             .expect("Failed to post unfavorite recipe.")
     }
+
+    pub async fn get_recipes(&self) -> reqwest::Response {
+        self.api_client
+            .get(format!("{}/v1/recipe/", &self.address))
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.test_user.id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post unfavorite recipe.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {

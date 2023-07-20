@@ -10,6 +10,7 @@ mod health_check;
 mod helpers;
 mod login;
 mod presign_s3;
+mod recipe;
 mod register;
 mod search;
 mod user;
