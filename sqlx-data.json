@@ -562,6 +562,108 @@
     },
     "query": "\n        INSERT INTO fish_type (\n            id,\n            name,\n            anishinaabe_name,\n            s3_fish_image,\n            s3_woodland_image,\n            about\n        )\n        VALUES (\n            $1, $2, $3, $4, $5, $6\n        );\n        "
   },
+  "55616a47cb218b5051e728d11cb4e950aa3de6bf510375c7817ee44ce8ba7bb4": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "anishinaabe_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "lake",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "fish_image",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "woodland_fish_image",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_fish_image",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "s3_woodland_image",
+          "ordinal": 7,
+          "type_info": "Text"
+        },
+        {
+          "name": "pcb",
+          "ordinal": 8,
+          "type_info": "Float4"
+        },
+        {
+          "name": "protein",
+          "ordinal": 9,
+          "type_info": "Float4"
+        },
+        {
+          "name": "mercury",
+          "ordinal": 10,
+          "type_info": "Float4"
+        },
+        {
+          "name": "omega_3_ratio",
+          "ordinal": 11,
+          "type_info": "Float4"
+        },
+        {
+          "name": "omega_3",
+          "ordinal": 12,
+          "type_info": "Float4"
+        },
+        {
+          "name": "date_sampled",
+          "ordinal": 13,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "recipes",
+          "ordinal": 14,
+          "type_info": "UuidArray"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT\n            fish.id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish.lake,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.mercury,\n            fish.omega_3_ratio,\n            fish.omega_3,\n            fish.date_sampled,\n            array(\n                SELECT recipe_id\n                FROM fishtype_recipe\n                WHERE fishtype_recipe.fishtype_id=fish_type.id\n                ) as recipes\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        "
+  },
   "5581d02e9774b63001133dfda06edb6617193ca96c91e133c3c8f32c11441276": {
     "describe": {
       "columns": [],
@@ -896,102 +998,6 @@
       }
     },
     "query": "\n        SELECT\n            id,\n            name,\n            ingredients,\n            steps\n        FROM recipe\n        WHERE recipe.id\n        IN (\n            SELECT \n                recipe_id\n            FROM fishtype_recipe\n            WHERE fishtype_id = $1\n        );\n        "
-  },
-  "c40295b1a428bd55e9c04eb8a050b807dab8e4e0b344309e5a1f1ff1e8369c14": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "anishinaabe_name",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "lake",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "fish_image",
-          "ordinal": 4,
-          "type_info": "Text"
-        },
-        {
-          "name": "woodland_fish_image",
-          "ordinal": 5,
-          "type_info": "Text"
-        },
-        {
-          "name": "s3_fish_image",
-          "ordinal": 6,
-          "type_info": "Text"
-        },
-        {
-          "name": "s3_woodland_image",
-          "ordinal": 7,
-          "type_info": "Text"
-        },
-        {
-          "name": "pcb",
-          "ordinal": 8,
-          "type_info": "Float4"
-        },
-        {
-          "name": "protein",
-          "ordinal": 9,
-          "type_info": "Float4"
-        },
-        {
-          "name": "mercury",
-          "ordinal": 10,
-          "type_info": "Float4"
-        },
-        {
-          "name": "omega_3_ratio",
-          "ordinal": 11,
-          "type_info": "Float4"
-        },
-        {
-          "name": "omega_3",
-          "ordinal": 12,
-          "type_info": "Float4"
-        },
-        {
-          "name": "recipes",
-          "ordinal": 13,
-          "type_info": "UuidArray"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        null
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\n        SELECT\n            fish.id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish.lake,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.mercury,\n            fish.omega_3_ratio,\n            fish.omega_3,\n            array(\n                SELECT recipe_id\n                FROM fishtype_recipe\n                WHERE fishtype_recipe.fishtype_id=fish_type.id\n                ) as recipes\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        "
   },
   "c5503e36f6c88937f352ffd6ade7e7b9913f69576279506e5721378a822e7fd3": {
     "describe": {

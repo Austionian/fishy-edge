@@ -19,6 +19,7 @@ struct Fish {
     pub pcb: Option<f32>,
     pub protein: Option<f32>,
     pub recipes: Option<Vec<Uuid>>,
+    pub date_sampled: Option<chrono::NaiveDateTime>,
 }
 
 #[derive(serde::Serialize)]
@@ -98,6 +99,7 @@ async fn get_fish_data(db_pool: &PgPool) -> Result<Vec<Fish>, sqlx::Error> {
             fish.mercury,
             fish.omega_3_ratio,
             fish.omega_3,
+            fish.date_sampled,
             array(
                 SELECT recipe_id
                 FROM fishtype_recipe

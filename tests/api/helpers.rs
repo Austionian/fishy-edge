@@ -387,7 +387,7 @@ impl TestApp {
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await
-            .expect("Failed to post unfavorite recipe.")
+            .expect("Failed to post presign url.")
     }
 
     pub async fn get_recipes(&self) -> reqwest::Response {
@@ -400,7 +400,16 @@ impl TestApp {
             .header("Authorization", &format!("Bearer {}", &self.api_key))
             .send()
             .await
-            .expect("Failed to post unfavorite recipe.")
+            .expect("Failed to get recipes.")
+    }
+
+    pub async fn get_everything(&self) -> reqwest::Response {
+        self.api_client
+            .get(format!("{}/v1/everything", &self.address))
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to get everything.")
     }
 }
 

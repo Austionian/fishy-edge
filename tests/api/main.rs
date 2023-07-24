@@ -1,6 +1,7 @@
 mod admin;
 mod api;
 mod change_password;
+mod everything;
 mod favorite;
 mod fish;
 mod fish_avg;
