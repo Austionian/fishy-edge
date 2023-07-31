@@ -55,14 +55,14 @@ pub async fn min_and_max(
     let attr = query.attr.as_str();
     if !VALID_ATTRS.contains(&attr) {
         tracing::warn!("Invalid attr supplied.");
-        return HttpResponse::NotAcceptable().finish();
+        return HttpResponse::BadRequest().finish();
     }
     match &query.lake {
         Some(lake) => {
             let lake = lake.as_str();
             if !VALID_LAKES.contains(&lake) {
                 tracing::warn!("Invalid lake supplied.");
-                return HttpResponse::NotAcceptable().finish();
+                return HttpResponse::BadRequest().finish();
             }
             match get_min_and_max_data(lake, attr, &db_pool).await {
                 Ok(data) => {

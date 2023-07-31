@@ -10,6 +10,7 @@ mod fishs;
 mod health_check;
 mod helpers;
 mod login;
+mod min_and_max;
 mod presign_s3;
 mod recipe;
 mod register;

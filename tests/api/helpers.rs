@@ -411,6 +411,18 @@ impl TestApp {
             .await
             .expect("Failed to get everything.")
     }
+
+    pub async fn get_min_and_max(&self, lake: &str, attr: &str) -> reqwest::Response {
+        self.api_client
+            .get(format!(
+                "{}/v1/min_and_max?lake={}&attr={}",
+                &self.address, lake, attr
+            ))
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to get min and max.")
+    }
 }
 
 async fn configure_database(config: &DataBaseSettings) -> PgPool {
