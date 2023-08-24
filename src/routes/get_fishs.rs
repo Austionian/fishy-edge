@@ -7,7 +7,7 @@ pub struct FishQuery {
     lake: Option<String>,
 }
 
-const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
+const VALID_LAKES: [&str; 5] = ["Store", "Superior", "Huron", "Michigan", "Inland"];
 
 /// Returns a JSON of all fish for a given lake. If no lake is supplied
 /// or an invalid lake is supplied the 'store' fish will be returned.
