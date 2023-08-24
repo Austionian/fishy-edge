@@ -1,7 +1,7 @@
 use uuid::Uuid;
 
 mod admin;
-mod everything;
+pub mod everything;
 mod favorite;
 mod get_fish;
 mod get_fish_avg;
@@ -9,10 +9,10 @@ mod get_fish_avgs;
 mod get_fishs;
 mod health_check;
 mod login;
-mod min_and_max;
-mod presign_s3;
-mod recipe;
-mod recipes;
+pub mod min_and_max;
+pub mod presign_s3;
+pub mod recipe;
+pub mod recipes;
 mod search;
 mod unfavorite;
 mod user;
