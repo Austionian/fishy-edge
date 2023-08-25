@@ -75,3 +75,5 @@ pub struct FishType {
     pub woodland_fish_image: Option<String>,
     pub about: String,
 }
+
+pub const VALID_LAKES: [&str; 5] = ["Store", "Superior", "Huron", "Michigan", "Inland"];

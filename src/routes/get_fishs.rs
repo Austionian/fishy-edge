@@ -1,4 +1,4 @@
-use crate::routes::Fish;
+use crate::routes::{Fish, VALID_LAKES};
 use actix_web::{get, web, HttpResponse};
 use sqlx::PgPool;
 
@@ -6,8 +6,6 @@ use sqlx::PgPool;
 pub struct FishQuery {
     lake: Option<String>,
 }
-
-const VALID_LAKES: [&str; 5] = ["Store", "Superior", "Huron", "Michigan", "Inland"];
 
 /// Returns a JSON of all fish for a given lake. If no lake is supplied
 /// or an invalid lake is supplied the 'store' fish will be returned.

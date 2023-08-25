@@ -1,3 +1,4 @@
+use crate::routes::VALID_LAKES;
 use actix_web::{get, web, HttpResponse};
 use sqlx::{PgPool, Postgres};
 
@@ -21,7 +22,6 @@ struct Data {
 }
 
 // Whitelist options
-const VALID_LAKES: [&str; 4] = ["Store", "Superior", "Huron", "Michigan"];
 const VALID_ATTRS: [&str; 4] = ["protein", "pcb", "mercury", "omega_3_ratio"];
 
 /// Returns a json of the fish with the min and max value for a given lake and
