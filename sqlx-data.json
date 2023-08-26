@@ -755,6 +755,24 @@
     },
     "query": "\n        DELETE FROM fishtype_recipe\n        WHERE fishtype_id = $1;\n        "
   },
+  "85aad5757070029c49dfad3ca03100159dd41f6743a8730aeaefbe39e2dd3b41": {
+    "describe": {
+      "columns": [
+        {
+          "name": "count",
+          "ordinal": 0,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT count(email) FROM users;\n        "
+  },
   "8c19df2099af738036da04e2333065d5f0ccff2d87ab96d24732a3a038867f4b": {
     "describe": {
       "columns": [
@@ -856,6 +874,24 @@
       }
     },
     "query": "\n        DELETE FROM recipe\n        WHERE id = $1;\n        "
+  },
+  "a466d07a753cfe3487ddfb988464ad9c5c8e2d58a54f0724f762190fbb93f57d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "email",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT email FROM users;\n        "
   },
   "a71aac8ea6b38ed60a7f4ed1145ed158ff712904fd6bcb45fbbadcbc94c07983": {
     "describe": {
