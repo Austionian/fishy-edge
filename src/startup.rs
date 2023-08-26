@@ -73,7 +73,8 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                                     .service(routes::read_fish_type)
                                     .service(routes::read_all_fish_types)
                                     .service(routes::update_fish_type_image),
-                            ),
+                            )
+                            .service(web::scope("/analytics").service(routes::get_analytics)),
                     ),
             )
             .app_data(db_pool.clone())

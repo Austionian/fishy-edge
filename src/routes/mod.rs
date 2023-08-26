@@ -18,8 +18,9 @@ mod unfavorite;
 mod user;
 
 pub use admin::{
-    create_fish_type, delete_fish, delete_recipe, new_fish, new_recipe, read_all_fish_types,
-    read_fish_type, update_fish, update_fish_type, update_fish_type_image, update_recipe,
+    create_fish_type, delete_fish, delete_recipe, get_analytics, new_fish, new_recipe,
+    read_all_fish_types, read_fish_type, update_fish, update_fish_type, update_fish_type_image,
+    update_recipe,
 };
 pub use everything::*;
 pub use favorite::{favorite_fish, favorite_recipe, favorites};
