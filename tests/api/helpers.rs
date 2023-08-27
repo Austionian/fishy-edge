@@ -541,8 +541,8 @@ impl TestUser {
             portion_size: None,
             is_admin: Some(false),
             image_url: None,
-            created_at: Some(chrono::DateTime::default()),
-            latest_login: Some(chrono::DateTime::default()),
+            created_at: Some(Utc::now()),
+            latest_login: Some(Utc::now()),
         }
     }
 
