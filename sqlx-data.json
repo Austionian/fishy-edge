@@ -12,68 +12,6 @@
     },
     "query": "\n        DELETE FROM fishtype_recipe\n        WHERE recipe_id = $1;\n        "
   },
-  "0515a96aac1d4dbf311b7543f93195e4b10c25a6ab6a842b3131588eef4063b1": {
-    "describe": {
-      "columns": [
-        {
-          "name": "weight",
-          "ordinal": 0,
-          "type_info": "Int2"
-        },
-        {
-          "name": "age",
-          "ordinal": 1,
-          "type_info": "Int2"
-        },
-        {
-          "name": "sex",
-          "ordinal": 2,
-          "type_info": "Varchar"
-        },
-        {
-          "name": "plan_to_get_pregnant",
-          "ordinal": 3,
-          "type_info": "Bool"
-        },
-        {
-          "name": "portion_size",
-          "ordinal": 4,
-          "type_info": "Int2"
-        },
-        {
-          "name": "image_url",
-          "ordinal": 5,
-          "type_info": "Text"
-        },
-        {
-          "name": "first_name",
-          "ordinal": 6,
-          "type_info": "Varchar"
-        },
-        {
-          "name": "last_name",
-          "ordinal": 7,
-          "type_info": "Varchar"
-        }
-      ],
-      "nullable": [
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        SELECT\n            weight,\n            age,\n            sex,\n            plan_to_get_pregnant,\n            portion_size,\n            image_url,\n            first_name,\n            last_name\n        FROM users\n        WHERE id=$1\n        "
-  },
   "07e312d6dd2c169fbd575f1b69e584c27c24e3f9620ed4a9788874e1be68c198": {
     "describe": {
       "columns": [
@@ -358,6 +296,19 @@
       }
     },
     "query": "\n        UPDATE fish_type\n        SET s3_fish_image = $1\n        WHERE id = $2;\n        "
+  },
+  "2d7e2ac30fee719ffe1a8b26fc209185a19c035c896a1af229d49a1a59317728": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "\n        UPDATE users\n        SET latest_login=$2\n        WHERE id=$1\n        "
   },
   "349254e7e395a13052131c34fab61859a9dde0b55665a9820bf0845440145ac4": {
     "describe": {
@@ -689,19 +640,67 @@
     },
     "query": "\n        UPDATE users\n        SET password_hash = $1\n        WHERE id = $2\n        "
   },
-  "655e8067e5fdc9f9c9575c5e7c7b772e1e88cfb06491b784db3218af64425d88": {
+  "61834e4429ea07506494ed63b7771e850559e4de2cf9a51a4c3f387fb7cbdcc2": {
     "describe": {
-      "columns": [],
-      "nullable": [],
+      "columns": [
+        {
+          "name": "weight",
+          "ordinal": 0,
+          "type_info": "Int2"
+        },
+        {
+          "name": "age",
+          "ordinal": 1,
+          "type_info": "Int2"
+        },
+        {
+          "name": "sex",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "plan_to_get_pregnant",
+          "ordinal": 3,
+          "type_info": "Bool"
+        },
+        {
+          "name": "portion_size",
+          "ordinal": 4,
+          "type_info": "Int2"
+        },
+        {
+          "name": "image_url",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "first_name",
+          "ordinal": 6,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "last_name",
+          "ordinal": 7,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
       "parameters": {
         "Left": [
-          "Uuid",
-          "Text",
-          "Text"
+          "Uuid"
         ]
       }
     },
-    "query": "\n        INSERT INTO users (id, email, password_hash, is_admin)\n        VALUES ($1, $2, $3, false)\n        "
+    "query": "\n        SELECT\n            weight,\n            age,\n            sex,\n            plan_to_get_pregnant,\n            portion_size,\n            image_url,\n            first_name,\n            last_name\n        FROM users\n        WHERE id=$1;\n        "
   },
   "7088dc1934911f9f468950d61d3e7d2ee93640f96b53c196eaff57b9acf2a66a": {
     "describe": {
@@ -843,6 +842,22 @@
     },
     "query": "\n        SELECT\n            id,\n            name,\n            steps,\n            ingredients\n        FROM recipe\n        JOIN user_recipe ON recipe.id = user_recipe.recipe_id\n        WHERE user_recipe.user_id = $1;\n        "
   },
+  "9b23edabc0041cf2b8cb4735e71ab19b068914c08da7e8dfec34950d0e67c75a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO users (id, email, password_hash, is_admin, created_at, latest_login)\n        VALUES ($1, $2, $3, false, $4, $5)\n        "
+  },
   "a2c496be8c7b12ddd1e88d01d610dc9e7d4da538f9a5295e8ff195452b2289b7": {
     "describe": {
       "columns": [
@@ -874,24 +889,6 @@
       }
     },
     "query": "\n        DELETE FROM recipe\n        WHERE id = $1;\n        "
-  },
-  "a466d07a753cfe3487ddfb988464ad9c5c8e2d58a54f0724f762190fbb93f57d": {
-    "describe": {
-      "columns": [
-        {
-          "name": "email",
-          "ordinal": 0,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\n        SELECT email FROM users;\n        "
   },
   "a71aac8ea6b38ed60a7f4ed1145ed158ff712904fd6bcb45fbbadcbc94c07983": {
     "describe": {
@@ -1350,6 +1347,36 @@
       }
     },
     "query": "\n        SELECT\n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish_type.about,\n            AVG(pcb) as pcb,\n            AVG(protein) as protein,\n            AVG(mercury) as mercury,\n            AVG(omega_3_ratio) as omega_3_ratio,\n            AVG(omega_3) as omega_3\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        WHERE fish_type.id=$1\n        GROUP BY fish_type.id;\n        "
+  },
+  "ec6c5f4be1aa64f1bdd44625542ee8d98fdec277b407b43f40791d318b4ea69e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "email",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 1,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "latest_login",
+          "ordinal": 2,
+          "type_info": "Timestamptz"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT \n            email,\n            created_at,\n            latest_login\n        FROM users;\n        "
   },
   "efe4f2123d489966679b4aa0b7045b1896f2d8393883b696984251dac9bab7b7": {
     "describe": {

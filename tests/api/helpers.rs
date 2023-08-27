@@ -1,5 +1,6 @@
 use argon2::password_hash::SaltString;
 use argon2::{Algorithm, Argon2, Params, PasswordHasher, Version};
+use chrono::Utc;
 use fishy_edge::configuration::{get_configuration, DataBaseSettings};
 use fishy_edge::startup::run;
 use fishy_edge::telemetry;
@@ -520,6 +521,8 @@ pub struct TestUser {
     pub portion_size: Option<i16>,
     pub is_admin: Option<bool>,
     pub image_url: Option<String>,
+    pub created_at: Option<chrono::DateTime<Utc>>,
+    pub latest_login: Option<chrono::DateTime<Utc>>,
 }
 
 impl TestUser {
@@ -538,6 +541,8 @@ impl TestUser {
             portion_size: None,
             is_admin: Some(false),
             image_url: None,
+            created_at: Some(chrono::DateTime::default()),
+            latest_login: Some(chrono::DateTime::default()),
         }
     }
 

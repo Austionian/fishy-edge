@@ -1,5 +1,6 @@
 use crate::authentication::{validate_credentials, AuthError, Credentials};
 use actix_web::{error::InternalError, web, HttpResponse};
+use chrono::Utc;
 use secrecy::Secret;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -88,7 +89,7 @@ async fn get_user_db(db_pool: &PgPool, user_id: Uuid) -> Result<UserData, sqlx::
             first_name,
             last_name
         FROM users
-        WHERE id=$1
+        WHERE id=$1;
         "#,
         user_id
     )
@@ -98,6 +99,18 @@ async fn get_user_db(db_pool: &PgPool, user_id: Uuid) -> Result<UserData, sqlx::
         tracing::error!("Failed to execute the query: {:?}", e);
         e
     })?;
+
+    sqlx::query!(
+        r#"
+        UPDATE users
+        SET latest_login=$2
+        WHERE id=$1
+        "#,
+        user_id,
+        Utc::now()
+    )
+    .execute(db_pool)
+    .await?;
 
     Ok(user_data)
 }

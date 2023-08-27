@@ -1,6 +1,7 @@
 use crate::authentication::compute_password_hash;
 use crate::utils::e500;
 use actix_web::{web, HttpResponse};
+use chrono::Utc;
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -51,12 +52,14 @@ async fn insert_user(
     let user_id = Uuid::new_v4();
     sqlx::query!(
         r#"
-        INSERT INTO users (id, email, password_hash, is_admin)
-        VALUES ($1, $2, $3, false)
+        INSERT INTO users (id, email, password_hash, is_admin, created_at, latest_login)
+        VALUES ($1, $2, $3, false, $4, $5)
         "#,
         user_id,
         email,
-        password_hash.expose_secret()
+        password_hash.expose_secret(),
+        Utc::now(),
+        Utc::now(),
     )
     .execute(db_pool)
     .await
