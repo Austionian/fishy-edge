@@ -6,11 +6,10 @@ async fn a_user_should_be_able_to_update_their_profile() {
 
     let weight = 200;
     let age = 23;
-    let sex = "Male";
     let portion_size = 8;
 
     let body = format!(
-        "user_id={}&weight={weight}&age={age}&sex={sex}&portion_size={portion_size}",
+        "user_id={}&weight={weight}&age={age}&portion_size={portion_size}",
         &app.test_user.id,
     );
 
@@ -25,7 +24,6 @@ async fn a_user_should_be_able_to_update_their_profile() {
 
     assert_eq!(user.weight, Some(weight));
     assert_eq!(user.age, Some(age));
-    assert_eq!(user.sex, Some(sex.to_string()));
     assert_eq!(user.plan_to_get_pregnant, None);
     assert_eq!(user.portion_size, Some(portion_size));
 }
