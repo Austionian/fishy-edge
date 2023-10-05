@@ -25,7 +25,6 @@ pub struct FormData {
     user_id: Uuid,
     weight: i16,
     age: i16,
-    sex: Sex,
     plan_to_get_pregnant: Option<bool>,
     portion_size: i16,
 }
@@ -58,7 +57,7 @@ async fn update_profile_db(db_pool: &PgPool, form: web::Form<FormData>) -> Resul
         "#,
         form.weight,
         form.age,
-        form.sex.to_string(),
+        "male",
         form.plan_to_get_pregnant,
         form.portion_size,
         form.user_id,
