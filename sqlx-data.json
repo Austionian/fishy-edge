@@ -220,6 +220,36 @@
     },
     "query": "\n        SELECT \n            fish.id as fish_id,\n            fish.fish_type_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.omega_3,\n            fish.omega_3_ratio,\n            fish.mercury,\n            fish.lake,\n            fish_type.about\n        FROM fish\n        JOIN fish_type\n        ON fish.fish_type_id=fish_type.id\n        WHERE fish.lake=$1;\n        "
   },
+  "0d9f3721a0949c933866c693777f0995df2ff8d72837adb7c8d7dc30aed033c9": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "like_count",
+          "ordinal": 2,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT \n            ft.id,\n            ft.name,\n            like_count \n        FROM (\n            SELECT \n                fishtype_id, \n                count(fishtype_id) as like_count\n            FROM user_fishtype \n            GROUP BY fishtype_id \n            ORDER BY fishtype_id DESC \n            LIMIT 1) \n        AS subquery\n        JOIN fish_type AS ft \n        ON subquery.fishtype_id = ft.id;\n        "
+  },
   "1abd7468849cac23c2d88ff53d650c915fcb0402b4a92a60e19045686011289f": {
     "describe": {
       "columns": [],
@@ -1463,6 +1493,36 @@
       }
     },
     "query": "\n        SELECT \n            id as recipe_id,\n            name as recipe_name\n        FROM recipe\n        "
+  },
+  "f8319b6cfeaf07a63a74e4fd19630e6a48cf3a8f7caae1d3896f414e70991860": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "like_count",
+          "ordinal": 2,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT \n            r.id,\n            r.name,\n            like_count \n        FROM (\n            SELECT \n                recipe_id, \n                count(recipe_id) as like_count\n            FROM user_recipe\n            GROUP BY recipe_id\n            ORDER BY recipe_id DESC \n            LIMIT 1) \n        AS subquery\n        JOIN recipe AS r \n        ON subquery.recipe_id = r.id;\n        "
   },
   "f932b51d3a49d3a015c7f421e1871b504f4602422873f766af6242dfa0cde637": {
     "describe": {
