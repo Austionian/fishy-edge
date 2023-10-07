@@ -7,6 +7,12 @@ use sqlx::PgPool;
 pub struct Data {
     pub(crate) user_data: Vec<UserData>,
     pub(crate) number_of_registered_users: usize,
+    pub(crate) most_liked_fish: String,
+    pub(crate) most_liked_fish_id: uuid::Uuid,
+    pub(crate) fish_like_count: Option<i64>,
+    pub(crate) most_liked_recipe: String,
+    pub(crate) most_liked_recipe_id: uuid::Uuid,
+    pub(crate) recipe_like_count: Option<i64>,
 }
 
 #[derive(serde::Serialize)]
@@ -58,8 +64,60 @@ async fn analytics(db_pool: &PgPool) -> Result<Data, sqlx::Error> {
     .fetch_all(db_pool)
     .await?;
 
+    let (most_liked_fish_id, most_liked_fish, fish_like_count) = sqlx::query!(
+        r#"
+        SELECT 
+            ft.id,
+            ft.name,
+            like_count 
+        FROM (
+            SELECT 
+                fishtype_id, 
+                count(fishtype_id) as like_count
+            FROM user_fishtype 
+            GROUP BY fishtype_id 
+            ORDER BY fishtype_id DESC 
+            LIMIT 1) 
+        AS subquery
+        JOIN fish_type AS ft 
+        ON subquery.fishtype_id = ft.id;
+        "#
+    )
+    .fetch_one(db_pool)
+    .await
+    .map(|row| (row.id, row.name, row.like_count))?;
+
+    let (most_liked_recipe_id, most_liked_recipe, recipe_like_count) = sqlx::query!(
+        r#"
+        SELECT 
+            r.id,
+            r.name,
+            like_count 
+        FROM (
+            SELECT 
+                recipe_id, 
+                count(recipe_id) as like_count
+            FROM user_recipe
+            GROUP BY recipe_id
+            ORDER BY recipe_id DESC 
+            LIMIT 1) 
+        AS subquery
+        JOIN recipe AS r 
+        ON subquery.recipe_id = r.id;
+        "#
+    )
+    .fetch_one(db_pool)
+    .await
+    .map(|row| (row.id, row.name, row.like_count))?;
+
     Ok(Data {
         user_data,
         number_of_registered_users,
+        most_liked_fish_id,
+        most_liked_fish,
+        fish_like_count,
+        most_liked_recipe,
+        most_liked_recipe_id,
+        recipe_like_count,
     })
 }
