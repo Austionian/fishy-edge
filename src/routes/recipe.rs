@@ -70,7 +70,8 @@ async fn get_recipe_data(
             id,
             name,
             ingredients,
-            steps
+            steps,
+            image_url
         FROM recipe
         WHERE id = $1;
         "#,

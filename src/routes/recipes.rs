@@ -51,7 +51,8 @@ async fn get_recipe_data(db_pool: &PgPool) -> Result<Vec<Recipe>, sqlx::Error> {
             id,
             name,
             ingredients,
-            steps
+            steps,
+            image_url
         FROM recipe
         "#
     )

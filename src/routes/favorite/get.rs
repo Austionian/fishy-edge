@@ -98,7 +98,8 @@ async fn favorites_db(db_pool: &PgPool, user_id: Uuid) -> Result<Favorites, sqlx
             id,
             name,
             steps,
-            ingredients
+            ingredients,
+            image_url
         FROM recipe
         JOIN user_recipe ON recipe.id = user_recipe.recipe_id
         WHERE user_recipe.user_id = $1;

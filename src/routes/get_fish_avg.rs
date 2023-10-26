@@ -165,7 +165,8 @@ async fn get_recipe_data(fish_type_id: Uuid, db_pool: &PgPool) -> Result<Vec<Rec
             id,
             name,
             ingredients,
-            steps
+            steps,
+            image_url
         FROM recipe
         WHERE recipe.id
         IN (

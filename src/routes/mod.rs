@@ -63,6 +63,7 @@ pub struct Recipe {
     pub name: String,
     pub ingredients: Option<Vec<String>>,
     pub steps: Option<Vec<String>>,
+    pub image_url: Option<String>,
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
