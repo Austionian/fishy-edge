@@ -1082,6 +1082,19 @@
     },
     "query": "\n        UPDATE users\n        SET email=$1, first_name=$2, last_name=$3 \n        WHERE id = $4\n        "
   },
+  "b17bce041820fdab5adc775404ac61bde540b38330f8063a6b5e8b441c1b8730": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE recipe\n        SET image_url = $1\n        WHERE id = $2;\n        "
+  },
   "c5503e36f6c88937f352ffd6ade7e7b9913f69576279506e5721378a822e7fd3": {
     "describe": {
       "columns": [
