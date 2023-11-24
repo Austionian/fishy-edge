@@ -5,6 +5,7 @@ alias d := dev
 alias u := update
 alias cm := create-migration
 
+# List out available commands.
 default:
     just --list
 
@@ -39,7 +40,7 @@ test:
     ulimit -n 5000
     cargo t
 
-# Update dependencies.
+# Update dependencies and run the tests.
 update:
     #!/bin/bash
     cargo update
