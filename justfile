@@ -66,6 +66,10 @@ init-db:
     #!/usr/bin/env bash
     scripts/init_db.sh
 
+# Create a new database instance with fish data.
+create-db:
+    #!/usr/bin/env bash
+    just init-db
     just populate
 
 # Update the digital ocean configurations after making a change to the spec file
