@@ -28,13 +28,14 @@ async fn save_new_recipe(
 ) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
-        INSERT INTO recipe (id, name, ingredients, steps)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO recipe (id, name, ingredients, steps, image_url)
+        VALUES ($1, $2, $3, $4, $5)
         "#,
         recipe_id,
         data.name,
         &data.ingredients,
-        &data.steps
+        &data.steps,
+        &data.image_url,
     )
     .execute(db_pool)
     .await

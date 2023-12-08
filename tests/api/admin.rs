@@ -6,8 +6,10 @@ async fn admin_users_can_crud_recipes() {
     // Part One: Create a new recipe.
     let app = spawn_app().await;
     let name = Uuid::new_v4();
+    let image_url = "https://fake_url.com";
     let body = serde_json::json!({
         "name": name,
+        "image_url": image_url,
         "steps": [
             "step"
         ],
@@ -28,10 +30,14 @@ async fn admin_users_can_crud_recipes() {
     assert_eq!(recipe.name, name.to_string());
     assert_eq!(recipe.steps.unwrap().len(), 1);
     assert_eq!(recipe.ingredients.unwrap().len(), 1);
+    assert_eq!(recipe.image_url.unwrap(), image_url);
+
+    let new_image_url = "https:://new_fake_url.com";
 
     // Part Two: Update the recipe
     let body = serde_json::json!({
         "name": name,
+        "image_url": new_image_url,
         "steps": [
             "step",
             "step2"
@@ -51,6 +57,7 @@ async fn admin_users_can_crud_recipes() {
     assert_eq!(recipe.name, name.to_string());
     assert_eq!(recipe.steps.unwrap().len(), 2);
     assert_eq!(recipe.ingredients.unwrap().len(), 0);
+    assert_eq!(recipe.image_url.unwrap(), new_image_url);
 
     // Part Three: Delete the recipe
     let response = app.delete_recipe(&recipe.id.to_string()).await;
