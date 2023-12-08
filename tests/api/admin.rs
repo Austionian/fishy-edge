@@ -32,12 +32,10 @@ async fn admin_users_can_crud_recipes() {
     assert_eq!(recipe.ingredients.unwrap().len(), 1);
     assert_eq!(recipe.image_url.unwrap(), image_url);
 
-    let new_image_url = "https:://new_fake_url.com";
-
     // Part Two: Update the recipe
     let body = serde_json::json!({
         "name": name,
-        "image_url": new_image_url,
+        "image_url": "",
         "steps": [
             "step",
             "step2"
@@ -57,7 +55,7 @@ async fn admin_users_can_crud_recipes() {
     assert_eq!(recipe.name, name.to_string());
     assert_eq!(recipe.steps.unwrap().len(), 2);
     assert_eq!(recipe.ingredients.unwrap().len(), 0);
-    assert_eq!(recipe.image_url.unwrap(), new_image_url);
+    assert_eq!(recipe.image_url.unwrap(), image_url);
 
     // Part Three: Delete the recipe
     let response = app.delete_recipe(&recipe.id.to_string()).await;
@@ -70,6 +68,25 @@ async fn admin_users_can_crud_recipes() {
         .expect("Failed to execute the recipe select.");
 
     assert_eq!(recipes.len(), 0);
+}
+
+#[tokio::test]
+async fn admin_users_should_be_able_to_update_recipe_images() {
+    let app = spawn_app().await;
+    let new_url = "https://www.new_fake_url.com";
+    let body = serde_json::json!({
+        "image_url": new_url,
+    });
+    let response = app.update_recipe_image(&body).await;
+
+    assert_eq!(response.status().as_u16(), 200);
+
+    let recipe = sqlx::query!("SELECT * FROM recipe WHERE id = $1", app.recipe.id)
+        .fetch_one(&app.db_pool)
+        .await
+        .expect("Failed to get the updated recipe.");
+
+    assert_eq!(recipe.image_url.unwrap(), new_url);
 }
 
 #[tokio::test]

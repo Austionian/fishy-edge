@@ -47,14 +47,12 @@ async fn update_recipe_db(
         SET 
            name = $1,
            ingredients = $2,
-           steps = $3,
-           image_url = $4
-        WHERE id = $5
+           steps = $3
+        WHERE id = $4
         "#,
         data.name,
         &data.ingredients,
         &data.steps,
-        data.image_url,
         recipe_uuid
     )
     .execute(db_pool)

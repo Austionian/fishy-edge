@@ -66,6 +66,26 @@ impl TestApp {
             .expect("Failed to post recipe update.")
     }
 
+    pub async fn update_recipe_image<Body>(&self, body: &Body) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
+        self.api_client
+            .put(format!(
+                "{}/v1/admin/recipe/{}/image",
+                &self.address, &self.recipe.id
+            ))
+            .json(body)
+            .header(
+                "Cookie",
+                &format!("user_id={}", &self.admin_user.user_id.to_string()),
+            )
+            .header("Authorization", &format!("Bearer {}", &self.api_key))
+            .send()
+            .await
+            .expect("Failed to post recipe image update.")
+    }
+
     pub async fn delete_recipe(&self, recipe_id: &str) -> reqwest::Response {
         self.api_client
             .delete(format!("{}/v1/admin/recipe/{}", &self.address, recipe_id))
@@ -695,6 +715,7 @@ impl Fish {
 pub struct Recipe {
     pub id: Uuid,
     pub name: String,
+    pub image_url: Option<String>,
     pub ingredients: Option<Vec<String>>,
     pub steps: Option<Vec<String>>,
 }
@@ -704,6 +725,7 @@ impl Recipe {
         Self {
             id: uuid::Uuid::new_v4(),
             name: uuid::Uuid::new_v4().to_string(),
+            image_url: None,
             ingredients: None,
             steps: None,
         }
