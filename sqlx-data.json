@@ -16,22 +16,6 @@
     },
     "query": "\n        INSERT INTO recipe (id, name, ingredients, steps, image_url)\n        VALUES ($1, $2, $3, $4, $5)\n        "
   },
-  "02d0ce5185ed39ea5288536252984189eb8c95a38dd0902b8481cd5b98c0ead7": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          "TextArray",
-          "TextArray",
-          "Text",
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        UPDATE recipe\n        SET \n           name = $1,\n           ingredients = $2,\n           steps = $3,\n           image_url = $4\n        WHERE id = $5\n        "
-  },
   "0357b796e720fbf79ef413e136329adae7b34993c8eac47b2a52635707a7eeab": {
     "describe": {
       "columns": [],
@@ -330,6 +314,21 @@
       }
     },
     "query": "\n        DELETE FROM users\n        WHERE id=$1\n        "
+  },
+  "28f9fc2f01f289779caeebb39780a75e2df7c34f5d764639d00bf14e19156d41": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "TextArray",
+          "TextArray",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE recipe\n        SET \n           name = $1,\n           ingredients = $2,\n           steps = $3\n        WHERE id = $4\n        "
   },
   "2bdf58576e0781cc279f0cab96822644e5bc11b651af349b86a12177224b36ff": {
     "describe": {
