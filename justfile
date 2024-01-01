@@ -38,11 +38,13 @@ test:
 
     # ensures that Mac isn't limiting the amount of files allowed opened.
     ulimit -n 5000
+    echo "Testing..."
     cargo t
 
 # Update dependencies and run the tests.
 update:
     #!/bin/bash
+    echo "Updating dependencies..."
     cargo update
     just test
     
