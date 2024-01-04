@@ -44,8 +44,8 @@ test:
 # Update dependencies and run the tests.
 update:
     #!/bin/bash
-    echo "Updating dependencies..."
     cargo update
+    echo $'Dependencies updated!\n'
     just test
     
 # Start the Actix server and watch for changes.
