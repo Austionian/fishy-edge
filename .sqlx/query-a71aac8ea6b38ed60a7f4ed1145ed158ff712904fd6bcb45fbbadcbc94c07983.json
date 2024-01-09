@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            id,\n            name,\n            anishinaabe_name,\n            fish_image,\n            s3_fish_image,\n            s3_woodland_image,\n            woodland_fish_image,\n            about\n        FROM fish_type\n        WHERE id = $1;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "anishinaabe_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "s3_fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "s3_woodland_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "woodland_fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "about",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false
+    ]
+  },
+  "hash": "a71aac8ea6b38ed60a7f4ed1145ed158ff712904fd6bcb45fbbadcbc94c07983"
+}

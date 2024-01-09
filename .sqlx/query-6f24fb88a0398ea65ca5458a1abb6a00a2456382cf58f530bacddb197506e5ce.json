@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            id,\n            name,\n            steps,\n            ingredients,\n            image_url\n        FROM recipe\n        JOIN user_recipe ON recipe.id = user_recipe.recipe_id\n        WHERE user_recipe.user_id = $1;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "steps",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 3,
+        "name": "ingredients",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 4,
+        "name": "image_url",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "6f24fb88a0398ea65ca5458a1abb6a00a2456382cf58f530bacddb197506e5ce"
+}

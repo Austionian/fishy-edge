@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE users\n        SET (weight, age, sex, plan_to_get_pregnant, portion_size) = ($1, $2, $3, $4, $5)\n        WHERE users.id = $6\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int2",
+        "Int2",
+        "Varchar",
+        "Bool",
+        "Int2",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "1abd7468849cac23c2d88ff53d650c915fcb0402b4a92a60e19045686011289f"
+}

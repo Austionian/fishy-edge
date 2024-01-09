@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE recipe\n        SET image_url = $1\n        WHERE id = $2;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "b17bce041820fdab5adc775404ac61bde540b38330f8063a6b5e8b441c1b8730"
+}

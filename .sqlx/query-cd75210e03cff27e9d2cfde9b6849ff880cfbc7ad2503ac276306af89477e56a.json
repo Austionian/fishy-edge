@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO user_recipe (user_id, recipe_id)\n        VALUES ($1, $2);\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "cd75210e03cff27e9d2cfde9b6849ff880cfbc7ad2503ac276306af89477e56a"
+}

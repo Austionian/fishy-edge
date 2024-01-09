@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        DELETE FROM fishtype_recipe\n        WHERE fishtype_id = $1;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "844691a98e288699c77064d9e4afd9807be4f6f0491c7a2b3629e03594388be2"
+}

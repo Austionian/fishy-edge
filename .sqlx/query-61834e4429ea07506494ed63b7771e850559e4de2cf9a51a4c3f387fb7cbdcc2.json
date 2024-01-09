@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            weight,\n            age,\n            sex,\n            plan_to_get_pregnant,\n            portion_size,\n            image_url,\n            first_name,\n            last_name\n        FROM users\n        WHERE id=$1;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "weight",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 1,
+        "name": "age",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 2,
+        "name": "sex",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "plan_to_get_pregnant",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "portion_size",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 5,
+        "name": "image_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "first_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "last_name",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "61834e4429ea07506494ed63b7771e850559e4de2cf9a51a4c3f387fb7cbdcc2"
+}

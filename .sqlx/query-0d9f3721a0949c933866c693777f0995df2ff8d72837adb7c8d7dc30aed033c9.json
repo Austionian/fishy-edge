@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n            ft.id,\n            ft.name,\n            like_count \n        FROM (\n            SELECT \n                fishtype_id, \n                count(fishtype_id) as like_count\n            FROM user_fishtype \n            GROUP BY fishtype_id \n            ORDER BY fishtype_id DESC \n            LIMIT 1) \n        AS subquery\n        JOIN fish_type AS ft \n        ON subquery.fishtype_id = ft.id;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "like_count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "0d9f3721a0949c933866c693777f0995df2ff8d72837adb7c8d7dc30aed033c9"
+}

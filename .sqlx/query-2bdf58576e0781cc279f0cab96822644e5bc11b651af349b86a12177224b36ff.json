@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE fish_type\n        SET s3_fish_image = $1\n        WHERE id = $2;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "2bdf58576e0781cc279f0cab96822644e5bc11b651af349b86a12177224b36ff"
+}

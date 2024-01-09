@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            id,\n            name,\n            ingredients,\n            steps,\n            image_url\n        FROM recipe\n        WHERE recipe.id\n        IN (\n            SELECT \n                recipe_id\n            FROM fishtype_recipe\n            WHERE fishtype_id = $1\n        );\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "ingredients",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 3,
+        "name": "steps",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 4,
+        "name": "image_url",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "2dbd6bc60473428fdff1e1339174c5e0e0abd597f23e12b5590f76f89096d9cf"
+}

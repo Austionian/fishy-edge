@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE fish_type\n        SET \n            name = $1,\n            anishinaabe_name = $2,\n            about = $3\n        WHERE id = $4;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4aa3c97ec41078895a18a3b085d633647cbcf862d4940e44d2ef575c9f81c440"
+}

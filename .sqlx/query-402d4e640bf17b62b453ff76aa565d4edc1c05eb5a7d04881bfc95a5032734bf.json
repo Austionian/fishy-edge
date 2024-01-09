@@ -1,0 +1,92 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            fish_type.id as fish_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish_type.about,\n            AVG(pcb) as pcb,\n            AVG(protein) as protein,\n            AVG(mercury) as mercury,\n            AVG(omega_3_ratio) as omega_3_ratio,\n            AVG(omega_3) as omega_3\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        GROUP BY fish_type.id;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "fish_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "anishinaabe_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "woodland_fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "s3_fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "s3_woodland_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "about",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "pcb",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 9,
+        "name": "protein",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 10,
+        "name": "mercury",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 11,
+        "name": "omega_3_ratio",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 12,
+        "name": "omega_3",
+        "type_info": "Float8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "402d4e640bf17b62b453ff76aa565d4edc1c05eb5a7d04881bfc95a5032734bf"
+}

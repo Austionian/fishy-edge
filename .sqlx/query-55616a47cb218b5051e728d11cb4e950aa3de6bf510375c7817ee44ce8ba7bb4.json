@@ -1,0 +1,104 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            fish.id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish.lake,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.pcb,\n            fish.protein,\n            fish.mercury,\n            fish.omega_3_ratio,\n            fish.omega_3,\n            fish.date_sampled,\n            array(\n                SELECT recipe_id\n                FROM fishtype_recipe\n                WHERE fishtype_recipe.fishtype_id=fish_type.id\n                ) as recipes\n        FROM fish \n        JOIN fish_type ON fish.fish_type_id=fish_type.id\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "anishinaabe_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "lake",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "woodland_fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "s3_fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "s3_woodland_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "pcb",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 9,
+        "name": "protein",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 10,
+        "name": "mercury",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 11,
+        "name": "omega_3_ratio",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 12,
+        "name": "omega_3",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 13,
+        "name": "date_sampled",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 14,
+        "name": "recipes",
+        "type_info": "UuidArray"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      null
+    ]
+  },
+  "hash": "55616a47cb218b5051e728d11cb4e950aa3de6bf510375c7817ee44ce8ba7bb4"
+}

@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO user_fishtype (user_id, fishtype_id)\n        VALUES ($1, $2);\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ca252f32fc1980a1727982355ab62654c5b62c946805ceb9c44eb1cd5806e3bc"
+}

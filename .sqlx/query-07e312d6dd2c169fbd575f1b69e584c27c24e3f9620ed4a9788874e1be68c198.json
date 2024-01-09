@@ -1,0 +1,106 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n            fish.id as fish_id,\n            fish.fish_type_id,\n            fish_type.name,\n            fish_type.anishinaabe_name,\n            fish_type.fish_image,\n            fish_type.woodland_fish_image,\n            fish_type.s3_fish_image,\n            fish_type.s3_woodland_image,\n            fish.mercury,\n            fish.omega_3,\n            fish.omega_3_ratio,\n            fish.pcb,\n            fish.protein,\n            fish.lake,\n            fish_type.about\n        FROM fish_type\n        INNER JOIN fish\n        ON fish_type.id=fish.fish_type_id\n        WHERE fish.id = $1;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "fish_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "fish_type_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "anishinaabe_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "woodland_fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "s3_fish_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "s3_woodland_image",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "mercury",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 9,
+        "name": "omega_3",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 10,
+        "name": "omega_3_ratio",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 11,
+        "name": "pcb",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 12,
+        "name": "protein",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 13,
+        "name": "lake",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 14,
+        "name": "about",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "07e312d6dd2c169fbd575f1b69e584c27c24e3f9620ed4a9788874e1be68c198"
+}
