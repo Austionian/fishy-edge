@@ -42,7 +42,8 @@ features = [
     "postgres", 
     "uuid", 
     "chrono", 
-    "migrate"
+    "migrate",
+    "tls-native-tls"
 ]
 
 [dev-dependencies]
