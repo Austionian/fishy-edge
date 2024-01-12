@@ -14,8 +14,8 @@ async fn a_user_should_be_able_to_change_their_password() {
     let new_password = uuid::Uuid::new_v4().to_string();
 
     let body = format!(
-        "user_id={}&new_password={}&new_password_check={}",
-        &app.test_user.id, new_password, new_password
+        "user_id={}&current_password={}&new_password={}&new_password_check={}",
+        &app.test_user.id, &app.test_user.password_hash, new_password, new_password
     );
 
     let response = app.change_password(body).await;
@@ -53,8 +53,8 @@ async fn new_passwords_must_match() {
     let other_new_password = uuid::Uuid::new_v4().to_string();
 
     let body = format!(
-        "user_id={}&new_password={}&new_password_check={}",
-        &app.test_user.id, new_password, other_new_password
+        "user_id={}&current_password={}&new_password={}&new_password_check={}",
+        &app.test_user.id, &app.test_user.password_hash, new_password, other_new_password
     );
 
     let response = app.change_password(body).await;
@@ -62,19 +62,19 @@ async fn new_passwords_must_match() {
     assert_eq!(response.status().as_u16(), 400);
 }
 
-// #[tokio::test]
-// async fn current_password_must_be_correct() {
-//     let app = spawn_app().await;
-//
-//     let wrong_password = uuid::Uuid::new_v4().to_string();
-//     let new_password = uuid::Uuid::new_v4().to_string();
-//
-//     let body = format!(
-//         "user_id={}&new_password={}&new_password_check={}",
-//         &app.test_user.id, wrong_password, new_password, new_password
-//     );
-//
-//     let response = app.change_password(body).await;
-//
-//     assert_eq!(response.status().as_u16(), 400);
-// }
+#[tokio::test]
+async fn current_password_must_be_correct() {
+    let app = spawn_app().await;
+
+    let wrong_password = uuid::Uuid::new_v4().to_string();
+    let new_password = uuid::Uuid::new_v4().to_string();
+
+    let body = format!(
+        "user_id={}&current_password={}&new_password={}&new_password_check={}",
+        &app.test_user.id, wrong_password, new_password, new_password
+    );
+
+    let response = app.change_password(body).await;
+
+    assert_eq!(response.status().as_u16(), 400);
+}
