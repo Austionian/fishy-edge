@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT \n            email,\n            created_at,\n            latest_login\n        FROM users;\n        ",
+  "query": "\n        SELECT \n            email,\n            created_at,\n            latest_login\n        FROM users\n        limit 10;\n        ",
   "describe": {
     "columns": [
       {
@@ -28,5 +28,5 @@
       true
     ]
   },
-  "hash": "ec6c5f4be1aa64f1bdd44625542ee8d98fdec277b407b43f40791d318b4ea69e"
+  "hash": "386c667ca6175278b066c2bc7dd53b3e1b707e8b7f8de2ab8cac291b37bd4585"
 }
