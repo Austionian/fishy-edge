@@ -13,6 +13,8 @@ pub struct Data {
     pub(crate) most_liked_recipe: String,
     pub(crate) most_liked_recipe_id: uuid::Uuid,
     pub(crate) recipe_like_count: Option<i64>,
+    pub(crate) number_of_active_users: usize,
+    pub(crate) number_of_registered_users_in_last_month: usize,
 }
 
 #[derive(serde::Serialize)]
@@ -42,6 +44,30 @@ async fn analytics(db_pool: &PgPool) -> Result<Data, sqlx::Error> {
     let number_of_registered_users = sqlx::query!(
         r#"
         SELECT count(email) FROM users;
+        "#
+    )
+    .fetch_one(db_pool)
+    .await
+    .map(|row| match row.count {
+        Some(count) => count as usize,
+        None => 0,
+    })?;
+
+    let number_of_active_users = sqlx::query!(
+        r#"
+        SELECT count(email) FROM users where latest_login > CURRENT_DATE - 14;
+        "#
+    )
+    .fetch_one(db_pool)
+    .await
+    .map(|row| match row.count {
+        Some(count) => count as usize,
+        None => 0,
+    })?;
+
+    let number_of_registered_users_in_last_month = sqlx::query!(
+        r#"
+        SELECT count(email) FROM users where created_at > CURRENT_DATE - 30;
         "#
     )
     .fetch_one(db_pool)
@@ -120,5 +146,7 @@ async fn analytics(db_pool: &PgPool) -> Result<Data, sqlx::Error> {
         most_liked_recipe,
         most_liked_recipe_id,
         recipe_like_count,
+        number_of_registered_users_in_last_month,
+        number_of_active_users,
     })
 }
