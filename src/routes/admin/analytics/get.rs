@@ -84,8 +84,7 @@ async fn analytics(db_pool: &PgPool) -> Result<Data, sqlx::Error> {
             email,
             created_at,
             latest_login
-        FROM users
-        limit 10;
+        FROM users;
         "#
     )
     .fetch_all(db_pool)
