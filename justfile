@@ -88,3 +88,13 @@ docker-build:
 docker-run:
     #!/bin/bash
     docker run -p 8000:8000 fisy-edge
+
+# Connect to the production db
+connect-db:
+    #!/bin/bash
+    psql $PROD_DATABASE_URL
+
+# Connect to the local db
+connect-dev-db:
+    #!/bin/bash
+    psql $DATABASE_URL
