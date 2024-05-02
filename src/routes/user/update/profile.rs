@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::utils::e500;
 use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
@@ -11,11 +13,11 @@ pub enum Sex {
     Female,
 }
 
-impl ToString for Sex {
-    fn to_string(&self) -> String {
+impl Display for Sex {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Sex::Female => "Female".to_string(),
-            Sex::Male => "Male".to_string(),
+            Sex::Female => write!(f, "Female"),
+            Sex::Male => write!(f, "Male"),
         }
     }
 }
