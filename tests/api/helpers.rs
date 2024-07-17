@@ -527,6 +527,10 @@ pub async fn spawn_app() -> TestApp {
     test_app
 }
 
+// Even though the fields aren't used, SQLx still needs
+// to know that the fields exist to correctly parse the
+// db data.
+#[allow(dead_code)]
 pub struct TestUser {
     pub id: Uuid,
     pub email: String,
@@ -712,6 +716,10 @@ impl Fish {
 }
 
 #[derive(serde::Deserialize)]
+// Even though the fields aren't used, SQLx still needs
+// to know that the fields exist to correctly parse the
+// db data.
+#[allow(dead_code)]
 pub struct Recipe {
     pub id: Uuid,
     pub name: String,
