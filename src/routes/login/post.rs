@@ -46,10 +46,10 @@ pub async fn login(
         email: form.0.email,
         password: form.0.password,
     };
-    tracing::Span::current().record("username", &tracing::field::display(&credentials.email));
+    tracing::Span::current().record("username", tracing::field::display(&credentials.email));
     match validate_credentials(credentials, &db_pool).await {
         Ok(user_data) => {
-            tracing::Span::current().record("user_id", &tracing::field::display(&user_data.0));
+            tracing::Span::current().record("user_id", tracing::field::display(&user_data.0));
             match get_user_db(&db_pool, user_data.0).await {
                 Ok(data) => Ok(HttpResponse::Ok().json(LoginResponse {
                     user_id: user_data.0,
