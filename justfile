@@ -37,7 +37,7 @@ test:
     #!/bin/bash
 
     # ensures that Mac isn't limiting the amount of files allowed opened.
-    ulimit -n 5000
+    ulimit -n 10000
     echo "Testing..."
     cargo t
 
@@ -88,6 +88,18 @@ docker-build:
 docker-run:
     #!/bin/bash
     docker run -p 8000:8000 fisy-edge
+
+docker-deploy:
+    #!/bin/bash
+    export POSTGRES_USER=$POSTGRES_USER
+    export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+    export POSTGRES_DB=$POSTGRES_DB
+
+    DOCKER_HOST="ssh://austin@cluster.local" docker compose up -d
+
+# Transfers the docker image to the pi and runs the deploy script
+deploy:
+     just docker-build && docker save fishy-edge | bzip2 | ssh austin@cluster.local docker load && just docker-deploy
 
 # Connect to the production db
 connect-db:
