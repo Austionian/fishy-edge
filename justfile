@@ -47,7 +47,7 @@ update:
     cargo update
     echo $'Dependencies updated!\n'
     just test
-    
+
 # Start the Actix server and watch for changes.
 dev:
     #!/bin/bash
@@ -84,10 +84,10 @@ docker-build:
     #!/bin/bash
     docker build --tag fishy-edge --file Dockerfile .
 
-# Run the Docker image of fishy-edge at port 8000.
+# Run the Docker image of fishy-edge at port 8080.
 docker-run:
     #!/bin/bash
-    docker run -p 8000:8000 fisy-edge
+    docker run -p 8080:8080 fishy-edge
 
 docker-deploy:
     #!/bin/bash
@@ -95,11 +95,11 @@ docker-deploy:
     export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
     export POSTGRES_DB=$POSTGRES_DB
 
-    DOCKER_HOST="ssh://austin@cluster.local" docker compose up -d
+    DOCKER_HOST="ssh://otto@docker.local" docker compose up -d
 
 # Transfers the docker image to the pi and runs the deploy script
 deploy:
-     just docker-build && docker save fishy-edge | bzip2 | ssh austin@cluster.local docker load && just docker-deploy
+     just docker-build && docker save fishy-edge | bzip2 | ssh otto@docker.local docker load && just docker-deploy
 
 # Connect to the production db
 connect-db:
