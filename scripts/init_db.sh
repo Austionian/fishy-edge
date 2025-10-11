@@ -20,16 +20,19 @@ DB_PASSWORD="${POSTGRES_PASSWORD:=password}"
 DB_NAME="${POSTGRES_DB:=fish}"
 DB_PORT="${POSTGRES_PORT:=5432}"
 
-if [[ -z "${SKIP_DOCKER}" ]]
-then
-    docker run \
-      -e POSTGRES_USER=${DB_USER} \
-      -e POSTGRES_PASSWORD=${DB_PASSWORD} \
-      -e POSTGRES_DB=${DB_NAME} \
-      -p "${DB_PORT}":5432 \
-      -d postgres \
-      postgres -N 1000
-fi
+echo DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}
+# if [[ -z "${SKIP_DOCKER}" ]]
+# then
+#     docker run \
+#       -e POSTGRES_USER=${DB_USER} \
+#       -e POSTGRES_PASSWORD=${DB_PASSWORD} \
+#       -e POSTGRES_DB=${DB_NAME} \
+#       -p "${DB_PORT}":5432 \
+#       -d postgres \
+#       postgres -N 1000
+# fi
+
+
 
 # Keep pinging Postgres until it's ready to accept commands
 export PGPASSWORD="${DB_PASSWORD}"
@@ -40,6 +43,6 @@ done
 
 >&2 echo "Postgres is up and running on port ${DB_PORT}!"
 
-export DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}
+export database_url=postgres://${db_user}:${db_password}@docker.local:${db_port}/${db_name}
 sqlx database create
 sqlx migrate run

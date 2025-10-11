@@ -20,7 +20,7 @@ pub struct ApplicationSettings {
     pub public_key: String,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct DataBaseSettings {
     pub username: String,
     pub password: Secret<String>,

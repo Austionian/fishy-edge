@@ -94,8 +94,21 @@ docker-deploy:
     export POSTGRES_USER=$POSTGRES_USER
     export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
     export POSTGRES_DB=$POSTGRES_DB
+    export API_KEY=$API_KEY
 
     DOCKER_HOST="ssh://otto@docker.local" docker compose up -d
+
+db-init:
+    #!/bin/bash
+    DB_USER=$POSTGRES_USER
+    DB_PASSWORD=$POSTGRES_PASSWORD
+    DB_NAME=$POSTGRES_DB
+    DB_PORT=5432
+    
+    export DATABASE_URL=postgres://${db_user}:${db_password}@docker.local:${db_port}/${db_name}
+    sqlx database create
+    sqlx migrate run
+
 
 # Transfers the docker image to the pi and runs the deploy script
 deploy:
